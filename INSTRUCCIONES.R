@@ -62,3 +62,14 @@ git rm --cached -r _freeze/
   git add .gitignore
 git commit -m "Remover archivos pesados del tracking"
 git push
+
+
+
+#PARA REINICIAR TODO EL COMMIT (BORRA LOS ARCHIVOS Y SUBE NUEVOS)
+# Opción nuclear (solo si no te importa el historial)
+rmdir /s /q .git          # en Windows
+git init
+git add .
+git commit -m "Initial commit limpio"
+git remote add origin https://github.com/JeronimoPennini/PORTFOLIO_JP
+git push --force origin main
