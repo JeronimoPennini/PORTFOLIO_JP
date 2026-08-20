@@ -1,0 +1,1120 @@
+---
+title: "Cáncer en Argentina"
+subtitle: "Un análisis epidemiológico del cáncer en Argentina 2012–2025"
+author: "Jerónimo Pennini"
+date: 2026-08-13
+categories: [Epidemiología, Cáncer, Early-onset, Argentina]
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-fold: true
+jupyter: false
+editor:
+  markdown:
+    wrap: 72
+---
+
+![](image.jpg)
+
+# Contexto
+
+El cáncer es una de las principales causas de muerte y de carga de
+enfermedad en Argentina. En los últimos años, resulta llamativo el
+aumento del **cáncer de aparición temprana** (*early-onset cancer*), es
+decir, aquel diagnosticado en personas menores de 50 años. Distintos
+estudios a nivel global reportaron incrementos en la incidencia de
+tumores como el colorrectal, de mama o de riñón en franjas etarias
+cada vez más jóvenes
+
+Este trabajo utiliza los registros individuales de diagnóstico de
+tumores del **RITA (Registro Institucional de Tumores de Argentina)**
+entre 2012 y 2025 para explorar tres preguntas de investigación:
+
+1.  ¿Cómo evolucionó el número de diagnósticos a lo largo del tiempo?
+2.  ¿Cómo se distribuyen los diagnósticos según la edad y la
+    localización tumoral?
+3.  ¿Qué particularidades presenta el cáncer de aparición temprana (\<50
+    años) respecto del resto de los diagnósticos?
+
+::: callout-warning
+Nota metodológica
+
+Este es un registro de **base institucional**, no un registro
+poblacional con cobertura nacional completa. Esto significa que los
+recuentos no deben interpretarse como la incidencia real de cáncer en
+Argentina, sino como los diagnósticos efectivamente registrados en esta
+fuente. Por esa razón, el análisis se centra en **conteos, proporciones
+y composición** (qué parte del total representa cada grupo), y evita
+hablar de "tasas poblacionales", ya que no se cuenta con un denominador
+poblacional para calcularlas correctamente.
+
+Los datos individuales (edad, sexo, fecha, topografía) son reales. La
+variable de **provincia** que se utiliza en la sección del mapa
+interactivo, en cambio, es **simulada**, ya que la base original no
+incluye información geográfica. Esto se explica en detalle más adelante.
+:::
+
+```{r}
+#| echo: true
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(readxl)
+library(lubridate)
+library(scales)
+library(ggplot2)
+library(plotly)
+library(broom)
+library(scico)
+library(sf)
+library(leaflet)
+library(stringi)
+library(tidytext)
+library(gtExtras) 
+library(DT)
+
+set.seed(2026)
+```
+
+# Carga y preparación de datos
+
+Los datos provienen de la hoja `Dataset` del archivo
+`rita-2012-2025.xlsx`, que contiene un registro por paciente/tumor
+diagnosticado, con su fecha de diagnóstico, edad, sexo, localización
+(topografía), morfología, comportamiento (maligno, in situ, benigno,
+etc.) y método diagnóstico.
+
+```{r}
+
+rita_raw <- read_excel(
+  "rita-2012-2025.xlsx",
+  sheet = "Dataset"
+) %>%
+  # limpia espacios de más en los nombres de columna (p.ej. "TOPOGRAFÍA ")
+  # para que el rename() de abajo no dependa de que vengan prolijos
+  rename_with(str_trim)
+
+rita <- rita_raw %>%
+  rename(
+    id = IDPTE,
+    sexo = Sexo,
+    fecha_diagnostico = FECHA_DIAGNÓSTICO,
+    edad = EDAD_DIAGNÓSTICO,
+    topografia_cod = TOPOGRAFÍA,
+    topografia = TOPOGRAFÍA_N,
+    morfologia_cod = MORFOLOGÍA,
+    morfologia = MORFOLOGÍA_N,
+    comportamiento_cod = COMPORTAMIENTO,
+    comportamiento = COMPORTAMIENTO_N,
+    metodo_cod = METODO_DIAGNÓSTICO,
+    metodo = METODO_DIAGNÓSTICO_N
+  ) %>%
+  filter(!grepl("OTRO|otro|Otro", sexo)) |> 
+  mutate(
+    anio = year(fecha_diagnostico),
+    grupo_etario = cut(
+      edad,
+      breaks = c(14, 29, 39, 49, 59, 69, 79, 110),
+      labels = c(
+        "15-29", "30-39", "40-49",
+        "50-59", "60-69", "70-79", "80+"
+      )
+    ),
+    precoz = edad < 50
+  )
+```
+
+## ¿Qué comportamiento tienen los diagnósticos?
+
+La base incluye distintos tipos de comportamiento tumoral: maligno de
+sitio primario, in situ, benigno, incierto o casos donde se ignora. Para
+el análisis principal nos concentramos en los tumores **malignos de
+sitio primario**, que constituyen la gran mayoría de los registros.
+
+```{r}
+#|echo: false
+#|warning: false
+
+resumen <- rita %>%
+  count(comportamiento, sort = TRUE) %>%
+  mutate(
+    porcentaje = n / sum(n)
+  )
+
+datatable(
+  resumen %>%
+    select(comportamiento, n, porcentaje),
+  rownames = FALSE,
+  options = list(
+    pageLength = 5,
+    ordering = TRUE,
+    language = list(
+      info = "Mostrando _START_ a _END_ de _TOTAL_ registros"
+    ),
+    headerCallback = JS(
+      "function(thead) {
+        $(thead).find('th').css({
+          'background-color': '#0a9396',
+          'color': 'white',
+          'font-weight': '600',
+          'text-align': 'center',
+          'padding': '12px'
+        });
+      }"
+    )
+  )
+  ) |> 
+  formatPercentage(
+    "porcentaje",
+    digits = 1
+  ) %>%
+  formatStyle(
+    "porcentaje",
+    background = styleColorBar(
+      c(0, 1),
+      "#b56576"
+    ),
+    backgroundSize = "100% 80%",
+    backgroundRepeat = "no-repeat",
+    backgroundPosition = "center"
+  )
+```
+
+## Agrupación de localizaciones tumorales
+
+La topografía original tiene más de 800 códigos distintos, muchos de
+ellos subdivisiones anatómicas de un mismo órgano (por ejemplo,
+distintos cuadrantes de la mama). Para poder analizar "por causa" se
+agrupan los primeros tres caracteres del código (equivalentes al
+capítulo de la CIE-O/CIE-10) en categorías clínicamente relevantes.
+
+```{r}
+#| echo: true
+
+
+# Clasificación de tumores por localización
+rita_malignos <- rita %>%
+  mutate(
+    cod3 = str_sub(topografia_cod, 1, 3),
+    causa = case_when(
+      cod3 == "C50" ~ "Mama",
+      cod3 == "C53" ~ "Cuello uterino",
+      cod3 %in% c("C54", "C55") ~ "Cuerpo uterino",
+      cod3 == "C56" ~ "Ovario",
+      cod3 == "C61" ~ "Próstata",
+      cod3 == "C62" ~ "Testículo",
+      cod3 == "C67" ~ "Vejiga",
+      cod3 %in% c("C64", "C65") ~ "Riñón",
+      cod3 %in% c("C18", "C19", "C20", "C21") ~ "Colon y recto",
+      cod3 == "C17" ~ "Intestino delgado",
+      cod3 == "C15" ~ "Esófago",
+      cod3 == "C16" ~ "Estómago",
+      cod3 == "C22" ~ "Hígado",
+      cod3 %in% c("C23", "C24") ~ "Vesícula y vías biliares",
+      cod3 == "C25" ~ "Páncreas",
+      cod3 == "C34" ~ "Pulmón",
+      cod3 == "C32" ~ "Laringe",
+      cod3 == "C44" ~ "Piel (no melanoma)",
+      cod3 == "C43" ~ "Melanoma de piel",
+      cod3 == "C71" ~ "Sistema nervioso central",
+      cod3 == "C73" ~ "Tiroides",
+      cod3 == "C42" ~ "Médula ósea / hemolinfopoyético",
+      cod3 == "C77" ~ "Ganglios linfáticos",
+      cod3 == "C80" ~ "Sitio primario desconocido",
+      TRUE ~ "Otros"
+    )
+  )
+
+# Resumen
+resumen_mmalignos <- rita_malignos %>%
+  count(causa, sort = TRUE) %>%
+  mutate(
+    porcentaje = n / sum(n)
+  )
+
+# Tabla interactiva
+datatable(
+  resumen_mmalignos %>%
+    select(causa, n, porcentaje),
+
+  rownames = FALSE,
+
+  colnames = c(
+    "Localización del tumor",
+    "Casos",
+    "Porcentaje"
+  ),
+
+  options = list(
+    pageLength = 15,
+    lengthMenu = c(10, 15, 25, 50),
+
+    ordering = TRUE,
+    order = list(list(1, "desc")),
+
+    searching = TRUE,
+    autoWidth = FALSE,
+
+    dom = "lfrtip",
+
+    language = list(
+      search = "Buscar:",
+      lengthMenu = "Mostrar _MENU_ registros",
+      info = "Mostrando _START_ a _END_ de _TOTAL_ registros",
+      infoEmpty = "Sin registros",
+      zeroRecords = "No se encontraron resultados",
+      paginate = list(
+        previous = "Anterior",
+        `next` = "Siguiente"
+      )
+    ),
+
+    columnDefs = list(
+      list(width = "55%", targets = 0),
+      list(width = "15%", targets = 1),
+      list(width = "30%", targets = 2)
+    ),
+
+    headerCallback = JS(
+      "function(thead) {
+        $(thead).find('th').css({
+          'background-color': '#7f1d1d',
+          'color': 'white',
+          'font-weight': '600',
+          'text-align': 'center',
+          'padding': '12px'
+        });
+      }"
+    )
+  )
+) %>%
+
+  # Porcentaje con un decimal
+  formatPercentage(
+    "porcentaje",
+    digits = 1
+  ) %>%
+
+  # Columna de localización
+  formatStyle(
+    "causa",
+    fontWeight = "500"
+  ) %>%
+
+  # Columna de casos
+  formatStyle(
+    "n",
+    fontWeight = "bold",
+    textAlign = "center"
+  ) %>%
+
+  # Barra proporcional al porcentaje
+  formatStyle(
+    "porcentaje",
+    background = styleColorBar(
+      c(0, 1),
+      "#fb6f92"
+    ),
+    backgroundSize = "100% 70%",
+    backgroundRepeat = "no-repeat",
+    backgroundPosition = "center",
+    fontWeight = "bold"
+  ) %>%
+
+  # Líneas divisorias
+  formatStyle(
+    columns = names(resumen_mmalignos),
+    borderBottom = "1px solid #eeeeee"
+  )
+```
+
+# Análisis temporal
+
+::: panel-tabset
+## Diagnósticos por año
+
+```{r}
+#| echo: false
+
+diagnosticos_anio <- rita_malignos %>% 
+  count(anio) 
+grafico_anio <- ggplot( diagnosticos_anio, 
+                        aes(x = anio, y = n) ) + 
+  geom_line( color = "#da627d", linewidth = 1 ) + 
+  geom_point( color = "#a53860", size = 2 ) + 
+  scale_x_continuous(breaks = 2012:2025) + 
+  labs( title = "Diagnósticos de cáncer por año", 
+        subtitle = "Tumores malignos de sitio primario, RITA 2012-2025", 
+        x = NULL, y = "Diagnósticos" ) + 
+  theme_minimal() 
+ggplotly(grafico_anio)
+```
+
+
+## Diagnósticos por año y sexo
+
+```{r}
+#| echo: false
+
+diagnosticos_anio_sexo <- rita_malignos %>%
+  filter(!grepl("otro|Otro|OTRO",sexo)) |> 
+  count(anio, sexo)
+
+grafico_anio_sexo <- ggplot(
+  diagnosticos_anio_sexo,
+  aes(x = anio, y = n, color = sexo)
+) +
+
+  geom_line(linewidth = 1) +
+  geom_point(size = 1.8) +
+
+  scale_x_continuous(breaks = 2012:2025) +
+
+  scale_color_manual(
+    values = c("Mujer" = "#3a5a40", "Hombre" = "#bc6c25")
+  ) +
+
+  labs(
+    title = "Diagnósticos por año según sexo",
+    x = NULL,
+    y = "Diagnósticos",
+    color = NULL
+  ) +
+
+  theme_minimal()
+
+ggplotly(grafico_anio_sexo)
+```
+
+:::
+
+Se observa una tendencia creciente en el número de diagnósticos
+registrados durante buena parte del período, con una caída visible en
+2020. Esa caída coincide con el contexto de pandemia de COVID-19, que
+afectó fuertemente el acceso a controles, estudios diagnósticos y
+consultas médicas en general, un patrón documentado también a nivel
+internacional.
+
+
+# Análisis etario
+
+::: panel-tabset
+## Distribución de la edad al diagnóstico
+
+```{r}
+#| echo: false
+
+grafico_edad <- ggplot(
+  rita_malignos,
+  aes(x = edad, text = paste0("Edad: ", edad))
+) +
+  geom_histogram(
+    bins = 40,
+    fill = "#739e82",
+    color = "white",
+    alpha = 0.9
+  ) +
+  geom_vline(
+    xintercept = 50,
+    linetype = "dashed",
+    color = "#e07a5f",
+    linewidth = 0.7
+  ) +
+  annotate(
+    "text",
+    x = 50, y = Inf,
+    label = "50 años",
+    color = "#e07a5f",
+    vjust = 1.5,
+    hjust = -0.1,
+    size = 3.5
+  ) +
+  scale_x_continuous(breaks = seq(0, max(rita_malignos$edad, na.rm = TRUE), by = 10)) +
+  labs(
+    title = "Distribución de la edad al diagnóstico",
+    subtitle = "La línea punteada marca el umbral de 50 años (aparición temprana)",
+    x = "Edad",
+    y = "Diagnósticos",
+    caption = paste0("N = ", nrow(rita_malignos))
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(color = "gray40"),
+    plot.caption = element_text(color = "gray50", size = 9)
+  )
+
+ggplotly(grafico_edad, tooltip = "text") %>%
+  layout(
+    hoverlabel = list(bgcolor = "white"),
+    margin = list(t = 80)
+  )
+```
+
+## Diagnósticos por grupo etario
+
+```{r}
+#| echo: false
+
+paleta_golden_harvest <- c("#99621e", "#d38b5d", "#f3ffb6", "#739e82", "#2c5530")
+
+datos_grupo <- rita_malignos %>% count(grupo_etario)
+n_grupos <- nrow(datos_grupo)
+
+colores_interpolados <- colorRampPalette(paleta_golden_harvest)(n_grupos)
+
+grafico_grupo_etario <- datos_grupo %>%
+  ggplot(aes(x = grupo_etario, y = n, fill = grupo_etario, text = paste0(grupo_etario, ": ", n))) +
+  geom_col() +
+  scale_fill_manual(values = colores_interpolados) +
+  labs(
+    title = "Diagnósticos por grupo etario",
+    subtitle = "Ordenado de menor a mayor edad",
+    x = NULL,
+    y = "Diagnósticos"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(color = "gray40")
+  )
+
+ggplotly(grafico_grupo_etario, tooltip = "text") %>%
+  layout(margin = list(t = 80))
+```
+:::
+
+# Análisis por causa (localización tumoral)
+
+:::panel-tabset
+## Las localizaciones más frecuentes
+
+```{r}
+#| echo: false
+
+top_causas <- rita_malignos %>%
+  count(causa, sort = TRUE) %>%
+  slice_max(n, n = 15) %>%
+  mutate(causa = str_wrap(causa, width = 35))
+
+grafico_causas <- ggplot(
+  top_causas,
+  aes(
+    x = n,
+    y = reorder(causa, n),
+    fill = n,
+    text = paste0(causa, "<br>Diagnósticos: ", n)
+  )
+) +
+  geom_col(width = 0.75) +
+  geom_text(
+    aes(label = n),
+    hjust = 1.1,
+    nudge_x = max(top_causas$n) * 0.03,     
+    size = 3.2,
+    color = "black",
+    fontface = "bold sans"
+) +
+  scale_fill_gradient(low = "#f7a9a8", high = "#8f2d56", guide = "none") +
+  scale_x_continuous(
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    title = "Localizaciones tumorales más frecuentes",
+    subtitle = "Top 15, tumores malignos de sitio primario",
+    x = "Diagnósticos",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "black", size = 11, margin = margin(b = 10)),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text.y = element_text(size = 10, color = "#2b2b2b"),
+    axis.title.x = element_text(size = 10, color = "grey30")
+  )
+
+ggplotly(grafico_causas, tooltip = "text") %>%
+  layout(
+    margin = list(l = 10, r = 10, t = 60, b = 10),
+    font = list(family = "Arial", size = 12)
+  )
+```
+
+## Diferencias por sexo
+
+```{r}
+#| echo: false
+
+top_causas_sexo <- rita_malignos %>%
+  count(sexo, causa) %>%
+  group_by(sexo) %>%
+  slice_max(n, n = 8) %>%
+  ungroup()
+
+grafico_causas_sexo <- ggplot(
+  top_causas_sexo,
+  aes(
+    x = n,
+    y = reorder_within(causa, n, sexo),
+    fill = sexo
+  )
+) +
+
+  geom_col() +
+
+  geom_text(
+    aes(label = n),
+    hjust =0.5,
+    size = 3.2,
+    color = "black",
+    fontface = "bold"
+  ) +
+
+  tidytext::scale_y_reordered() +
+
+  facet_wrap(
+    ~sexo,
+    scales = "free_y"
+  ) +
+
+  scale_fill_manual(
+    values = c(
+      "Mujer" = "#218380",
+      "Hombre" = "#f46036"
+    )
+  ) +
+
+  scale_x_continuous(
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+
+  labs(
+    title = "Principales localizaciones tumorales según sexo",
+    x = "Diagnósticos",
+    y = NULL
+  ) +
+
+  theme_minimal() +
+
+  theme(
+    legend.position = "none"
+  )
+
+grafico_causas_sexo
+```
+
+## Edad al diagnóstico según localización
+
+```{r}
+#| echo: false
+
+causas_frecuentes <- top_causas$causa
+
+grafico_edad_causa <- rita_malignos %>%
+  filter(causa %in% causas_frecuentes) %>%
+  ggplot(aes(
+    x = edad,
+    y = reorder(causa, edad, FUN = median)
+  )) +
+
+  geom_boxplot(
+    fill = "#30638e",
+    alpha = 0.7,
+    outlier.alpha = 0.2
+  ) +
+
+  geom_vline(
+    xintercept = 50,
+    linetype = "dashed",
+    color = "#ef476f"
+  ) +
+
+  labs(
+    title = "Edad al diagnóstico según localización tumoral",
+    subtitle = "Top 15 localizaciones más frecuentes",
+    x = "Edad",
+    y = NULL
+  ) +
+
+  theme_minimal()
+
+grafico_edad_causa
+```
+
+:::
+
+Varias localizaciones son, por definición, exclusivas de un sexo (mama,
+cuello/cuerpo uterino y ovario en mujeres; próstata y testículo en
+varones), por lo que resulta más informativo observar el top de causas
+dentro de cada sexo por separado.
+
+En este analisis comienza a aparecer un patrón interesante:
+localizaciones como el testículo, el cuello uterino o la tiroides
+concentran buena parte de sus diagnósticos por debajo de los 50 años,
+mientras que otras, como el colon-recto, el pulmón o la próstata, se
+concentran en edades más avanzadas.
+
+# Cáncer de aparición temprana (early-onset)
+
+Definimos como **aparición temprana** a todo diagnóstico en personas
+menores de 50 años, siguiendo el criterio más utilizado en la literatura
+internacional sobre *early-onset cancer*.
+
+```{r}
+#| echo: false
+
+#| echo: false
+
+resumen_precoz <- rita_malignos %>%
+  filter(!grepl("OTRO|otro|Otro", sexo)) |> 
+  count(precoz) %>%
+  mutate(
+    grupo = if_else(
+      precoz,
+      "Aparición temprana (<50 años)",
+      "50 años o más"
+    ),
+    porcentaje = n / sum(n)
+  ) %>%
+  select(grupo, n, porcentaje)
+
+datatable(
+  resumen_precoz,
+  rownames = FALSE,
+
+  colnames = c(
+    "Grupo etario",
+    "Diagnósticos",
+    "Porcentaje"
+  ),
+
+  options = list(
+    pageLength = 2,
+    ordering = TRUE,
+    searching = FALSE,
+    paging = FALSE,
+    autoWidth = FALSE,
+
+    columnDefs = list(
+      list(width = "55%", targets = 0),
+      list(width = "15%", targets = 1),
+      list(width = "30%", targets = 2)
+    ),
+
+    headerCallback = JS(
+      "function(thead) {
+        $(thead).find('th').css({
+          'background-color': '#028090',
+          'color': 'white',
+          'font-weight': '600',
+          'text-align': 'center',
+          'padding': '10px'
+        });
+      }"
+    ),
+
+    language = list(
+      info = ""
+    )
+  )
+) %>%
+
+formatStyle(
+  "grupo",
+  fontWeight = "500"
+) %>%
+
+formatStyle(
+  "n",
+  fontWeight = "bold",
+  textAlign = "center"
+) %>%
+
+formatPercentage(
+  "porcentaje",
+  digits = 1
+) %>%
+
+formatStyle(
+  "porcentaje",
+  background = styleColorBar(
+    c(0, 1),
+    "#f4a261"
+  ),
+  backgroundSize = "100% 70%",
+  backgroundRepeat = "no-repeat",
+  backgroundPosition = "center",
+  fontWeight = "bold"
+)
+```
+
+## ¿Aumentó su participación a lo largo del tiempo?
+
+En este gráfico podemos ver que la participación del grupo etario \<50
+tiene una tendencia en aumento en esta serie temporal, lo que nos indica
+que si participación en el total de diagnósticos es cada vez mayor. Esto
+nos sugiere repensar las estrategias de tamizaje, redefiniendo su
+poblacion. Quizás no se trata de solo ampliar el rango etario a tamizar,
+sino más bien de redirigir las acciones de tamizaje hacia los
+territorios con menos acceso a una prueba diagnóstica como es una
+mamografía, test de VPH, etc.
+
+```{r}
+#| echo: false
+#| message: false
+precoz_anio <- rita_malignos %>%
+  group_by(anio) %>%
+  summarise(
+    total = n(),
+    precoces = sum(precoz),
+    proporcion = precoces / total
+  )
+
+grafico_precoz_anio <- ggplot(
+  precoz_anio,
+  aes(x = anio, y = proporcion)
+) +
+
+  geom_line(color = "#1a759f", linewidth = 1) +
+  geom_point(color = "#184e77", size = 2) +
+
+  geom_smooth(
+    method = "lm",
+    se = TRUE,
+    color = "#a4ac86",
+    linetype = "dashed"
+  ) +
+
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  scale_x_continuous(breaks = 2012:2025) +
+
+  labs(
+    title = "Proporción de diagnósticos de aparición temprana por año",
+    subtitle = "Diagnósticos en menores de 50 años sobre el total anual",
+    x = NULL,
+    y = "% de aparición temprana"
+  ) +
+
+  theme_minimal()
+
+ggplotly(grafico_precoz_anio)
+```
+
+## ¿Qué localizaciones concentran más diagnósticos tempranos?
+
+No todas las localizaciones tumorales tienen el mismo perfil etario.
+Para identificarlas, calculamos, dentro de cada localización, qué
+porcentaje de sus diagnósticos corresponde a personas menores de 50 años
+(restringiendo a localizaciones con al menos 30 casos para evitar
+estimaciones inestables).
+
+```{r}
+#| echo: false
+
+precoz_causa <- rita_malignos %>%
+  group_by(causa) %>%
+  summarise(
+    total = n(),
+    precoces = sum(precoz),
+    proporcion = precoces / total
+  ) %>%
+  filter(total >= 30) %>%
+  arrange(desc(proporcion)) %>%
+  slice_max(proporcion, n = 15)
+
+grafico_precoz_causa <- ggplot(
+  precoz_causa,
+  aes(x = proporcion, y = reorder(causa, proporcion))
+) +
+
+  geom_col(fill = "#00798c") +
+  
+  geom_text(
+    aes(label = paste0("%",round(proporcion*100))),
+    hjust = -0.001,
+    size = 3.2,
+    color = "black",
+    fontface = "bold"
+  ) +
+
+  scale_x_continuous(labels = percent_format(accuracy = 1)) +
+
+  labs(
+    title = "Localizaciones con mayor participación de diagnósticos tempranos",
+    subtitle = "Solo localizaciones con al menos 30 casos en el período",
+    x = "% de diagnósticos en menores de 50 años",
+    y = NULL
+  ) +
+  theme_minimal() + 
+  theme(
+    plot.subtitle = element_text(color = "grey50")
+  )
+
+grafico_precoz_causa
+```
+
+## Mapa de calor: causa x grupo etario
+
+```{r}
+#| echo: false
+
+mapa_calor <- rita_malignos %>%
+  filter(causa %in% causas_frecuentes) %>%
+  count(causa, grupo_etario) %>%
+  group_by(causa) %>%
+  mutate(proporcion = n / sum(n)) %>%
+  ungroup()
+
+grafico_calor <- ggplot(
+  mapa_calor,
+  aes(
+    x = grupo_etario,
+    y = causa,
+    fill = proporcion
+  )
+) +
+
+  geom_tile(
+    color = "white",
+    linewidth = 0.5
+  ) +
+
+  geom_text(
+    aes(
+      label = percent(proporcion, accuracy = 1)
+    ),
+    size = 3.2,
+    fontface = "bold"
+  ) +
+
+  scale_fill_distiller(
+    palette = "YlGnBu",
+    direction = 1,
+    labels = percent_format(accuracy = 1),
+    limits = c(0, 1)
+  ) +
+
+  labs(
+    title = "Distribución etaria dentro de cada localización tumoral",
+    subtitle = "Top 15 localizaciones más frecuentes",
+    x = NULL,
+    y = NULL,
+    fill = "Proporción"
+  ) +
+
+  theme_minimal(base_size = 12) +
+
+  theme(
+    plot.title = element_text(
+      face = "bold",
+      size = 16
+    ),
+
+    plot.subtitle = element_text(
+      color = "gray40",
+      size = 11
+    ),
+
+    axis.text.x = element_text(
+      color="black",
+      angle = 45,
+      hjust = 1
+    ),
+
+    axis.text.y = element_text(
+      color="black",
+      size = 10
+    ),
+
+    panel.grid = element_blank(),
+
+    legend.title = element_text(
+      face = "bold"
+    )
+  )
+
+grafico_calor
+```
+
+## ¿La tendencia de aparición temprana es estadísticamente significativa?
+
+Para complementar el gráfico de tendencia, ajustamos un modelo de
+regresión logística simple que estima la probabilidad de que un
+diagnóstico corresponda a aparición temprana en función del año,
+controlando por sexo.
+
+```{r}
+#| echo: true
+
+modelo_precoz <- glm(
+  precoz ~ anio + sexo,
+  data = rita_malignos,
+  family = binomial
+)
+
+broom::tidy(modelo_precoz, exponentiate = TRUE, conf.int = TRUE)
+
+```
+
+Un **odds ratio** (columna *estimate*, ya exponenciada) mayor a 1 para
+la variable anio indica que, año a año, aumentan los odds (o chances) de
+que un diagnóstico corresponda a una persona menor de 50 años,
+**ajustando por sexo**. En este modelo el aumento es de aproximadamente
+**1,7% por año (OR = 1,02)** y resulta estadísticamente significativo (p
+\< 0,001). Como en el resto del análisis, esto describe un patrón
+observado en los registros disponibles y no debe interpretarse como una
+relación causal: cambios en el acceso al diagnóstico, en las prácticas
+de tamizaje o en la composición de la población atendida también pueden
+influir en esta tendencia.
+
+# Mapa interactivo por provincia
+
+::: callout-note
+**Aclaración metodológica — datos geográficos simulados**
+
+La base original no incluye información de provincia o localización
+geográfica de los pacientes. Para crear una visualización geográfica
+interactiva con fines ilustrativos con el paquete `sf`, en esta sección
+se **inventa** una variable de provincia, asignada de manera aleatoria a
+cada diagnóstico.
+
+**Los valores que se muestran en el mapa son ficticios** y se incluyen
+únicamente con fines demostrativos/de portfolio. No representan la
+distribución geográfica real del cáncer en Argentina.
+:::
+
+
+## Mapa interactivo de diagnostico precoz por provincia
+
+```{r}
+#| echo: true
+#| warning: false
+#| message: false
+
+provincias_arg <- c(
+  "Buenos Aires", "Ciudad Autónoma de Buenos Aires", "Catamarca",
+  "Chaco", "Chubut", "Córdoba", "Corrientes", "Entre Ríos",
+  "Formosa", "Jujuy", "La Pampa", "La Rioja", "Mendoza",
+  "Misiones", "Neuquén", "Río Negro", "Salta", "San Juan",
+  "San Luis", "Santa Cruz", "Santa Fe", "Santiago del Estero",
+  "Tierra del Fuego", "Tucumán"
+)
+
+set.seed(2026)
+
+rita_geo <- rita_malignos %>%
+  mutate(
+    provincia_simulada = sample(
+      provincias_arg,
+      size = n(),
+      replace = TRUE
+    )
+  )
+
+resumen_provincia <- rita_geo %>%
+  group_by(provincia_simulada) %>%
+  summarise(
+    casos = n(),
+    precoces = sum(precoz, na.rm = TRUE),
+    proporcion_precoces = precoces / casos,
+    .groups = "drop"
+  ) %>%
+  arrange(desc(proporcion_precoces))
+
+
+provincias_sf <- st_read(
+  "https://apis.datos.gob.ar/georef/api/v2.0/provincias.geojson",
+  quiet = TRUE
+)
+
+mapa <- provincias_sf %>%
+  left_join(resumen_provincia, by = c("nombre" = "provincia_simulada"))
+
+sin_match <- resumen_provincia %>%
+  filter(!provincia_simulada %in% provincias_sf$nombre) %>%
+  pull(provincia_simulada)
+
+if (length(sin_match) > 0) {
+  message("Revisar nombres, no matchearon: ", paste(sin_match, collapse = ", "))
+}
+
+paleta <- colorNumeric(
+  palette = "YlOrRd",
+  domain = mapa$casos,
+  na.color = "#eeeeee"
+)
+
+
+mapa$etiqueta <- lapply(
+  sprintf(
+    "<b>%s</b><br>Casos: %s<br>Diagnósticos precoces: %s<br>Proporción precoz: %s%%",
+    mapa$nombre,
+    ifelse(is.na(mapa$casos), "s/d", mapa$casos),
+    ifelse(is.na(mapa$precoces), "s/d", mapa$precoces),
+    ifelse(is.na(mapa$proporcion_precoces), "s/d", round(mapa$proporcion_precoces * 100, 1))
+  ),
+  htmltools::HTML
+)
+
+# detach("package:xts", unload = TRUE)
+
+leaflet(mapa) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  setView(lng = -64, lat = -38, zoom = 4) %>%
+  addPolygons(
+    fillColor = ~paleta(casos),
+    fillOpacity = 0.75,
+    color = "white",
+    weight = 1.5,
+    label = ~etiqueta,
+    popup = ~etiqueta,
+    highlightOptions = highlightOptions(
+      weight = 3,
+      color = "#2B3E4C",
+      bringToFront = TRUE
+    )
+  ) %>%
+  addLegend(
+    pal = paleta,
+    values = ~mapa$casos,
+    title = "Casos",
+    position = "bottomright"
+  )
+```
+
+
+
+# Conclusiones
+
+El análisis de los registros individuales del RITA (2012-2025) muestra
+que el número de diagnósticos aumentó a lo largo del período, con una
+caída puntual en 2020 asociada al contexto de pandemia. Al observar la
+composición etaria, aparece un subconjunto de localizaciones —como
+testículo, cuello uterino o tiroides— con una proporción particularmente
+alta de diagnósticos en menores de 50 años, en línea con lo que la
+literatura internacional describe como *early-onset cancer*.
+
+La proporción de diagnósticos tempranos sobre el total muestra una
+tendencia que el modelo de regresión logística permite cuantificar,
+aunque esto describe unaasociación y no prueba una causa: podría
+reflejar cambios reales en la frecuencia de estos tumores, pero también
+cambios en el acceso al diagnóstico o en la población cubierta por el
+registro a lo largo del tiempo.
+
+Finalmente, con el mapa interactivo se puede observar, con datos
+geográficos simulados, cómo se integran datos tabulares (frecuencias)
+con geometrías `sf` para construir visualizaciones interactivas con
+`leaflet`. Para elaborar hipótesis o correlaciones, se debería contar
+con información geografica real, ya sea provincia y/o municipio de
+residencia de cada registro, dato que no está disponible en esta base.
+
+# Fuentes
+
+- Dataset obtenido de : [Datos Abiertos - RITA  2012-2025](https://datos.salud.gob.ar/dataset/rita-registro-institucional-de-tumores-de-argentina-casos-de-cancer-diagnosticados-2012-2024/archivo/1f33e416-21e9-4c54-aef5-a4bce37b453b)
+- [Early-Onset Cancers in Adults: A Review of Epidemiology, Supportive Care Needs and Future Research Priorities](https://pmc.ncbi.nlm.nih.gov/articles/PMC9406462/)
+- [Biological aging and generational shifts in early-onset cancer risk](https://www.nature.com/articles/s41591-026-04448-w)

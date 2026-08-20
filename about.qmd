@@ -1,0 +1,21 @@
+---
+title: "Sobre mí"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/jeronimo-pennini/
+    - icon: github
+      text: Github
+      href: https://github.com/JeronimoPennini
+---
+
+Soy **Epidemiólogo, Biotecnólogo y Biólogo Molecular**. Nací en la Ciudad de Neuquén, estudié en La Plata, y recientemente volví a mis pagos. Dicen, quien probó las aguas del Limay siempre vuelve, y yo no fuí la excepción. Mi interés por la Salud Pública viene desde tiempos remotos, y fue a través de la Residencia de Epidemiología que pude comenzar a encausar esa curiosidad y vocación en una carrera profesional. Mis expertices y hobbies son diversos, van desde análisis estadísticos en R, hasta mecánica de Renault 12, pasando por la cocina y la poesía. Soy proactivo, por no decir muy inquieto y curioso. Quedarme con una duda no es para mi una opción, por lo que siempre estoy buscando respuestas o profundizar en temas que me movilicen. Mi zanahoria es aportar y colaborar en la construcción de una Salud Publica accesible, oportuna, efectiva y de calidad. Por esta razón todo lo que hago suele ser en pos de este objetivo. Mis mayores intereses están ligados a la gestión e investigación en salud publica, particularmente la elaboración de políticas públicas con base en la evidencia.
+
+Si quieren conocer un poco más de mi recorrido profesional, lxs invito a pasarse por la sección "CV" donde encontrarán un resumen de este. Por cualquier consulta o comentario, no duden en contactarme a JeronimoPennini1\@gmail.com
+
+Gracias por leerme.
+
+Que tengas un lindo dia!

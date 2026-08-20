@@ -1,0 +1,1414 @@
+---
+title: Mortalidad en la Provincia de Buenos Aires
+subtitle: Analisis multidimensional de la mortalidad en PBA
+author: JeronimoPennini
+date: '2026-08-18'
+categories: [Epidemiologia, Mortalidad, PBA]
+format:
+  html:
+    code-fold: true
+    code-tools: true
+---
+
+![](image.jpg)
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(scales)
+library(forcats)
+library(plotly)
+library(readxl)
+library(janitor)
+library(DT)
+library(sf)
+library(dplyr)
+library(leaflet)
+library(htmltools)
+library(rmapshaper)
+
+# Colores Provincia de Buenos Aires
+color_turquesa <- "#07A6BC"
+color_magenta  <- "#E02377"
+color_azul     <- "#4DB6C4"
+color_rosa     <- "#C94B8C"
+color_azul_claro <- "#75AFC0"
+color_rosa_claro <- "#D56AA5"
+color_oscuro   <- "#34495E"
+
+paleta_capitulos <- c(
+  "#07A6BC", "#E02377", "#4DB6C4", "#C94B8C", "#75AFC0",
+  "#D56AA5", "#34495E", "#F2A65A", "#5B8C5A", "#9B5DE5",
+  "#00A8A8", "#F15BB5", "#845EC2", "#4E8397", "#B0413E",
+  "#6D597A", "#118AB2", "#EF476F", "#06D6A0"
+)
+```
+
+# Mortalidad en la Provincia de Buenos Aires
+
+La mortalidad constituye uno de los indicadores fundamentales para describir el perfil epidemiológico de una población. Analizar no solamente cuántas personas mueren, sino también **de qué causas, a qué edades, distribución según sexo y dónde ocurren esas defunciones**, permite identificar tendencias que podrían traducirse en estrategias territoriales y redireccionamiento de los recursos sanitarios.
+
+En este análisis se explora la evolución histórica de la mortalidad en la Provincia de Buenos Aires, la participación de las principales causas de muerte, distribución según edad y sexo, y su distribución geográfica.
+
+El objetivo no es solamente construir un ranking de causas, sino observar cómo cambia la mirada del perfil de mortalidad cuando incorporamos distintas dimensiones epidemiológicas.
+
+::: callout-important
+**Nota metodológica** 
+Los datos utilizados son reales, peeero el fin de este análisis es meramente ilustrativo, por lo que no recomiendo usar los resultados obtenidos a continuación. Sugiero usar este informe como ejemplo de la amplitud de herramientas disponibles con R para analizar distintas situaciones en salud pública
+:::
+
+```{r}
+#| echo: false
+#| message: false
+
+BASE <- read_xlsx("DEFUNCIONES_PBA_2009_2024.xlsx")
+colnames(BASE) <- toupper(make_clean_names(colnames(BASE), case = "all_caps"))
+
+BASE <- BASE |>
+  mutate(
+    GRUPO_EDAD = case_when(
+      GRUPO_EDAD %in% c("0-4",  "0 a 4")   ~ "0-4",
+      GRUPO_EDAD %in% c("5-9",  "5 a 9")   ~ "5-9",
+      GRUPO_EDAD %in% c("10-14","10 a 14") ~ "10-14",
+      GRUPO_EDAD %in% c("15-19","15 a 19") ~ "15-19",
+      GRUPO_EDAD %in% c("20-24","20 a 24") ~ "20-24",
+      GRUPO_EDAD %in% c("25-29","25 a 29") ~ "25-29",
+      GRUPO_EDAD %in% c("30-34","30 a 34") ~ "30-34",
+      GRUPO_EDAD %in% c("35-39","35 a 39") ~ "35-39",
+      GRUPO_EDAD %in% c("40-44","40 a 44") ~ "40-44",
+      GRUPO_EDAD %in% c("45-49","45 a 49") ~ "45-49",
+      GRUPO_EDAD %in% c("50-54","50 a 54") ~ "50-54",
+      GRUPO_EDAD %in% c("55-59","55 a 59") ~ "55-59",
+      GRUPO_EDAD %in% c("60-64","60 a 64") ~ "60-64",
+      GRUPO_EDAD %in% c("65-69","65 a 69") ~ "65-69",
+      GRUPO_EDAD %in% c("70-74","70 a 74") ~ "70-74",
+      GRUPO_EDAD %in% c("75-79","75 a 79") ~ "75-79",
+      GRUPO_EDAD %in% c("80 y mas","80 y más") ~ "80 y más",
+      TRUE ~ NA_character_
+    ),
+    MUNICIPIO_NOMBRE = case_when(
+      MUNICIPIO_NOMBRE == "25 de mayo"        ~ "25 de Mayo",
+      MUNICIPIO_NOMBRE == "9 de julio"        ~ "9 de Julio",
+      MUNICIPIO_NOMBRE == "General la Madrid" ~ "General La Madrid",
+      MUNICIPIO_NOMBRE == "General las Heras" ~ "General Las Heras",
+      TRUE ~ MUNICIPIO_NOMBRE
+    )
+  )
+orden_edad <- c(
+  "0-4",
+  "5-9",
+  "10-14",
+  "15-19",
+  "20-24",
+  "25-29",
+  "30-34",
+  "35-39",
+  "40-44",
+  "45-49",
+  "50-54",
+  "55-59",
+  "60-64",
+  "65-69",
+  "70-74",
+  "75-79",
+  "80 y más"
+)
+
+BASE<-BASE |> 
+  mutate(GRUPO_EDAD = factor(GRUPO_EDAD, levels = orden_edad))
+
+POBLACION_RAW <- read_xlsx(
+  "PROYECCIONES_2009_2024.xlsx",
+  sheet = "proyecciones-poblacion-2010_202"
+)
+
+POBLACION <- POBLACION_RAW |>
+  filter(municipio_nombre != "Total", !is.na(municipio_nombre)) |>
+  pivot_longer(
+    cols      = -municipio_nombre,
+    names_to  = "ANIO",
+    values_to = "POBLACION"
+  ) |>
+  mutate(ANIO = as.integer(ANIO)) |>
+  rename(MUNICIPIO_NOMBRE = municipio_nombre) |>
+  filter(!is.na(POBLACION))
+
+
+BASE <- BASE |>
+  left_join(POBLACION, by = c("MUNICIPIO_NOMBRE", "ANIO")) |>
+  mutate(
+    TASA_DEFUNCIONES = if_else(
+      !is.na(POBLACION) & POBLACION > 0,
+      DEFUNCIONES_CANTIDAD / POBLACION * 100000,
+      NA_real_
+    )
+  )
+
+
+TASA_DEFUNCIONES_PROVINCIAL <- BASE %>%
+  group_by(ANIO) %>%
+  summarise(
+    DEFUNCIONES_TOTAL = sum(DEFUNCIONES_CANTIDAD, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  left_join(
+    POBLACION_RAW %>%
+      filter(municipio_nombre == "Total") %>%
+      pivot_longer(
+        cols = -municipio_nombre,
+        names_to = "ANIO",
+        values_to = "POBLACION_TOTAL"
+      ) %>%
+      mutate(ANIO = as.numeric(ANIO)),
+    by = "ANIO"
+  ) %>%
+  mutate(
+    TASA_TOTAL = DEFUNCIONES_TOTAL / POBLACION_TOTAL * 100000
+  )
+```
+
+```{r}
+
+total_periodo   <- sum(BASE$DEFUNCIONES_CANTIDAD)
+anio_min        <- min(BASE$ANIO)
+anio_max        <- max(BASE$ANIO)
+n_capitulos     <- n_distinct(BASE$CAUSA_MUERTE_CAPITULO)
+n_agrupamientos <- n_distinct(BASE$CAUSA_MUERTE_AGRUPAMIENTO)
+n_codigos       <- n_distinct(BASE$CODIGO_CIE10)
+n_municipios    <- n_distinct(BASE$MUNICIPIO_NOMBRE)
+
+pct_ignorado_region <- mean(BASE$REGION_SANITARIA == "Ignorado", na.rm = TRUE)
+```
+
+**Resumen del período `r anio_min`-`r anio_max`:** `r comma(total_periodo)` defunciones registradas, distribuidas en `r n_capitulos` capítulos CIE-10, `r n_agrupamientos` agrupamientos, `r n_codigos` códigos específicos y `r n_municipios` municipios.
+
+# Distribución temporal de la mortalidad
+
+::: panel-tabset
+## Mortalidad absoluta por año
+
+```{r}
+
+mortalidad_anual <- BASE |>
+  group_by(ANIO) |>
+  summarise(DEFUNCIONES = sum(DEFUNCIONES_CANTIDAD), .groups = "drop")
+
+grafico_mortalidad <- ggplot(
+  mortalidad_anual,
+  aes(
+    x = ANIO, y = DEFUNCIONES, group = 1,
+    text = paste0("<b>Año:</b> ", ANIO, "<br><b>Defunciones:</b> ", comma(DEFUNCIONES))
+  )
+) +
+  geom_area(fill = color_turquesa, alpha = 0.12) +
+  geom_line(linewidth = 1, color = color_turquesa) +
+  geom_point(size = 2, color = color_oscuro) +
+  annotate(
+    "rect", xmin = 2019.5, xmax = 2021.5, ymin = -Inf, ymax = Inf,
+    alpha = 0.06, fill = color_magenta
+  ) +
+  scale_x_continuous(breaks = mortalidad_anual$ANIO) +
+  scale_y_continuous(labels = comma, breaks = pretty_breaks(n = 6), expand = expansion(mult = c(0, 0.15))) +
+  labs(x = NULL, y = "Cant. defunciones", title = "Defunciones totales por año - PBA") +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title       = element_text(face = "bold", color = color_turquesa),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.text.x      = element_text(angle = 45, hjust = 1),
+    axis.title.y     = element_text(face = "bold")
+  )
+
+ggplotly(grafico_mortalidad, tooltip = "text")
+```
+
+## Tasa de Mortalidad por año
+
+```{r}
+grafico_tasa_mortalidad <- ggplot(
+  TASA_DEFUNCIONES_PROVINCIAL,
+  aes(
+    x = ANIO, y = TASA_TOTAL, group = 1,
+    text = paste0(
+      "<b>Año:</b> ", ANIO,
+      "<br><b>Tasa:</b> ", round(TASA_TOTAL, 1),
+      " por 100.000 habitantes"
+    )
+  )
+) +
+  geom_area(fill = color_magenta, alpha = 0.12) +
+  geom_line(linewidth = 1, color = color_magenta) +
+  geom_point(size = 2, color = color_oscuro) +
+  annotate(
+    "rect", xmin = 2019.5, xmax = 2021.5, ymin = -Inf, ymax = Inf,
+    alpha = 0.06, fill = color_magenta
+  ) +
+  scale_x_continuous(
+    breaks = TASA_DEFUNCIONES_PROVINCIAL$ANIO
+  ) +
+  scale_y_continuous(
+    labels = function(x) comma(round(x, 1)),
+    breaks = pretty_breaks(n = 6),
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(
+    x = NULL,
+    y = "Tasa por 100.000 hab.",
+    title = "Tasa de mortalidad total por año - PBA"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title       = element_text(face = "bold", color = color_magenta),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.text.x      = element_text(angle = 45, hjust = 1),
+    axis.title.y     = element_text(face = "bold")
+  )
+
+ggplotly(
+  grafico_tasa_mortalidad,
+  tooltip = "text"
+)
+```
+:::
+
+::: panel-tabset
+## Evolución absoluta por capítulo
+
+```{r}
+#| label: evolucion-capitulos
+#| echo: false
+
+top_capitulos_periodo <- BASE |>
+  group_by(CAUSA_MUERTE_CAPITULO) |>
+  summarise(
+    total = sum(DEFUNCIONES_CANTIDAD, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  slice_max(total, n = 8) |>
+  pull(CAUSA_MUERTE_CAPITULO)
+
+evolucion_capitulos <- BASE |>
+  mutate(
+    capitulo_agg = if_else(
+      CAUSA_MUERTE_CAPITULO %in% top_capitulos_periodo,
+      CAUSA_MUERTE_CAPITULO,
+      "OTROS CAPITULOS"
+    )
+  ) |>
+  group_by(ANIO, capitulo_agg) |>
+  summarise(
+    DEFUNCIONES = sum(DEFUNCIONES_CANTIDAD, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+grafico_evol <- ggplot(
+  evolucion_capitulos,
+  aes(
+    x = ANIO,
+    y = DEFUNCIONES,
+    color = capitulo_agg,
+    group = capitulo_agg,
+    text = paste0(
+      "<b>", capitulo_agg, "</b>",
+      "<br>Año: ", ANIO,
+      "<br>Defunciones: ", comma(DEFUNCIONES)
+    )
+  )
+) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 1.5, alpha = 0.8) +
+  scale_color_manual(values = paleta_capitulos) +
+  scale_x_continuous(
+    breaks = seq(2009, 2024, 2)
+  ) +
+  scale_y_continuous(
+    labels = comma
+  ) +
+  labs(
+    title = "Evolución de las principales causas de muerte",
+    x = "Año",
+    y = "Defunciones",
+    color = "Capítulo CIE-10"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(
+      face = "bold",
+      color = color_turquesa
+    ),
+    plot.subtitle = element_text(
+      color = "grey40"
+    ),
+    legend.position = "bottom",
+    panel.grid.minor = element_blank()
+  )
+
+ggplotly(
+  grafico_evol,
+  tooltip = "text"
+) |>
+  layout(
+    legend = list(
+      orientation = "h",
+      x = 0,
+      y = -0.2
+    )
+  )
+```
+
+## Composición porcentual
+
+```{r}
+#| label: composicion-capitulos
+#| echo: false
+
+composicion <- evolucion_capitulos |>
+  group_by(ANIO) |>
+  mutate(porcentaje = DEFUNCIONES / sum(DEFUNCIONES)) |>
+  ungroup()
+
+grafico_comp <- ggplot(composicion, aes(x = ANIO, y = porcentaje, fill = capitulo_agg)) +
+  geom_area(position = "stack") +
+  scale_fill_manual(values = paleta_capitulos) +
+  scale_x_continuous(breaks = seq(2009, 2024, 2)) +
+  scale_y_continuous(labels = percent) +
+  labs(
+    title    = "Composición de la mortalidad en el tiempo",
+    subtitle = "Participación de cada capítulo sobre el total",
+    x        = "Año",
+    y        = "Porcentaje de defunciones",
+    fill     = "Causa de muerte (Capítulo CIE-10)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title       = element_text(face = "bold", color = color_magenta),
+    plot.subtitle    = element_text(color = "black"),
+    legend.position  = "bottom",
+    panel.grid.minor = element_blank()
+  )
+
+grafico_comp
+```
+
+## Principales causas de muerte del 2024
+
+```{r}
+#| echo: false
+
+ranking_causas <- evolucion_capitulos %>%
+  filter(ANIO == max(ANIO)) %>%
+  group_by(capitulo_agg) %>%
+  summarise(
+    DEFUNCIONES = sum(DEFUNCIONES),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    porcentaje = DEFUNCIONES / sum(DEFUNCIONES),
+    causa      = fct_reorder(capitulo_agg, DEFUNCIONES)
+  )
+
+grafico <- ggplot(
+  ranking_causas,
+  aes(
+    x    = DEFUNCIONES,
+    y    = causa,
+    fill = causa,
+    text = paste0(
+      causa,
+      "<br>Defunciones: ", comma(DEFUNCIONES),
+      "<br>Participación: ", percent(porcentaje, accuracy = 0.1)
+    )
+  )
+) +
+  geom_col(width = 0.70) +
+  geom_text(
+    aes(
+      label = paste0(comma(DEFUNCIONES), "  |  ", percent(porcentaje, accuracy = 0.1))
+    ),
+    hjust    = 0.01,
+    color    = "black",
+    fontface = "bold",
+    size     = 2.5
+  ) +
+  scale_fill_manual(values = paleta_capitulos) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0, 0.20))) +
+  labs(
+    title = paste("Principales causas de muerte -", max(BASE$ANIO)),
+    x     = "Cantidad de defunciones",
+    y     = NULL
+  ) +
+  guides(fill = "none") +
+  theme_minimal() +
+  theme(
+    plot.title           = element_text(face = "bold", color = color_turquesa),
+    panel.grid.major.y   = element_blank(),
+    panel.grid.minor     = element_blank()
+  )
+
+grafico
+```
+:::
+
+
+
+# Distribución de la mortalidad según causa
+
+Conocer el número total de defunciones es solamente el primer paso. La siguiente pregunta es **qué causas concentran esas muertes**.
+
+El ranking permite identificar los grandes grupos de causas que explican una mayor proporción de las defunciones en un determinado año.
+
+En este tipo de análisis es importante distinguir entre **cantidad de muertes** y **riesgo de morir**. Las causas que concentran más defunciones no necesariamente son las que presentan mayor tasa de mortalidad en todos los grupos de edad.
+
+**Estructura del CIE-10**
+El capítulo es el nivel más agregado (Primer caracter. Por ej. "I"), luego le sigue el Grupo (Segundo caracter. Por ej. "I1"), Categorías (Tercer caracter. Por ej. "I12") y Subcategoría (Cuarto caracter. Por ej. "I121")
+
+## Top 20 Categorías
+
+```{r}
+#| label: tabla-cie10
+#| echo: false
+
+top_codigos <- BASE |>
+  filter(ANIO == max(ANIO)) |>
+  group_by(CODIGO_CIE10, CAUSA_MUERTE_AGRUPAMIENTO, CAUSA_MUERTE_CAPITULO) |>
+  summarise(DEFUNCIONES_CANTIDAD = sum(DEFUNCIONES_CANTIDAD), .groups = "drop") |>
+  arrange(desc(DEFUNCIONES_CANTIDAD)) |>
+  slice_head(n = 20) |>
+  mutate(participacion = DEFUNCIONES_CANTIDAD / sum(DEFUNCIONES_CANTIDAD))
+
+datatable(
+  top_codigos,
+  colnames = c("Código CIE-10", "Grupo-Categoría", "Capítulo", "Defunciones", "Participación"),
+  options  = list(
+    pageLength = 10,
+    ordering   = TRUE,
+    dom        = "tip",
+    language   = list(info = "Mostrando _START_ a _END_ de _TOTAL_ registros"),
+    headerCallback = JS(
+      "function(thead) {
+        $(thead).find('th').css({
+          'background-color': '#0a9396',
+          'color': 'white',
+          'font-weight': '600',
+          'text-align': 'center',
+          'padding': '12px'
+        });
+      }"
+    )
+  )
+) |>
+  formatPercentage("participacion", digits = 1) %>%
+  formatStyle(
+    "participacion",
+    background         = styleColorBar(c(0, 1), "#b56576"),
+    backgroundSize     = "100% 80%",
+    backgroundRepeat   = "no-repeat",
+    backgroundPosition = "center"
+  )
+```
+
+# Distribución de la mortalidad según sexo
+
+
+
+## Causas de muerte según sexo
+```{r}
+#| label: sexo
+#| echo: false
+
+datos_sexo <- BASE |>
+  filter(ANIO == max(ANIO), SEXO %in% c("Masculino", "Femenino"), CAUSA_MUERTE_CAPITULO %in% top_capitulos_periodo) |>
+  group_by(SEXO, CAUSA_MUERTE_CAPITULO) |>
+  summarise(DEFUNCIONES = sum(DEFUNCIONES_CANTIDAD), .groups = "drop")
+
+grafico_sexo <- ggplot(
+  datos_sexo,
+  aes(
+    x    = fct_reorder(CAUSA_MUERTE_CAPITULO, DEFUNCIONES, .fun = sum),
+    y    = DEFUNCIONES,
+    fill = SEXO,
+    text = paste0("Sexo: ", SEXO, "<br>Capítulo: ", CAUSA_MUERTE_CAPITULO, "<br>Defunciones: ", comma(DEFUNCIONES))
+  )
+) +
+  geom_col(position = position_dodge(width = 0.75), width = 0.65) +
+  scale_fill_manual(values = c("Masculino" = color_turquesa, "Femenino" = color_magenta)) +
+  scale_y_continuous(labels = comma) +
+  coord_flip() +
+  labs(
+    title    = "Mortalidad según sexo, por capítulo",
+    subtitle = paste("Provincia de Buenos Aires -", max(BASE$ANIO)),
+    x        = NULL,
+    y        = "Defunciones",
+    fill     = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title           = element_text(face = "bold", color = color_turquesa),
+    panel.grid.major.y   = element_blank()
+  )
+
+ggplotly(grafico_sexo, tooltip = "text")
+```
+
+## Evolución de la razón de feminidad en la mortalidad
+
+Un indicador importante a la hora de analizar y construir un perfil la mortalidad de una población, es la razón de feminidad. Es decir, cuántas defunciones femeninas hay por cada defunción masculina, y cómo cambia esa razón en el tiempo (una razón \> 1 indica sobremortalidad femenina). Esto nos da una idea de la calidad del sistema de salud, ya que si un gran número de muertes están asociadas al sexo femenino, esto indicaría que esta población sigue siendo vulnerada, debido a falta de acceso oportuno y efectivo.
+
+```{r}
+#| label: razon-feminidad
+#| echo: false
+
+razon_sexo <- BASE |>
+  filter(SEXO %in% c("Masculino", "Femenino"), CAUSA_MUERTE_CAPITULO %in% top_capitulos_periodo) |>
+  group_by(ANIO, CAUSA_MUERTE_CAPITULO, SEXO) |>
+  summarise(DEFUNCIONES = sum(DEFUNCIONES_CANTIDAD), .groups = "drop") |>
+  pivot_wider(names_from = SEXO, values_from = DEFUNCIONES, values_fill = 0) |>
+  mutate(razon_feminidad = round(Femenino / pmax(Masculino, 1), 2))
+
+grafico_razon <- ggplot(razon_sexo, aes(x = ANIO, y = razon_feminidad, color = CAUSA_MUERTE_CAPITULO)) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "grey60") +
+  geom_line(linewidth = 1) +
+  scale_color_manual(values = paleta_capitulos) +
+  scale_x_continuous(breaks = seq(2009, 2024, 2)) +
+  labs(
+    title    = "Razón de feminidad de la mortalidad por capítulo",
+    subtitle = "Defunciones femeninas por cada defunción masculina (línea punteada = paridad)",
+    x        = "Año",
+    y        = "Razón F/M",
+    color    = "Causa de muerte (Capítulo CIE-10)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title       = element_text(face = "bold", color = color_magenta),
+    legend.position  = "bottom",
+    panel.grid.minor = element_blank()
+  )
+
+ggplotly(grafico_razon)
+```
+
+# Distribución de la mortalidad según grupo etario
+
+::: panel-tabset
+## Defunciones absolutas del total del período según grupo etario
+
+```{r}
+#| label: defunciones-edad
+#| echo: false
+#| warning: false
+#| message: false
+
+datos_edad <- BASE |>
+  filter(!is.na(GRUPO_EDAD)) |>
+  group_by(GRUPO_EDAD) |>
+  summarise(
+    DEFUNCIONES = sum(DEFUNCIONES_CANTIDAD, na.rm = TRUE),
+    .groups     = "drop"
+  )
+
+orden_edad <- c(
+  "0-4", "5-9", "10-14", "15-19",
+  "20-24", "25-29", "30-34", "35-39",
+  "40-44", "45-49", "50-54", "55-59",
+  "60-64", "65-69", "70-74", "75-79",
+  "80 y más"
+)
+
+datos_edad <- datos_edad |>
+  mutate(GRUPO_EDAD = factor(GRUPO_EDAD, levels = orden_edad))
+
+grafico_edad <- ggplot(
+  datos_edad,
+  aes(
+    x    = GRUPO_EDAD,
+    y    = DEFUNCIONES,
+    text = paste0("<b>Grupo de edad: ", GRUPO_EDAD, "</b><br>Defunciones: ", comma(DEFUNCIONES))
+  )
+) +
+  geom_col(fill = color_magenta, width = 0.75) +
+  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.05))) +
+  labs(
+    title    = "Defunciones según grupo de edad",
+    subtitle = "Provincia de Buenos Aires · período completo",
+    x        = "Grupo de edad",
+    y        = "Defunciones"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title    = element_text(face = "bold", color = color_turquesa, size = 15),
+    plot.subtitle = element_text(color = "grey40"),
+    axis.text.x   = element_text(size = 9),
+    panel.grid.minor = element_blank()
+  )
+
+grafico_edad
+
+
+```
+
+## Heatmap: participación de cada grupo de causas dentro de los grupos etarios
+
+```{r}
+#| label: heatmap-edad
+#| echo: false
+#| warning: false
+#| message: false
+
+heatmap_datos <- BASE |>
+  filter(
+    CAUSA_MUERTE_CAPITULO %in% top_capitulos_periodo,
+    !GRUPO_EDAD %in% c("Sin dato", NA),
+    !is.na(GRUPO_EDAD)
+  ) |>
+  group_by(
+    CAUSA_MUERTE_CAPITULO,
+    GRUPO_EDAD
+  ) |>
+  summarise(
+    DEFUNCIONES = sum(DEFUNCIONES_CANTIDAD, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  group_by(GRUPO_EDAD) |>
+  mutate(
+    porcentaje_col = DEFUNCIONES / sum(DEFUNCIONES)
+  ) |>
+  ungroup()
+
+grafico_heatmap <- ggplot(
+  heatmap_datos,
+  aes(
+    x = GRUPO_EDAD,
+    y = CAUSA_MUERTE_CAPITULO,
+    fill = porcentaje_col,
+    text = paste0(
+      "Capítulo: ", CAUSA_MUERTE_CAPITULO,
+      "<br>Edad: ", GRUPO_EDAD,
+      "<br>Defunciones: ", comma(DEFUNCIONES),
+      "<br>% dentro del grupo etario: ",
+      percent(porcentaje_col, accuracy = 0.1)
+    )
+  )
+) +
+
+  # Separación sutil entre columnas
+  geom_vline(
+    xintercept = seq(
+      1.5,
+      length(unique(heatmap_datos$GRUPO_EDAD)) - 0.5,
+      by = 1
+    ),
+    color = "white",
+    linewidth = 0.6
+  ) +
+
+  geom_tile(
+    color = "white",
+    linewidth = 0.15
+  ) +
+
+  scale_fill_gradient(
+    low = "#90a955",
+    high = "#132a13",
+    labels = percent
+  ) +
+
+  scale_x_discrete(
+    guide = guide_axis(angle = 45)
+  ) +
+
+  labs(
+    title = "Perfil de causas de muerte según grupo etario",
+    subtitle = "% que representa cada capítulo dentro de cada grupo de edad - todo el período",
+    x = "Grupo etario",
+    y = NULL,
+    fill = "% dentro\ndel grupo etario"
+  ) +
+
+  theme_minimal() +
+
+  theme(
+    plot.title = element_text(
+      face = "bold",
+      color = color_turquesa
+    ),
+
+    plot.subtitle = element_text(
+      color = "grey40"
+    ),
+
+    panel.grid = element_blank(),
+
+    axis.text.x = element_text(
+      size = 9,
+      color = "grey30"
+    ),
+
+    axis.text.y = element_text(
+      size = 9,
+      color = "grey30"
+    )
+  )
+
+grafico_heatmap
+
+
+```
+:::
+
+**Lectura rápida**
+El patrón muestra que el perfil de mortalidad cambia sustancialmente con la edad: las causas externas y las afecciones perinatales pesan proporcionalmente mucho más en los grupos jóvenes, mientras que las enfermedades cardiovasculares y los tumores dominan a partir de la mediana edad.
+
+## Causas externas según edad
+
+```{r}
+#| label: causas-externas-edad
+#| echo: false
+
+datos_externas <- BASE |>
+  filter(CAUSA_MUERTE_CAPITULO == "CAUSAS EXTERNAS", !GRUPO_EDAD %in% c("Sin dato", NA), !is.na(GRUPO_EDAD)) |>
+  group_by(GRUPO_EDAD) |>
+  summarise(DEFUNCIONES = sum(DEFUNCIONES_CANTIDAD), .groups = "drop")
+
+grafico_externas <- ggplot(
+  datos_externas,
+  aes(x = GRUPO_EDAD, y = DEFUNCIONES, text = paste0("Edad: ", GRUPO_EDAD, "<br>Defunciones: ", comma(DEFUNCIONES)))
+) +
+  geom_col(fill = color_magenta, width = 0.70) +
+  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.12))) +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  labs(
+    title    = "Causas externas según grupo de edad",
+    subtitle = "Provincia de Buenos Aires - período completo",
+    x        = "Grupo de edad",
+    y        = "Defunciones"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title           = element_text(face = "bold", color = color_turquesa),
+    panel.grid.major.x   = element_blank()
+  )
+
+grafico_externas
+```
+
+A diferencia de las enfermedades crónicas, las causas externas se concentran en edades donde la mortalidad general todavía es baja, lo que amplifica su relevancia en términos de **años de vida potencialmente perdidos (AVPP)** 
+
+# Distribución territorial
+
+::: panel-tabset
+## Mortalidad por Region Sanitaria
+```{r}
+#| label: region-sanitaria-combinado
+#| echo: false
+#| warning: false
+#| message: false
+
+datos_region <- BASE |>
+  filter(
+    REGION_SANITARIA != "Ignorado",
+    !is.na(DEFUNCIONES_CANTIDAD)
+  ) |>
+  group_by(
+    ANIO,
+    REGION_SANITARIA
+  ) |>
+  summarise(
+    DEFUNCIONES = sum(
+      DEFUNCIONES_CANTIDAD,
+      na.rm = TRUE
+    ),
+    POBLACION = sum(
+      POBLACION,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  ) |>
+  mutate(
+    TASA_DEFUNCIONES = DEFUNCIONES / POBLACION * 100000
+  ) |>
+  group_by(REGION_SANITARIA) |>
+  summarise(
+    DEFUNCIONES_MEDIA = mean(
+      DEFUNCIONES,
+      na.rm = TRUE
+    ),
+    TASA_MEDIA = mean(
+      TASA_DEFUNCIONES,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  ) |>
+  mutate(
+    REGION_SANITARIA = factor(
+      REGION_SANITARIA,
+      levels = c(
+        "I", "II", "III", "IV",
+        "V", "VI", "VII", "VIII",
+        "IX", "X", "XI", "XII"
+      )
+    )
+  )
+
+# Factor para llevar la tasa a la escala de defunciones
+factor_escala <- max(
+  datos_region$DEFUNCIONES_MEDIA,
+  na.rm = TRUE
+) / max(
+  datos_region$TASA_MEDIA,
+  na.rm = TRUE
+)
+
+grafico_region <- ggplot(
+  datos_region,
+  aes(x = REGION_SANITARIA)
+) +
+
+  # Barras: defunciones
+  geom_col(
+    aes(
+      y = DEFUNCIONES_MEDIA,
+      text = paste0(
+        "Región: ", REGION_SANITARIA,
+        "<br>Defunciones promedio: ",
+        comma(round(DEFUNCIONES_MEDIA)),
+        "<br>Tasa media: ",
+        round(TASA_MEDIA, 1),
+        " x 100.000 hab."
+      )
+    ),
+    fill = color_magenta,
+    width = 0.7
+  ) +
+
+  # Línea: tasa
+  geom_line(
+    aes(
+      y = TASA_MEDIA * factor_escala,
+      group = 1
+    ),
+    color = color_turquesa,
+    linewidth = 1.2
+  ) +
+
+  geom_point(
+    aes(
+      y = TASA_MEDIA * factor_escala
+    ),
+    color = color_turquesa,
+    size = 3
+  ) +
+
+  scale_y_continuous(
+    name = "Defunciones promedio",
+    labels = comma,
+    expand = expansion(mult = c(0, 0.1)),
+
+    sec.axis = sec_axis(
+      ~ . / factor_escala,
+      name = "Tasa media x 100.000 hab.",
+      labels = comma
+    )
+  ) +
+
+  labs(
+    title = "Mortalidad por región sanitaria",
+    subtitle = paste0(
+      "Período ", anio_min, "-", anio_max
+    ),
+    x = "Región sanitaria"
+  ) +
+
+  theme_minimal() +
+
+  theme(
+    plot.title = element_text(
+      face = "bold"
+    ),
+
+    plot.subtitle = element_text(
+      color = "grey40",
+      size = 9
+    ),
+
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+
+    axis.title.y = element_text(
+      color = color_magenta
+    ),
+
+    axis.title.y.right = element_text(
+      color = color_turquesa
+    ),
+
+    axis.text.y.right = element_text(
+      color = color_turquesa
+    )
+  )
+
+grafico_region
+```
+
+## Perfil de causas por región sanitaria (todas las regiones)
+
+```{r}
+#| label: causas-por-region
+#| echo: false
+
+top_regiones_vec <- as.character(
+  factor(
+    c("I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII"),
+    levels = c("I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII")
+  )
+)
+
+causas_region <- BASE |>
+  filter(REGION_SANITARIA %in% top_regiones_vec, CAUSA_MUERTE_CAPITULO %in% top_capitulos_periodo) |>
+  group_by(REGION_SANITARIA, CAUSA_MUERTE_CAPITULO) |>
+  summarise(DEFUNCIONES = sum(DEFUNCIONES_CANTIDAD), .groups = "drop") |>
+  group_by(REGION_SANITARIA) |>
+  mutate(porcentaje = DEFUNCIONES / sum(DEFUNCIONES)) |>
+  ungroup()
+
+grafico_causas_region <- ggplot(
+  causas_region,
+  aes(
+    x    = REGION_SANITARIA,
+    y    = porcentaje,
+    fill = CAUSA_MUERTE_CAPITULO,
+    text = paste0(
+      "Región: ", REGION_SANITARIA,
+      "<br>Capítulo: ", CAUSA_MUERTE_CAPITULO,
+      "<br>Participación: ", percent(porcentaje, accuracy = 0.1)
+    )
+  )
+) +
+  geom_col(position = "stack") +
+  scale_fill_manual(values = paleta_capitulos) +
+  scale_y_continuous(labels = percent) +
+  labs(
+    title = "Perfil de mortalidad por región sanitaria",
+    x     = NULL,
+    y     = "Participación",
+    fill  = "Causa de muerte"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title       = element_text(face = "bold", color = color_turquesa),
+    legend.position  = "bottom",
+    panel.grid.minor = element_blank()
+  )
+
+grafico_causas_region
+```
+:::
+
+
+
+## Mapa interactivo: Tasa de mortalidad según Año y Region Sanitaria
+
+```{r}
+#| label: mapa-region-sanitaria
+#| echo: false
+#| warning: false
+#| message: false
+
+
+
+partidos <- st_read(
+  "partidos-pba.geojson",
+  quiet = TRUE
+)
+
+partidos <- ms_simplify(partidos, keep = 0.05, keep_shapes = TRUE)
+
+
+partidos_rs <- partidos |>
+  mutate(
+    REGION_SANITARIA = case_when(
+
+      # -------------------------
+      # REGIÓN I
+      # -------------------------
+      municipio_nombre %in% c(
+        "Adolfo Alsina",
+        "Adolfo Gonzales Chaves",
+        "Bahía Blanca",
+        "Coronel Rosales",
+        "Coronel Dorrego",
+        "Coronel Pringles",
+        "Coronel Suárez",
+        "Guaminí",
+        "Monte Hermoso",
+        "Patagones",
+        "Puan",
+        "Puán",
+        "Saavedra",
+        "Tornquist",
+        "Tres Arroyos",
+        "Villarino",
+        "Coronel de Marina Leonardo Rosales"
+      ) |
+        municipio_nombre %in% c(
+          "Islas de San Pedro"
+        ) ~ "I",
+
+      # -------------------------
+      # REGIÓN II
+      # -------------------------
+      municipio_nombre %in% c(
+        "Carlos Casares",
+        "Carlos Tejedor",
+        "Daireaux",
+        "General Villegas",
+        "Hipólito Yrigoyen",
+        "Nueve de Julio",
+        "9 de Julio",
+        "Pehuajó",
+        "Pellegrini",
+        "Rivadavia",
+        "Salliqueló",
+        "Trenque Lauquen",
+        "Tres Lomas"
+      ) ~ "II",
+
+      # -------------------------
+      # REGIÓN III
+      # -------------------------
+      municipio_nombre %in% c(
+        "Chacabuco",
+        "Florentino Ameghino",
+        "General Arenales",
+        "General Pinto",
+        "General Viamonte",
+        "Junín",
+        "Leandro N. Alem",
+        "Lincoln"
+      ) ~ "III",
+
+      # -------------------------
+      # REGIÓN IV
+      # -------------------------
+      municipio_nombre %in% c(
+        "Arrecifes",
+        "Baradero",
+        "Capitán Sarmiento",
+        "Carmen de Areco",
+        "Colón",
+        "Pergamino",
+        "Ramallo",
+        "Rojas",
+        "Salto",
+        "San Andrés de Giles",
+        "San Antonio de Areco",
+        "San Nicolás",
+        "San Pedro"
+      ) |
+        municipio_nombre %in% c(
+          "Islas Baradero",
+          "Islas Ramallo",
+          "Islas de San Nicolas",
+          "Islas San Pedro"
+        ) ~ "IV",
+
+      # -------------------------
+      # REGIÓN V
+      # -------------------------
+      municipio_nombre %in% c(
+        "Campana",
+        "Escobar",
+        "Exaltación de la Cruz",
+        "General San Martín",
+        "José C. Paz",
+        "Malvinas Argentinas",
+        "Pilar",
+        "San Fernando",
+        "San Isidro",
+        "San Miguel",
+        "Tigre",
+        "Vicente López",
+        "Zárate"
+      ) |
+        municipio_nombre %in% c(
+          "Islas Campana",
+          "Islas de Zárate",
+          "Islas Tigre",
+          "Islas San Fernando"
+        ) ~ "V",
+
+      # -------------------------
+      # REGIÓN VI
+      # -------------------------
+      municipio_nombre %in% c(
+        "Almirante Brown",
+        "Avellaneda",
+        "Berazategui",
+        "Esteban Echeverría",
+        "Ezeiza",
+        "Florencio Varela",
+        "Lanús",
+        "Lomas de Zamora",
+        "Quilmes"
+      ) ~ "VI",
+
+      # -------------------------
+      # REGIÓN VII
+      # -------------------------
+      municipio_nombre %in% c(
+        "General Las Heras",
+        "General Rodríguez",
+        "Hurlingham",
+        "Ituzaingó",
+        "Luján",
+        "Marcos Paz",
+        "Merlo",
+        "Moreno",
+        "Morón",
+        "Tres de Febrero"
+      ) ~ "VII",
+
+      # -------------------------
+      # REGIÓN VIII
+      # -------------------------
+      municipio_nombre %in% c(
+        "Ayacucho",
+        "Balcarce",
+        "General Alvarado",
+        "General Guido",
+        "General Lavalle",
+        "General Madariaga",
+        "General Juan Madariaga",
+        "General Pueyrredón",
+        "La Costa",
+        "Lobería",
+        "Maipú",
+        "Mar Chiquita",
+        "Necochea",
+        "Pinamar",
+        "San Cayetano",
+        "Tandil",
+        "Villa Gesell"
+      ) ~ "VIII",
+
+      # -------------------------
+      # REGIÓN IX
+      # -------------------------
+      municipio_nombre %in% c(
+        "Azul",
+        "Benito Juárez",
+        "Bolívar",
+        "General Alvear",
+        "General La Madrid",
+        "Laprida",
+        "Las Flores",
+        "Olavarría",
+        "Rauch",
+        "Tapalqué"
+      ) ~ "IX",
+
+      # -------------------------
+      # REGIÓN X
+      # -------------------------
+      municipio_nombre %in% c(
+        "Alberti",
+        "Bragado",
+        "Chivilcoy",
+        "Lobos",
+        "Mercedes",
+        "Navarro",
+        "Roque Pérez",
+        "Saladillo",
+        "Suipacha",
+        "Veinticinco de Mayo",
+        "25 de Mayo"
+      ) ~ "X",
+
+      # -------------------------
+      # REGIÓN XI
+      # -------------------------
+      municipio_nombre %in% c(
+        "Berisso",
+        "Brandsen",
+        "Cañuelas",
+        "Castelli",
+        "Chascomús",
+        "Dolores",
+        "Ensenada",
+        "General Belgrano",
+        "General Paz",
+        "La Plata",
+        "Lezama",
+        "Magdalena",
+        "Monte",
+        "Pila",
+        "Presidente Perón",
+        "Punta Indio",
+        "San Vicente",
+        "Tordillo"
+      ) ~ "XI",
+
+      # -------------------------
+      # REGIÓN XII
+      # -------------------------
+      municipio_nombre == "La Matanza" ~ "XII",
+
+      TRUE ~ NA_character_
+    )
+  )
+
+
+regiones_sf <- partidos_rs |>
+  filter(!is.na(REGION_SANITARIA)) |>
+  group_by(REGION_SANITARIA) |>
+  summarise(
+    geometry = st_union(geometry),
+    .groups = "drop"
+  )
+
+
+datos_mapa <- BASE |>
+  filter(
+    !is.na(REGION_SANITARIA),
+    REGION_SANITARIA != "Ignorado"
+  ) |>
+  group_by(
+    ANIO,
+    REGION_SANITARIA
+  ) |>
+  summarise(
+    DEFUNCIONES = sum(
+      DEFUNCIONES_CANTIDAD,
+      na.rm = TRUE
+    ),
+    POBLACION = sum(
+      POBLACION,
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  ) |>
+  mutate(
+    TASA = DEFUNCIONES / POBLACION * 100000
+  )
+
+mapa_datos <- regiones_sf |>
+  left_join(
+    datos_mapa,
+    by = "REGION_SANITARIA"
+  )
+
+pal_tasa <- colorNumeric(
+  palette = c(
+    "#F4F6F7",
+    color_turquesa,
+    color_magenta
+  ),
+  domain = datos_mapa$TASA,
+  na.color = "#D9D9D9"
+)
+
+
+anios_mapa <- sort(unique(mapa_datos$ANIO))
+
+mapa <- leaflet() |>
+  addProviderTiles(
+    providers$CartoDB.Positron
+  )
+
+for (año in anios_mapa) {
+
+  datos_año <- mapa_datos |>
+    filter(ANIO == año)
+
+  mapa <- mapa |>
+    addPolygons(
+      data = datos_año,
+
+      group = paste0("Año ", año),
+
+      fillColor = ~pal_tasa(TASA),
+      fillOpacity = 0.8,
+
+      color = "white",
+      weight = 1.2,
+
+      label = ~paste0(
+        "Región Sanitaria ", REGION_SANITARIA
+      ),
+
+      popup = ~paste0(
+        "<b>Región Sanitaria ",
+        REGION_SANITARIA,
+        "</b>",
+        "<br><br>",
+        "<b>Año:</b> ", ANIO,
+        "<br>",
+        "<b>Defunciones:</b> ",
+        comma(DEFUNCIONES),
+        "<br>",
+        "<b>Población:</b> ",
+        comma(POBLACION),
+        "<br>",
+        "<b>Tasa:</b> ",
+        round(TASA, 1),
+        " x 100.000 habitantes"
+      ),
+
+      highlightOptions = highlightOptions(
+        weight = 3,
+        color = "#333333",
+        fillOpacity = 0.9,
+        bringToFront = TRUE
+      )
+    )
+}
+# Agregar control de años
+mapa <- mapa |>
+  addLayersControl(
+    baseGroups = paste0(
+      "Año ",
+      anios_mapa
+    ),
+    overlayGroups = NULL,
+    options = layersControlOptions(
+      collapsed = FALSE
+    )
+  )
+mapa <- mapa |>
+  addLegend(
+    position = "bottomleft",
+    pal = pal_tasa,
+    values = datos_mapa$TASA,
+    title = "Tasa x 100.000 hab.",
+    opacity = 0.8,
+    labFormat = labelFormat(
+      digits = 0,
+      big.mark = "."
+    )
+  )
+# Mostrar inicialmente el último año
+mapa
+```
+
+
+
+# Conclusión
+
+La mortalidad puede ser interpretada desde diferentes dimensiones. Una causa puede concentrar una gran cantidad de defunciones porque afecta principalmente a personas mayores, pero producir relativamente pocos años de vida perdidos; a la inversa, una causa con menos defunciones puede tener una enorme importancia sanitaria si se concentra en edades jóvenes o poblaciones vulneradas.
+
+
+::: callout-warning
+**Nota metodológica final**
+
+- La **tasa de mortalidad** (`TASA_DEFUNCIONES`) se calculó como defunciones / población × 100.000 habitantes, usando proyecciones poblacionales totales por municipio y año (INDEC). La base de proyecciones **no incluye desagregación por grupo de edad**, por lo que la tasa representa el riesgo global de la población de cada municipio, no tasas específicas por edad.
+- Los registros con `MUNICIPIO_NOMBRE == "Ignorado"` no tienen denominador poblacional y fueron excluidos de los análisis territoriales por tasa.
+- Los análisis de distribución etaria continúan usando **defunciones absolutas**, dado que no se dispone de denominadores poblacionales por grupo de edad.
+- Antes de publicar resultados con otros fines que no sean ilustrativos, se recomienda: (1) validar la consolidación de Codigos de CIE-10 y (2) recalcular valores obtenidos de tasas.
+:::
+
+## Fuentes
+
+- ["DATOS ABIERTOS PBA"](https://catalogo.datos.gba.gob.ar/dataset)

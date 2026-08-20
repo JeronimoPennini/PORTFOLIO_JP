@@ -1,0 +1,180 @@
+/*-- scss:defaults --*/
+
+// Paleta principal
+$primary:      #011638;
+$secondary:    #e76f51;
+
+// Cuerpo
+$body-bg:      #d5bdaf; // fondo de la página
+$body-color:   #011638; // texto general
+$link-color:   #277da1; // enlaces
+$border-color: black; // líneas / separadores
+$code-block-bg: #81b29a; // fondo de bloques de código
+
+// Barra de navegación
+$navbar-bg: #4a7c59; // fondo
+$navbar-fg: #dedbd2; // texto
+
+
+// Color de los títulos (h1-h6) en todo el documento.
+// Este es el control central: cambiá este valor y se propaga
+// a h1, h2, h3... salvo donde haya una regla más específica
+// más abajo (por ejemplo .stat-card h3) que lo pise.
+$headings-color: $primary;
+
+// Tipografía
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
+$font-family-sans-serif: "Google Sans", sans-serif;
+
+// Variables propias, derivadas de la paleta de arriba, para
+// reusar en los bloques custom (tarjetas, hero, etc.)
+$accent-a: $primary;    // usado en la 1ª stat-card
+$accent-b: $link-color; // usado en la 2ª stat-card
+$accent-c: $secondary;  // usado en la 3ª stat-card (alerta)
+$bg-soft:  #ece3da;     // variante clara de $body-bg para tarjetas
+
+/*-- scss:rules --*/
+
+h1, h2, h3, h4, h5 {
+  font-family: "Google Sans", sans-serif !important;
+}
+
+:root {
+  --accent-a: #{$accent-a};
+  --accent-b: #{$accent-b};
+  --accent-c: #{$accent-c};
+  --ink: #{$body-color};
+  --bg-soft: #{$bg-soft};
+  --border-soft: #{$border-color};
+}
+
+body {
+  color: var(--ink);
+}
+
+// Título principal del documento (el <h1> generado por el YAML "title").
+// Cambiá este color (o el "color: $headings-color;" si querés que
+// se mueva junto con el resto de los títulos) para el título grande.
+h1.title {
+  color: #011638;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  color: #011638;
+  font-weight: 400;
+}
+
+.quarto-title-block .subtitle {
+  color: #ffedc1 !important;
+  font-weight: 400;
+}
+
+/* Hero image block */
+.hero img {
+  width: 100%;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(1, 22, 56, 0.18);
+  margin-bottom: 0.5rem;
+}
+
+.hero-caption {
+  font-size: 0.95rem;
+  color: #6b6b78;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* KPI stat cards */
+.stat-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0 2rem 0;
+}
+
+.stat-card {
+  flex: 1 1 220px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 1.1rem 1.3rem;
+  border-left: 4px solid var(--accent-a);
+}
+
+// Color del número grande dentro de cada tarjeta de estadística.
+// Esta es la regla más específica: pisa a $headings-color de arriba
+// aunque técnicamente el número está en un <h3>.
+.stat-card h3 {
+  margin: 0;
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--accent-a);
+  border: none;
+}
+
+.stat-card-accent {
+  border-left-color: var(--accent-b);
+}
+.stat-card-accent h3 {
+  color: var(--accent-b);
+}
+
+.stat-card-alert {
+  border-left-color: var(--accent-c);
+}
+.stat-card-alert h3 {
+  color: var(--accent-c);
+}
+
+.stat-sub {
+  font-size: 0.85rem;
+  color: #6b6b78;
+  margin-top: 0.25rem;
+  line-height: 1.3;
+}
+
+// Títulos de sección (## en el .qmd -> <h2>). Heredan $headings-color
+// salvo que agregues "color: ..." acá abajo para pisarlo solo en h2.
+h2 {
+  margin-top: 2.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--border-soft);
+}
+
+/* OJS controls */
+form.inputs-form {
+  margin-bottom: 0.75rem;
+}
+
+/* CV embebido */
+.cv-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.cv-container iframe {
+  width: 100%;
+  height: 1600px;
+  border: none;
+}
+
+/* Botón de descarga del CV */
+.cv-download {
+  display: inline-block;
+  background-color: #07A6BC;
+  color: white !important;
+  padding: 10px 22px;
+  border-radius: 8px;
+  text-decoration: none !important;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.cv-download:hover {
+  background-color: #E02377;
+  color: white !important;
+}

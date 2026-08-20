@@ -1,0 +1,19 @@
+.Rproj.user
+.Rhistory
+.RData
+.httr-oauth
+.DS_Store
+.quarto
+
+/.quarto/
+**/*.quarto_ipynb
+
+# Archivos temporales y cache de Quarto
+.freeze/
+
+Thumbs.db
+
+# Archivos pesados generados por Quarto
+docs/index.xml
+docs/sitemap.xml
+docs/posts/mortalidad/

@@ -1,0 +1,392 @@
+---
+title: "Salud Mental en Neuquén: la evolución del intento de suicidio como indicador crítico"
+subtitle: "Análisis epidemiológico sobre el intento de suicidio"
+author: "Jeronimo Pennini"
+date: 2026-08-11
+categories: [Epidemiología, Salud Mental, Neuquén, Intentos de Suicidio]
+format:
+  html:
+    theme: flatly
+    css: styles.css
+    code-fold: true
+    code-tools: true
+    toc: true
+    toc-title: "Contenido"
+    number-sections: false
+    fig-align: center
+---
+
+:::: hero
+![](images.jpg)
+
+::: hero-caption
+Un análisis de datos sobre un tema sensible y urgente: cómo evolucionó el intento de suicidio en Neuquén frente a la tendencia nacional, y qué puede explicar la divergencia.
+:::
+::::
+
+## Contexto
+
+El suicidio es, según el Ministerio de Seguridad de la Nación, la **principal causa de muerte violenta del país**, con más de 5.200 víctimas en 2025 (+22,6 % interanual). Neuquén y la Patagonia históricamente concentraron las tasas más altas del país, pero el patrón reciente se invirtió: en 2024 Neuquén tuvo una tasa de **9,5 cada 100.000 habitantes** (la 5ª más baja del país) y en 2025 redujo sus casos un **15,6 %**, mientras la tendencia nacional creció con fuerza.
+
+::::::::: stat-grid
+:::: stat-card
+### 9,5 casos
+
+por cada 100.000 hab.
+
+::: stat-sub
+Tasa de Neuquén en 2024 — 5ª más baja del país
+:::
+::::
+
+:::: {.stat-card .stat-card-accent}
+### -15,6 %
+
+interanual
+
+::: stat-sub
+Caída de casos en Neuquén durante 2025
+:::
+::::
+
+:::: {.stat-card .stat-card-alert}
+### +22,6 %
+
+interanual
+
+::: stat-sub
+Suba nacional de víctimas en el mismo período
+:::
+::::
+:::::::::
+
+::: callout-Note
+Los valores de 2017-2019 (81, 89 y 81 defunciones) y de 2024-2025 (tasa 9,5/100.000 y caída interanual de 15,6 %) son datos publicados. Los años intermedios (2020-2023) se completaron de forma **ilustrativa** para reconstruir una serie continua, y la tabla de distribución por edad/sexo es una estimación basada en patrones nacionales documentados (\~8 de cada 10 víctimas son varones), no un registro provincial oficial. **La sección de "Regiones Sanitarias" que sigue más abajo es enteramente inventada con fines ilustrativos**: tanto la división territorial como las cifras por región son ficticias y no corresponden a la zonificación oficial del Ministerio de Salud de Neuquén ni a datos reales por localidad.
+:::
+
+Todo el procesamiento y las visualizaciones de este informe se realizan en R: los datos se definen como `tibble`s con **dplyr/tidyr**, los gráficos se construyen con **ggplot2** y se hacen interactivos con **plotly** (`ggplotly()`), y el mapa de regiones sanitarias usa **sf** para manejar la geometría de la provincia.
+
+```{r}
+#| label: setup
+#| include: false
+#| warnings: false
+
+library(tidyverse)
+library(plotly)
+library(sf)
+library(DT)
+library(crosstalk)
+library(scales)
+
+# Tema propio: fondo transparente (hereda el color de fondo de la página en
+# lugar de imponer un blanco/color propio) + tipografía y grilla más suaves.
+tema_informe <- function(base_size = 12) {
+  theme_minimal(base_size = base_size) +
+    theme(
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_line(color = "#2B3E4C", linewidth = 0.15),
+      plot.background   = element_rect(fill = "transparent", color = NA),
+      panel.background  = element_rect(fill = "transparent", color = NA),
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key        = element_rect(fill = "transparent", color = NA),
+      plot.title    = element_blank(),
+      axis.title    = element_text(color = "#2B3E4C", size = rel(0.95)),
+      axis.text     = element_text(color = "#5b6b76"),
+      axis.line     = element_line(color = "#2B3E4C", linewidth = 0.3),
+      legend.title  = element_text(color = "#2B3E4C", size = rel(0.9)),
+      legend.text   = element_text(color = "#5b6b76")
+    )
+}
+theme_set(tema_informe())
+
+# Deja transparentes tanto el "papel" como el área de trazado de un gráfico
+# plotly, para que se vea igual que el resto de la página (sin recuadro).
+fondo_transparente <- function(p) {
+  p |>
+    layout(
+      paper_bgcolor = "rgba(0,0,0,0)",
+      plot_bgcolor  = "rgba(0,0,0,0)",
+      legend = list(bgcolor = "rgba(0,0,0,0)")
+    ) |>
+    config(displayModeBar = FALSE)
+}
+```
+
+## Casos y tasa cada 100.000 habitantes
+
+```{r}
+#| label: serie-suicidios
+#| echo: false
+#| warnings: false
+
+poblacion_nqn <- tibble(
+  anio = 2015:2025,
+  poblacion = c(620000, 630000, 640000, 655000, 668000, 680000,
+                692000, 705000, 716000, 726590, 735000)
+)
+
+casos_por_anio <- tibble(
+  anio = 2015:2025,
+  casos = c(70, 75, 81, 89, 81, 76, 85, 90, 88, 69, 58)
+)
+
+serie_suicidios <- casos_por_anio |>
+  left_join(poblacion_nqn, by = "anio") |>
+  mutate(tasa = round(100000 * casos / poblacion, 1))
+
+anios_clave <- c(2019, 2023, 2025)
+```
+
+::: panel-tabset
+## Casos (N)
+
+```{r}
+#| echo: false
+#| warnings: false
+p_casos <- ggplot(serie_suicidios, aes(x = anio, y = casos)) +
+  geom_area(fill = "#6a51a3", alpha = 0.10) +
+  geom_line(color = "#6a51a3", linewidth = 1.3, lineend = "round") +
+  geom_point(
+    aes(text = paste0("Año: ", anio, "<br>Casos: ", casos)),
+    color = "#6a51a3", size = 2.2
+  ) +
+  geom_point(
+    data = filter(serie_suicidios, anio %in% anios_clave),
+    shape = 21, fill = "white", color = "#6a51a3", size = 3.3, stroke = 1.3
+  ) +
+  scale_x_continuous(breaks = serie_suicidios$anio) +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.12))) +
+  labs(x = "Año", y = "Casos (N)")
+
+ggplotly(p_casos, tooltip = "text") |> fondo_transparente()
+```
+
+## Tasa cada 100.000 hab.
+
+```{r}
+#| echo: false
+#| warnings: false
+p_tasa <- ggplot(serie_suicidios, aes(x = anio, y = tasa)) +
+  geom_area(fill = "#3182bd", alpha = 0.10) +
+  geom_line(color = "#3182bd", linewidth = 1.3, lineend = "round") +
+  geom_point(
+    aes(text = paste0("Año: ", anio, "<br>Tasa cada 100.000 hab.: ", tasa)),
+    color = "#3182bd", size = 2.2
+  ) +
+  geom_point(
+    data = filter(serie_suicidios, anio %in% anios_clave),
+    shape = 21, fill = "white", color = "#3182bd", size = 3.3, stroke = 1.3
+  ) +
+  scale_x_continuous(breaks = serie_suicidios$anio) +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.12))) +
+  labs(x = "Año", y = "Tasa cada 100.000 hab.")
+
+ggplotly(p_tasa, tooltip = "text") |> fondo_transparente()
+```
+:::
+
+**Lectura rápida:** entre 2022 y 2025 Neuquén muestra una caída sostenida, mientras que el país acumuló en el mismo período un fuerte aumento (2024: 4.249 víctimas nacionales; 2025: +22,6 %). Esta divergencia contrasta con el achicamiento presupuestario nacional en salud mental (el Ministerio de Salud de la Nación redujo 31 % real su presupuesto 2023-2024 y 18,2 % adicional en 2025), lo que sugiere que la explicación de la baja en Neuquén está más ligada a estrategias provinciales (línea "Salud Mental Te Escucha", equipos comunitarios regionales) que a un fenómeno nacional generalizado.
+
+## Distribución estimada por edad y sexo
+
+```{r}
+#| label: edad-sexo
+#| echo: false
+#| warnings: false
+distribucion_edad_sexo <- tibble(
+  grupo = c("10-14", "15-19", "20-29", "30-39", "40-49", "50-59", "60+"),
+  varones = c(3, 9, 16, 12, 9, 7, 6),
+  mujeres = c(2, 4, 5, 4, 3, 2, 2)
+) |>
+  mutate(grupo = factor(grupo, levels = grupo))
+
+distribucion_larga <- distribucion_edad_sexo |>
+  pivot_longer(cols = c(varones, mujeres), names_to = "sexo", values_to = "casos") |>
+  mutate(sexo = recode(sexo, varones = "Varones", mujeres = "Mujeres"))
+
+# Duplicamos las filas etiquetadas "Ambos" para poder filtrar con un único
+# control (Ambos / Varones / Mujeres) sobre la misma columna.
+distribucion_filtrable <- bind_rows(
+  distribucion_larga |> mutate(filtro_sexo = "Ambos"),
+  distribucion_larga |> mutate(filtro_sexo = sexo)
+) |>
+  mutate(filtro_sexo = factor(filtro_sexo, levels = c("Ambos", "Varones", "Mujeres")))
+
+sd_edad_sexo <- SharedData$new(distribucion_filtrable, group = "filtro_edad_sexo")
+```
+
+```{r}
+#| echo: false
+#| warnings: false
+filter_select("sexoSM", "Filtrar por sexo", sd_edad_sexo, ~filtro_sexo)
+```
+
+```{r}
+#| echo: false
+#| warnings: false
+p_edad_sexo <- ggplot(
+  sd_edad_sexo,
+  aes(
+    x = casos, y = grupo, fill = sexo,
+    text = paste0(sexo, " · ", grupo, "<br>", casos, " casos estimados")
+  )
+) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6, alpha = 0.92) +
+  scale_fill_manual(values = c("Varones" = "#2B3E4C", "Mujeres" = "#80B366")) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.12))) +
+  labs(x = "Casos estimados", y = "Grupo etario", fill = NULL) +
+  theme(legend.position = "top")
+
+ggplotly(p_edad_sexo, tooltip = "text") |>
+  layout(legend = list(orientation = "h", y = 1.08, x = 0.5, xanchor = "center"))
+```
+
+```{r}
+#| echo: false
+#| warnings: false
+datatable(
+  distribucion_edad_sexo,
+  colnames = c("Grupo etario" = "grupo", "Varones (est.)" = "varones", "Mujeres (est.)" = "mujeres"),
+  rownames = FALSE,
+  options = list(dom = "t", pageLength = 10)
+)
+```
+
+## Distribución geográfica: Regiones Sanitarias (estimación ilustrativa)
+
+::: callout-Note
+Neuquén no publica series de intento de suicidio abiertas por región sanitaria, así que para este mapa **inventamos una variable "Región Sanitaria"** agrupando departamentos y localidades en 6 zonas plausibles (Confluencia, Vaca Muerta - Añelo, Zapala - Centro, Norte Neuquino, Lácar - Los Lagos y Pehuenia). Tanto los límites de cada región como los casos y la población asignados son **estimaciones ficticias con fines de visualización**, construidas a partir del peso poblacional aproximado de cada zona, no de datos oficiales por departamento.
+:::
+
+```{r}
+#| label: prep-regiones-sf
+#| echo: false
+#| warning: false
+#| message: false
+library(sf)
+library(dplyr)
+library(leaflet)
+library(htmltools)
+
+geojson_neuquen <- r"({"type": "FeatureCollection", "features": [{"type": "Feature", "properties": {"name": "Neuquen"}, "geometry": {"type": "Polygon", "coordinates": [[[-68.258, -37.571], [-68.269, -38.668], [-68.104, -38.814], [-67.994, -38.934], [-68.192, -39.002], [-68.39, -39.036], [-68.5, -39.07], [-68.599, -39.232], [-68.73, -39.275], [-68.917, -39.462], [-69.203, -39.589], [-69.258, -39.682], [-69.434, -39.792], [-69.796, -39.91], [-69.972, -39.977], [-69.95, -40.145], [-70.082, -40.246], [-70.082, -40.363], [-70.159, -40.455], [-70.137, -40.522], [-70.214, -40.522], [-70.291, -40.505], [-70.378, -40.539], [-70.554, -40.505], [-70.642, -40.606], [-70.763, -40.589], [-70.906, -40.606], [-71.016, -40.664], [-71.005, -40.731], [-71.104, -40.764], [-71.093, -40.805], [-71.06, -40.864], [-71.049, -40.922], [-71.049, -40.963], [-71.082, -41.005], [-71.18, -41.063], [-71.334, -41.112], [-71.411, -41.055], [-71.499, -41.021], [-71.598, -41.021], [-71.73, -41.013], [-71.862, -41.005], [-71.884, -40.963], [-71.84, -40.897], [-71.917, -40.83], [-71.949, -40.747], [-71.917, -40.672], [-71.829, -40.639], [-71.796, -40.589], [-71.884, -40.572], [-71.862, -40.505], [-71.829, -40.422], [-71.73, -40.422], [-71.686, -40.397], [-71.642, -40.338], [-71.686, -40.271], [-71.752, -40.229], [-71.763, -40.28], [-71.807, -40.229], [-71.829, -40.154], [-71.818, -40.07], [-71.686, -40.103], [-71.609, -40.095], [-71.675, -40.044], [-71.686, -40.002], [-71.631, -39.943], [-71.598, -39.884], [-71.598, -39.825], [-71.675, -39.809], [-71.697, -39.749], [-71.62, -39.69], [-71.697, -39.64], [-71.752, -39.538], [-71.609, -39.597], [-71.521, -39.673], [-71.422, -39.614], [-71.444, -39.546], [-71.532, -39.529], [-71.499, -39.462], [-71.433, -39.385], [-71.4, -39.334], [-71.334, -39.283], [-71.389, -39.249], [-71.422, -39.19], [-71.444, -39.087], [-71.444, -39.002], [-71.477, -38.925], [-71.378, -38.891], [-71.29, -38.848], [-71.301, -38.763], [-71.202, -38.814], [-71.125, -38.754], [-71.005, -38.746], [-70.917, -38.72], [-70.862, -38.694], [-70.862, -38.634], [-70.829, -38.557], [-70.873, -38.479], [-70.972, -38.454], [-71.005, -38.359], [-70.972, -38.264], [-71.016, -38.186], [-71.049, -38.117], [-70.939, -38.109], [-71.005, -38.057], [-71.049, -38.005], [-71.115, -37.953], [-71.125, -37.892], [-71.147, -37.849], [-71.202, -37.858], [-71.104, -37.762], [-71.158, -37.719], [-71.202, -37.658], [-71.158, -37.614], [-71.125, -37.536], [-71.125, -37.466], [-71.169, -37.396], [-71.235, -37.344], [-71.202, -37.3], [-71.147, -37.239], [-71.093, -37.195], [-71.071, -37.143], [-71.115, -37.073], [-71.169, -36.967], [-71.104, -36.959], [-71.136, -36.906], [-71.158, -36.844], [-71.104, -36.73], [-71.005, -36.704], [-71.016, -36.624], [-71.093, -36.571], [-71.038, -36.536], [-70.983, -36.465], [-70.862, -36.395], [-70.73, -36.439], [-70.675, -36.404], [-70.719, -36.342], [-70.719, -36.271], [-70.609, -36.2], [-70.532, -36.147], [-70.455, -36.2], [-70.411, -36.138], [-70.378, -36.182], [-70.378, -36.271], [-70.378, -36.368], [-70.291, -36.342], [-70.236, -36.342], [-70.214, -36.404], [-70.192, -36.51], [-70.082, -36.616], [-69.983, -36.721], [-69.895, -36.8], [-69.818, -36.88], [-69.741, -36.941], [-69.763, -37.003], [-69.763, -37.073], [-69.609, -37.125], [-69.543, -37.204], [-69.291, -37.143], [-69.17, -37.169], [-69.038, -37.239], [-69.049, -37.318], [-69.049, -37.388], [-68.95, -37.405], [-68.829, -37.37], [-68.719, -37.396], [-68.665, -37.44], [-68.577, -37.449], [-68.39, -37.562], [-68.258, -37.571]]]}}]})"
+
+neuquen_sf <- st_read(geojson_neuquen, quiet = TRUE) |> st_make_valid()
+
+regiones_sanitarias <- tibble(
+  region = c("Confluencia", "Zapala - Centro", "Vaca Muerta - Añelo",
+             "Norte Neuquino", "Lácar - Los Lagos", "Pehuenia"),
+  cabecera = c("Neuquén / Plottier / Centenario", "Zapala",
+               "Añelo / Rincón de los Sauces", "Chos Malal",
+               "San Martín de los Andes / Junín", "Aluminé / Villa Pehuenia"),
+  lon = c(-68.10, -70.06, -68.85, -70.27, -71.35, -71.00),
+  lat = c(-38.92, -38.90, -37.85, -37.38, -40.16, -39.10),
+  poblacion = c(520000, 45000, 35000, 40000, 55000, 15000),
+  casos = c(38, 6, 4, 4, 4, 2)
+) |>
+  mutate(tasa = round(100000 * casos / poblacion, 1))
+
+regiones_pts <- st_as_sf(
+  regiones_sanitarias,
+  coords = c("lon", "lat"), crs = 4326, remove = FALSE
+)
+
+# --- Teselado de Voronoi para convertir los puntos en "regiones" visuales ---
+envolvente <- st_as_sfc(st_bbox(neuquen_sf) + c(-1, -1, 1, 1) * 0.5)
+
+voronoi_raw <- st_voronoi(st_union(regiones_pts), envelope = envolvente) |>
+  st_collection_extract("POLYGON") |>
+  st_sf(crs = st_crs(neuquen_sf))
+
+# Unimos cada polígono de Voronoi con el punto que contiene (por si el orden no coincide)
+regiones_poly <- st_join(voronoi_raw, regiones_pts, join = st_intersects, largest = TRUE) |>
+  filter(!is.na(region)) |>
+  st_intersection(st_union(neuquen_sf))
+```
+
+```{r}
+#| label: mapa-regiones-leaflet
+#| echo: false
+#| warning: false
+
+pal_tasa  <- colorNumeric("YlGnBu", domain = regiones_poly$tasa)
+pal_casos <- colorNumeric("YlOrRd", domain = regiones_poly$casos)
+
+popup_html <- sprintf(
+  "<div style='font-family:sans-serif; line-height:1.4;'>
+     <strong style='font-size:14px; color:#2B3E4C;'>%s</strong><br/>
+     <span style='color:#666;'>Cabecera: %s</span><br/>
+     Casos estimados: <b>%s</b><br/>
+     Tasa: <b>%s</b> / 100.000 hab.<br/>
+     Población estimada: %s
+   </div>",
+  regiones_poly$region, regiones_poly$cabecera, regiones_poly$casos,
+  regiones_poly$tasa, format(regiones_poly$poblacion, big.mark = ".")
+)
+
+leaflet(regiones_poly, options = leafletOptions(minZoom = 6, maxZoom = 10)) |>
+  addProviderTiles("CartoDB.PositronNoLabels") |>
+  addPolygons(
+    fillColor = ~pal_tasa(tasa), fillOpacity = 0.78,
+    color = "#ffffff", weight = 1.5,
+    label = lapply(popup_html, HTML),
+    popup = popup_html,
+    highlightOptions = highlightOptions(weight = 3, color = "#2B3E4C", bringToFront = TRUE),
+    group = "Tasa /100.000 hab."
+  ) |>
+  addPolygons(
+    fillColor = ~pal_casos(casos), fillOpacity = 0.78,
+    color = "#ffffff", weight = 1.5,
+    label = lapply(popup_html, HTML),
+    popup = popup_html,
+    highlightOptions = highlightOptions(weight = 3, color = "#2B3E4C", bringToFront = TRUE),
+    group = "Casos estimados"
+  ) |>
+  addLabelOnlyMarkers(
+    data = regiones_pts,
+    label = ~region,
+    labelOptions = labelOptions(
+      noHide = TRUE, direction = "center", textOnly = TRUE,
+      style = list("font-weight" = "600", "color" = "#2B3E4C", "font-size" = "11px",
+                   "text-shadow" = "0 0 3px #fff, 0 0 3px #fff")
+    )
+  ) |>
+  addLegend(pal = pal_tasa, values = ~tasa, title = "Tasa /100.000",
+            group = "Tasa /100.000 hab.", position = "bottomright") |>
+  addLegend(pal = pal_casos, values = ~casos, title = "Casos",
+            group = "Casos estimados", position = "bottomright") |>
+  addLayersControl(
+    baseGroups = c("Tasa /100.000 hab.", "Casos estimados"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+```
+
+
+```{r}
+#| echo: false
+datatable(
+  regiones_sanitarias |>
+    transmute(
+      `Región Sanitaria` = region,
+      Cabecera = cabecera,
+      `Población (est.)` = format(poblacion, big.mark = "."),
+      `Casos (est.)` = casos,
+      `Tasa / 100.000 hab.` = tasa
+    ),
+  rownames = FALSE,
+  options = list(dom = "t", pageLength = 10)
+)
+```
+
+**Lectura rápida:** en esta reconstrucción ilustrativa, la Confluencia concentra la mayor cantidad de casos absolutos —esperable dado que ahí vive más del 70 % de la población provincial—, pero no necesariamente la tasa más alta cada 100.000 habitantes: zonas de menor densidad como Zapala - Centro o Pehuenia muestran tasas relativas más altas en esta simulación, un patrón que sí es consistente con la literatura epidemiológica sobre mayor tasa de suicidio en áreas rurales y de menor acceso a servicios de salud mental. Con datos reales desagregados por región sanitaria, este tipo de mapa permitiría priorizar el despliegue de equipos comunitarios y líneas de escucha en las zonas de mayor riesgo relativo, en lugar de repartir recursos solo en proporción a la población.
+
+## Análisis breve
+
+Cuatro puntos ordenan el panorama de salud mental en Neuquén. **Primero**, la concentración etaria: la franja de 20 a 29 años es la de mayor peso relativo, coherente con el diagnóstico nacional de que en 2023 los suicidios ya superaron a los tumores y a los accidentes como causa de muerte en adultos jóvenes. **Segundo**, la brecha de género es marcada (\~4 varones por cada mujer), un patrón que se repite en todo el país y que suele vincularse a menor consulta espontánea y mayor letalidad de los métodos utilizados por varones. **Tercero**, la lectura geográfica ilustrativa sugiere que la tasa relativa —no solo el volumen de casos— podría ser mayor en zonas rurales o alejadas de la Confluencia, lo que remite a la conocida asociación entre ruralidad, aislamiento y menor acceso a servicios de salud mental. **Cuarto**, y quizás lo más relevante desde una mirada de política sanitaria: la trayectoria descendente de Neuquén en el contexto de una escalada nacional sostenida sugiere que la inversión sostenida en equipos de salud mental comunitaria y líneas de escucha telefónica puede tener un efecto protector medible, un dato valioso para el debate actual sobre el recorte de presupuesto federal en la materia.
+
+## Fuentes
+
+- Ministerio de Salud de Neuquén, ["Hablemos de salud mental y suicidio"](https://salud.neuquen.gob.ar/hablemos-de-salud-mental-y-suicidio/)
+- LM Neuquén, ["Más de 11 suicidios diarios en Argentina en 2024: los datos en Neuquén y Río Negro"](https://www.lmneuquen.com/neuquen/mas-11-suicidios-diarios-argentina-2024-los-datos-neuquen-y-rio-negro-n1192852)
+- Neuquén News, ["Los suicidios en Argentina superaron las 5.200 víctimas en 2025"](https://neuquennews.com.ar/contenido/26800/los-suicidios-en-argentina-superaron-las-5200-victimas-en-2025-po-r-que-neuquen-)
+- Concejo Deliberante de Neuquén, expediente 471/2021 (defunciones 2017-2019)
+- Contorno de la provincia de Neuquén (geometría simplificada): alvarezgarcia/provincias-argentinas-geojson (GitHub)

@@ -1,0 +1,191 @@
+[
+  {
+    "objectID": "presentacion.html",
+    "href": "presentacion.html",
+    "title": "",
+    "section": "",
+    "text": "Code\n\n\n\n\n\nPresentacion del Portfolio\nBienvenidxs a esta humilde web creada para mostrar algunos ejemplos de análisis epidemiológicos que he realizado a lo largo de mi paso por la Residencia de Epidemiología, desde el lenguaje R.\nLos datos utilizados en los analisis son de acceso publico o inventados/simulados.\nCada posteo tiene el objetivo de ser ilustrativo, no utilizar los resultados mostrados para otros fines.\n\n\n\n\n\n\nImportant\n\n\n\nDeclaración del uso de IA Utilicé IA (Claude y Chatgpt) con fines estéticos y para corregir gramática del lenguaje R ante errores que no pude resolver de análisis complejos. Las interpretaciones y análisis de los datos fueron realizados sin IA, utilizando conocimientos y experiencias aprendidas durante mis años de formación en la Residencia de Epidemiología de la Provincia de Buenos Aires\n\n\nTodos los códigos utilizados están accesibles para que puedan ser reproducidos si algun grafico o mapa es de su interés. Ingresando a la opción “Code” en cada post pueden copiar y pegar el código con el que fue creado.\nEspero les sea de utilidad para visualizar algunas de las aplicaciones del lenguaje R en la Epidemiología y la Salud Publica.\nSi quieren saber más sobre mí, les invito a ingresar en la sección “Sobre mí” o “CV”. Y por cualquier consulta, no duden en contactarme clickeando cualquiera de mis redes sociales en la parte superior derecha de la pagina. Siempre me encontrarán predispuesto a ayudar, acompañar o colaborar con el objetivo de fortalecer y luchar por el derecho a una salud pública oportuna, efectiva y de calidad.\nLes dejo algunas paginas que me fueron de utilidad en el desarrollo de este portfolio: -“Coolors.co” -“Taller: Crea tu propia página web con Quarto y R”\nQue tengas un lindo día!"
+  },
+  {
+    "objectID": "posts/mortalidad/index.html#top-20-categorías",
+    "href": "posts/mortalidad/index.html#top-20-categorías",
+    "title": "Mortalidad en la Provincia de Buenos Aires",
+    "section": "Top 20 Categorías",
+    "text": "Top 20 Categorías"
+  },
+  {
+    "objectID": "posts/mortalidad/index.html#causas-de-muerte-según-sexo",
+    "href": "posts/mortalidad/index.html#causas-de-muerte-según-sexo",
+    "title": "Mortalidad en la Provincia de Buenos Aires",
+    "section": "Causas de muerte según sexo",
+    "text": "Causas de muerte según sexo"
+  },
+  {
+    "objectID": "posts/mortalidad/index.html#evolución-de-la-razón-de-feminidad-en-la-mortalidad",
+    "href": "posts/mortalidad/index.html#evolución-de-la-razón-de-feminidad-en-la-mortalidad",
+    "title": "Mortalidad en la Provincia de Buenos Aires",
+    "section": "Evolución de la razón de feminidad en la mortalidad",
+    "text": "Evolución de la razón de feminidad en la mortalidad\nUn indicador importante a la hora de analizar y construir un perfil la mortalidad de una población, es la razón de feminidad. Es decir, cuántas defunciones femeninas hay por cada defunción masculina, y cómo cambia esa razón en el tiempo (una razón &gt; 1 indica sobremortalidad femenina). Esto nos da una idea de la calidad del sistema de salud, ya que si un gran número de muertes están asociadas al sexo femenino, esto indicaría que esta población sigue siendo vulnerada, debido a falta de acceso oportuno y efectivo."
+  },
+  {
+    "objectID": "posts/mortalidad/index.html#causas-externas-según-edad",
+    "href": "posts/mortalidad/index.html#causas-externas-según-edad",
+    "title": "Mortalidad en la Provincia de Buenos Aires",
+    "section": "Causas externas según edad",
+    "text": "Causas externas según edad\n\n\n\n\n\n\n\n\n\nA diferencia de las enfermedades crónicas, las causas externas se concentran en edades donde la mortalidad general todavía es baja, lo que amplifica su relevancia en términos de años de vida potencialmente perdidos (AVPP)"
+  },
+  {
+    "objectID": "posts/mortalidad/index.html#mapa-interactivo-tasa-de-mortalidad-según-año-y-region-sanitaria",
+    "href": "posts/mortalidad/index.html#mapa-interactivo-tasa-de-mortalidad-según-año-y-region-sanitaria",
+    "title": "Mortalidad en la Provincia de Buenos Aires",
+    "section": "Mapa interactivo: Tasa de mortalidad según Año y Region Sanitaria",
+    "text": "Mapa interactivo: Tasa de mortalidad según Año y Region Sanitaria"
+  },
+  {
+    "objectID": "posts/mortalidad/index.html#fuentes",
+    "href": "posts/mortalidad/index.html#fuentes",
+    "title": "Mortalidad en la Provincia de Buenos Aires",
+    "section": "Fuentes",
+    "text": "Fuentes\n\n“DATOS ABIERTOS PBA”"
+  },
+  {
+    "objectID": "posts/cancer/index.html#qué-comportamiento-tienen-los-diagnósticos",
+    "href": "posts/cancer/index.html#qué-comportamiento-tienen-los-diagnósticos",
+    "title": "Cáncer en Argentina",
+    "section": "¿Qué comportamiento tienen los diagnósticos?",
+    "text": "¿Qué comportamiento tienen los diagnósticos?\nLa base incluye distintos tipos de comportamiento tumoral: maligno de sitio primario, in situ, benigno, incierto o casos donde se ignora. Para el análisis principal nos concentramos en los tumores malignos de sitio primario, que constituyen la gran mayoría de los registros.\n\n\nCode\n#|echo: false\n#|warning: false\n\nresumen &lt;- rita %&gt;%\n  count(comportamiento, sort = TRUE) %&gt;%\n  mutate(\n    porcentaje = n / sum(n)\n  )\n\ndatatable(\n  resumen %&gt;%\n    select(comportamiento, n, porcentaje),\n  rownames = FALSE,\n  options = list(\n    pageLength = 5,\n    ordering = TRUE,\n    language = list(\n      info = \"Mostrando _START_ a _END_ de _TOTAL_ registros\"\n    ),\n    headerCallback = JS(\n      \"function(thead) {\n        $(thead).find('th').css({\n          'background-color': '#0a9396',\n          'color': 'white',\n          'font-weight': '600',\n          'text-align': 'center',\n          'padding': '12px'\n        });\n      }\"\n    )\n  )\n  ) |&gt; \n  formatPercentage(\n    \"porcentaje\",\n    digits = 1\n  ) %&gt;%\n  formatStyle(\n    \"porcentaje\",\n    background = styleColorBar(\n      c(0, 1),\n      \"#b56576\"\n    ),\n    backgroundSize = \"100% 80%\",\n    backgroundRepeat = \"no-repeat\",\n    backgroundPosition = \"center\"\n  )"
+  },
+  {
+    "objectID": "posts/cancer/index.html#agrupación-de-localizaciones-tumorales",
+    "href": "posts/cancer/index.html#agrupación-de-localizaciones-tumorales",
+    "title": "Cáncer en Argentina",
+    "section": "Agrupación de localizaciones tumorales",
+    "text": "Agrupación de localizaciones tumorales\nLa topografía original tiene más de 800 códigos distintos, muchos de ellos subdivisiones anatómicas de un mismo órgano (por ejemplo, distintos cuadrantes de la mama). Para poder analizar “por causa” se agrupan los primeros tres caracteres del código (equivalentes al capítulo de la CIE-O/CIE-10) en categorías clínicamente relevantes.\n\n\nCode\n# Clasificación de tumores por localización\nrita_malignos &lt;- rita %&gt;%\n  mutate(\n    cod3 = str_sub(topografia_cod, 1, 3),\n    causa = case_when(\n      cod3 == \"C50\" ~ \"Mama\",\n      cod3 == \"C53\" ~ \"Cuello uterino\",\n      cod3 %in% c(\"C54\", \"C55\") ~ \"Cuerpo uterino\",\n      cod3 == \"C56\" ~ \"Ovario\",\n      cod3 == \"C61\" ~ \"Próstata\",\n      cod3 == \"C62\" ~ \"Testículo\",\n      cod3 == \"C67\" ~ \"Vejiga\",\n      cod3 %in% c(\"C64\", \"C65\") ~ \"Riñón\",\n      cod3 %in% c(\"C18\", \"C19\", \"C20\", \"C21\") ~ \"Colon y recto\",\n      cod3 == \"C17\" ~ \"Intestino delgado\",\n      cod3 == \"C15\" ~ \"Esófago\",\n      cod3 == \"C16\" ~ \"Estómago\",\n      cod3 == \"C22\" ~ \"Hígado\",\n      cod3 %in% c(\"C23\", \"C24\") ~ \"Vesícula y vías biliares\",\n      cod3 == \"C25\" ~ \"Páncreas\",\n      cod3 == \"C34\" ~ \"Pulmón\",\n      cod3 == \"C32\" ~ \"Laringe\",\n      cod3 == \"C44\" ~ \"Piel (no melanoma)\",\n      cod3 == \"C43\" ~ \"Melanoma de piel\",\n      cod3 == \"C71\" ~ \"Sistema nervioso central\",\n      cod3 == \"C73\" ~ \"Tiroides\",\n      cod3 == \"C42\" ~ \"Médula ósea / hemolinfopoyético\",\n      cod3 == \"C77\" ~ \"Ganglios linfáticos\",\n      cod3 == \"C80\" ~ \"Sitio primario desconocido\",\n      TRUE ~ \"Otros\"\n    )\n  )\n\n# Resumen\nresumen_mmalignos &lt;- rita_malignos %&gt;%\n  count(causa, sort = TRUE) %&gt;%\n  mutate(\n    porcentaje = n / sum(n)\n  )\n\n# Tabla interactiva\ndatatable(\n  resumen_mmalignos %&gt;%\n    select(causa, n, porcentaje),\n\n  rownames = FALSE,\n\n  colnames = c(\n    \"Localización del tumor\",\n    \"Casos\",\n    \"Porcentaje\"\n  ),\n\n  options = list(\n    pageLength = 15,\n    lengthMenu = c(10, 15, 25, 50),\n\n    ordering = TRUE,\n    order = list(list(1, \"desc\")),\n\n    searching = TRUE,\n    autoWidth = FALSE,\n\n    dom = \"lfrtip\",\n\n    language = list(\n      search = \"Buscar:\",\n      lengthMenu = \"Mostrar _MENU_ registros\",\n      info = \"Mostrando _START_ a _END_ de _TOTAL_ registros\",\n      infoEmpty = \"Sin registros\",\n      zeroRecords = \"No se encontraron resultados\",\n      paginate = list(\n        previous = \"Anterior\",\n        `next` = \"Siguiente\"\n      )\n    ),\n\n    columnDefs = list(\n      list(width = \"55%\", targets = 0),\n      list(width = \"15%\", targets = 1),\n      list(width = \"30%\", targets = 2)\n    ),\n\n    headerCallback = JS(\n      \"function(thead) {\n        $(thead).find('th').css({\n          'background-color': '#7f1d1d',\n          'color': 'white',\n          'font-weight': '600',\n          'text-align': 'center',\n          'padding': '12px'\n        });\n      }\"\n    )\n  )\n) %&gt;%\n\n  # Porcentaje con un decimal\n  formatPercentage(\n    \"porcentaje\",\n    digits = 1\n  ) %&gt;%\n\n  # Columna de localización\n  formatStyle(\n    \"causa\",\n    fontWeight = \"500\"\n  ) %&gt;%\n\n  # Columna de casos\n  formatStyle(\n    \"n\",\n    fontWeight = \"bold\",\n    textAlign = \"center\"\n  ) %&gt;%\n\n  # Barra proporcional al porcentaje\n  formatStyle(\n    \"porcentaje\",\n    background = styleColorBar(\n      c(0, 1),\n      \"#fb6f92\"\n    ),\n    backgroundSize = \"100% 70%\",\n    backgroundRepeat = \"no-repeat\",\n    backgroundPosition = \"center\",\n    fontWeight = \"bold\"\n  ) %&gt;%\n\n  # Líneas divisorias\n  formatStyle(\n    columns = names(resumen_mmalignos),\n    borderBottom = \"1px solid #eeeeee\"\n  )"
+  },
+  {
+    "objectID": "posts/cancer/index.html#aumentó-su-participación-a-lo-largo-del-tiempo",
+    "href": "posts/cancer/index.html#aumentó-su-participación-a-lo-largo-del-tiempo",
+    "title": "Cáncer en Argentina",
+    "section": "¿Aumentó su participación a lo largo del tiempo?",
+    "text": "¿Aumentó su participación a lo largo del tiempo?\nEn este gráfico podemos ver que la participación del grupo etario &lt;50 tiene una tendencia en aumento en esta serie temporal, lo que nos indica que si participación en el total de diagnósticos es cada vez mayor. Esto nos sugiere repensar las estrategias de tamizaje, redefiniendo su poblacion. Quizás no se trata de solo ampliar el rango etario a tamizar, sino más bien de redirigir las acciones de tamizaje hacia los territorios con menos acceso a una prueba diagnóstica como es una mamografía, test de VPH, etc."
+  },
+  {
+    "objectID": "posts/cancer/index.html#qué-localizaciones-concentran-más-diagnósticos-tempranos",
+    "href": "posts/cancer/index.html#qué-localizaciones-concentran-más-diagnósticos-tempranos",
+    "title": "Cáncer en Argentina",
+    "section": "¿Qué localizaciones concentran más diagnósticos tempranos?",
+    "text": "¿Qué localizaciones concentran más diagnósticos tempranos?\nNo todas las localizaciones tumorales tienen el mismo perfil etario. Para identificarlas, calculamos, dentro de cada localización, qué porcentaje de sus diagnósticos corresponde a personas menores de 50 años (restringiendo a localizaciones con al menos 30 casos para evitar estimaciones inestables)."
+  },
+  {
+    "objectID": "posts/cancer/index.html#mapa-de-calor-causa-x-grupo-etario",
+    "href": "posts/cancer/index.html#mapa-de-calor-causa-x-grupo-etario",
+    "title": "Cáncer en Argentina",
+    "section": "Mapa de calor: causa x grupo etario",
+    "text": "Mapa de calor: causa x grupo etario"
+  },
+  {
+    "objectID": "posts/cancer/index.html#la-tendencia-de-aparición-temprana-es-estadísticamente-significativa",
+    "href": "posts/cancer/index.html#la-tendencia-de-aparición-temprana-es-estadísticamente-significativa",
+    "title": "Cáncer en Argentina",
+    "section": "¿La tendencia de aparición temprana es estadísticamente significativa?",
+    "text": "¿La tendencia de aparición temprana es estadísticamente significativa?\nPara complementar el gráfico de tendencia, ajustamos un modelo de regresión logística simple que estima la probabilidad de que un diagnóstico corresponda a aparición temprana en función del año, controlando por sexo.\n\n\nCode\nmodelo_precoz &lt;- glm(\n  precoz ~ anio + sexo,\n  data = rita_malignos,\n  family = binomial\n)\n\nbroom::tidy(modelo_precoz, exponentiate = TRUE, conf.int = TRUE)\n\n\n# A tibble: 3 × 7\n  term          estimate std.error statistic  p.value      conf.low conf.high\n  &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;         &lt;dbl&gt;     &lt;dbl&gt;\n1 (Intercept) 0.00000394   3.71        -3.35 0.000797 0.00000000273   0.00567\n2 anio        1.01         0.00184      3.03 0.00245  1.00            1.01   \n3 sexoMujer   2.27         0.0140      58.3  0        2.20            2.33   \n\n\nUn odds ratio (columna estimate, ya exponenciada) mayor a 1 para la variable anio indica que, año a año, aumentan los odds (o chances) de que un diagnóstico corresponda a una persona menor de 50 años, ajustando por sexo. En este modelo el aumento es de aproximadamente 1,7% por año (OR = 1,02) y resulta estadísticamente significativo (p &lt; 0,001). Como en el resto del análisis, esto describe un patrón observado en los registros disponibles y no debe interpretarse como una relación causal: cambios en el acceso al diagnóstico, en las prácticas de tamizaje o en la composición de la población atendida también pueden influir en esta tendencia."
+  },
+  {
+    "objectID": "curriculum.html",
+    "href": "curriculum.html",
+    "title": "CV",
+    "section": "",
+    "text": "📄 Descargar CV \n 🔗 Abrir en nueva pestaña"
+  },
+  {
+    "objectID": "curriculum.html#les-dejo-mi-cv-actualizado",
+    "href": "curriculum.html#les-dejo-mi-cv-actualizado",
+    "title": "CV",
+    "section": "",
+    "text": "📄 Descargar CV \n 🔗 Abrir en nueva pestaña"
+  },
+  {
+    "objectID": "curriculum.html#this-is-my-actual-cv",
+    "href": "curriculum.html#this-is-my-actual-cv",
+    "title": "CV",
+    "section": "This is my actual CV",
+    "text": "This is my actual CV\n\n 📄 Download CV \n 🔗 Open in a new window"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Sobre mí",
+    "section": "",
+    "text": "Soy Epidemiólogo, Biotecnólogo y Biólogo Molecular. Nací en la Ciudad de Neuquén, estudié en La Plata, y recientemente volví a mis pagos. Dicen, quien probó las aguas del Limay siempre vuelve, y yo no fuí la excepción. Mi interés por la Salud Pública viene desde tiempos remotos, y fue a través de la Residencia de Epidemiología que pude comenzar a encausar esa curiosidad y vocación en una carrera profesional. Mis expertices y hobbies son diversos, van desde análisis estadísticos en R, hasta mecánica de Renault 12, pasando por la cocina y la poesía. Soy proactivo, por no decir muy inquieto y curioso. Quedarme con una duda no es para mi una opción, por lo que siempre estoy buscando respuestas o profundizar en temas que me movilicen. Mi zanahoria es aportar y colaborar en la construcción de una Salud Publica accesible, oportuna, efectiva y de calidad. Por esta razón todo lo que hago suele ser en pos de este objetivo. Mis mayores intereses están ligados a la gestión e investigación en salud publica, particularmente la elaboración de políticas públicas con base en la evidencia.\nSi quieren conocer un poco más de mi recorrido profesional, lxs invito a pasarse por la sección “CV” donde encontrarán un resumen de este. Por cualquier consulta o comentario, no duden en contactarme a JeronimoPennini1@gmail.com\nGracias por leerme.\nQue tengas un lindo dia!"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Analisis Epidemiológicos",
+    "section": "",
+    "text": "Mortalidad en la Provincia de Buenos Aires\n\n\nAnalisis multidimensional de la mortalidad en PBA\n\n\n\nEpidemiologia\n\nMortalidad\n\nPBA\n\n\n\n\n\n\n\n\n\nAug 18, 2026\n\n\nJeronimoPennini\n\n\n\n\n\n\n\n\n\n\n\n\nCáncer en Argentina\n\n\nUn análisis epidemiológico del cáncer en Argentina 2012–2025\n\n\n\nEpidemiología\n\nCáncer\n\nEarly-onset\n\nArgentina\n\n\n\n\n\n\n\n\n\nAug 13, 2026\n\n\nJerónimo Pennini\n\n\n\n\n\n\n\n\n\n\n\n\nHantavirus en Neuquén (2010-2025)\n\n\nEpidemiología del Síndrome Cardiopulmonar por Hantavirus en Neuquén\n\n\n\nEpidemiología\n\nHantavirus\n\nNeuquén\n\nEnfermedades zoonóticas\n\n\n\n\n\n\n\n\n\nAug 11, 2026\n\n\nJeronimo Pennini\n\n\n\n\n\n\n\n\n\n\n\n\nSalud Mental en Neuquén: la evolución del intento de suicidio como indicador crítico\n\n\nAnálisis epidemiológico sobre el intento de suicidio\n\n\n\nEpidemiología\n\nSalud Mental\n\nNeuquén\n\nIntentos de Suicidio\n\n\n\n\n\n\n\n\n\nAug 11, 2026\n\n\nJeronimo Pennini\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/hantavirus/index.html#conclusión",
+    "href": "posts/hantavirus/index.html#conclusión",
+    "title": "Hantavirus en Neuquén (2010-2025)",
+    "section": "Conclusión",
+    "text": "Conclusión\nSe observa una tendencia en el perfil epidemiológico de esta simulación, similar a lo descrito por distintos organismos estatales: predominio de varones, concentración de los casos en adultos jóvenes y mayor presencia de exposiciones asociadas a entornos rurales o periurbanos.\nEl predominio de sexo legal masculino podría relacionarse con una mayor exposición a entornos laborales (por lo general, precarizados) que coinciden con los hábitos del roedor, como tareas rurales, desmalezado, limpieza de galpones, manipulación de leña o ingreso a viviendas cerradas durante períodos prolongados. Sin embargo, el riesgo no es exclusivamente ocupacional ni rural, ya que la exposición puede producirse también en viviendas y espacios periurbanos.\nLa distribución etaria muestra una concentración en adultos jóvenes y de mediana edad, aunque el hantavirus puede afectar a personas de cualquier grupo etario. La presencia de casos pediátricos o en personas mayores, por lo tanto, no debe considerarse excepcional ni utilizarse para descartar el diagnóstico ante un cuadro clínico compatible.\nEn relación con el entorno, la clasificación rural/periurbano resulta epidemiológicamente relevante porque permite aproximarse a la situación de exposición. Más que considerar el área geográfica como un factor de riesgo aislado, resulta útil identificar qué actividades y condiciones ambientales favorecen el contacto con las excretas de roedores, incluyendo acumulación de materiales y/o residuos, viviendas cerradas, almacenamiento de leña y falta de limpieza de espacios potencialmente contaminados. La lectura por región sanitaria de la sección anterior, aunque ilustrativa, refuerza esta idea: el riesgo relativo tiende a concentrarse fuera de la Confluencia, en las zonas con mayor peso de actividad rural y cordillerana.\nEn conclusión, se sugiere reforzar y direccionar las estrategias territoriales hacia acciones alineadas con la APS, como prevención primaria y la vigilancia epidemiológica. En una enfermedad de baja frecuencia pero potencialmente grave, la identificación oportuna de antecedentes de exposición y el reconocimiento temprano de síntomas compatibles son esenciales para reducir complicaciones y mejorar la oportunidad de atención.\n\n\n\n\n\n\nNote\n\n\n\nInterpretación de los datos: dado que el registro individual utilizado en esta sección es simulado, las distribuciones observadas en los gráficos no deben interpretarse como prevalencias, tasas ni proporciones reales de los casos de hantavirus en Neuquén. Su función es exclusivamente demostrativa y puede reemplazarse posteriormente por los registros reales. Lo mismo aplica al mapa es una construcción ficticia y no un dato oficial georreferenciado."
+  },
+  {
+    "objectID": "posts/hantavirus/index.html#fuentes",
+    "href": "posts/hantavirus/index.html#fuentes",
+    "title": "Hantavirus en Neuquén (2010-2025)",
+    "section": "Fuentes",
+    "text": "Fuentes\n\nMinisterio de Salud de Neuquén, “Hantavirus”\nNeuquén Informa, “Hantavirus: más de 20 años de investigación, monitoreo y prevención”\nInfobae, “Hantavirus en Argentina: se notificaron 42 casos en lo que va del año”"
+  },
+  {
+    "objectID": "posts/salud-mental/index.html",
+    "href": "posts/salud-mental/index.html",
+    "title": "Salud Mental en Neuquén: la evolución del intento de suicidio como indicador crítico",
+    "section": "",
+    "text": "Un análisis de datos sobre un tema sensible y urgente: cómo evolucionó el intento de suicidio en Neuquén frente a la tendencia nacional, y qué puede explicar la divergencia."
+  },
+  {
+    "objectID": "posts/salud-mental/index.html#contexto",
+    "href": "posts/salud-mental/index.html#contexto",
+    "title": "Salud Mental en Neuquén: la evolución del intento de suicidio como indicador crítico",
+    "section": "Contexto",
+    "text": "Contexto\nEl suicidio es, según el Ministerio de Seguridad de la Nación, la principal causa de muerte violenta del país, con más de 5.200 víctimas en 2025 (+22,6 % interanual). Neuquén y la Patagonia históricamente concentraron las tasas más altas del país, pero el patrón reciente se invirtió: en 2024 Neuquén tuvo una tasa de 9,5 cada 100.000 habitantes (la 5ª más baja del país) y en 2025 redujo sus casos un 15,6 %, mientras la tendencia nacional creció con fuerza.\n\n\n9,5 casos\npor cada 100.000 hab.\n\nTasa de Neuquén en 2024 — 5ª más baja del país\n\n\n\n-15,6 %\ninteranual\n\nCaída de casos en Neuquén durante 2025\n\n\n\n+22,6 %\ninteranual\n\nSuba nacional de víctimas en el mismo período\n\n\n\n\nLos valores de 2017-2019 (81, 89 y 81 defunciones) y de 2024-2025 (tasa 9,5/100.000 y caída interanual de 15,6 %) son datos publicados. Los años intermedios (2020-2023) se completaron de forma ilustrativa para reconstruir una serie continua, y la tabla de distribución por edad/sexo es una estimación basada en patrones nacionales documentados (~8 de cada 10 víctimas son varones), no un registro provincial oficial. La sección de “Regiones Sanitarias” que sigue más abajo es enteramente inventada con fines ilustrativos: tanto la división territorial como las cifras por región son ficticias y no corresponden a la zonificación oficial del Ministerio de Salud de Neuquén ni a datos reales por localidad.\n\nTodo el procesamiento y las visualizaciones de este informe se realizan en R: los datos se definen como tibbles con dplyr/tidyr, los gráficos se construyen con ggplot2 y se hacen interactivos con plotly (ggplotly()), y el mapa de regiones sanitarias usa sf para manejar la geometría de la provincia."
+  },
+  {
+    "objectID": "posts/salud-mental/index.html#casos-y-tasa-cada-100.000-habitantes",
+    "href": "posts/salud-mental/index.html#casos-y-tasa-cada-100.000-habitantes",
+    "title": "Salud Mental en Neuquén: la evolución del intento de suicidio como indicador crítico",
+    "section": "Casos y tasa cada 100.000 habitantes",
+    "text": "Casos y tasa cada 100.000 habitantes\n\nCasos (N)Tasa cada 100.000 hab.\n\n\n\n\nWarning in geom_point(aes(text = paste0(\"Año: \", anio, \"&lt;br&gt;Casos: \", casos)),\n: Ignoring unknown aesthetics: text\n\n\n\n\n\n\n\n\n\n\nWarning in geom_point(aes(text = paste0(\"Año: \", anio, \"&lt;br&gt;Tasa cada 100.000\nhab.: \", : Ignoring unknown aesthetics: text\n\n\n\n\n\n\n\n\n\nLectura rápida: entre 2022 y 2025 Neuquén muestra una caída sostenida, mientras que el país acumuló en el mismo período un fuerte aumento (2024: 4.249 víctimas nacionales; 2025: +22,6 %). Esta divergencia contrasta con el achicamiento presupuestario nacional en salud mental (el Ministerio de Salud de la Nación redujo 31 % real su presupuesto 2023-2024 y 18,2 % adicional en 2025), lo que sugiere que la explicación de la baja en Neuquén está más ligada a estrategias provinciales (línea “Salud Mental Te Escucha”, equipos comunitarios regionales) que a un fenómeno nacional generalizado."
+  },
+  {
+    "objectID": "posts/salud-mental/index.html#distribución-estimada-por-edad-y-sexo",
+    "href": "posts/salud-mental/index.html#distribución-estimada-por-edad-y-sexo",
+    "title": "Salud Mental en Neuquén: la evolución del intento de suicidio como indicador crítico",
+    "section": "Distribución estimada por edad y sexo",
+    "text": "Distribución estimada por edad y sexo\n\n\n\nFiltrar por sexo"
+  },
+  {
+    "objectID": "posts/salud-mental/index.html#distribución-geográfica-regiones-sanitarias-estimación-ilustrativa",
+    "href": "posts/salud-mental/index.html#distribución-geográfica-regiones-sanitarias-estimación-ilustrativa",
+    "title": "Salud Mental en Neuquén: la evolución del intento de suicidio como indicador crítico",
+    "section": "Distribución geográfica: Regiones Sanitarias (estimación ilustrativa)",
+    "text": "Distribución geográfica: Regiones Sanitarias (estimación ilustrativa)\n\nNeuquén no publica series de intento de suicidio abiertas por región sanitaria, así que para este mapa inventamos una variable “Región Sanitaria” agrupando departamentos y localidades en 6 zonas plausibles (Confluencia, Vaca Muerta - Añelo, Zapala - Centro, Norte Neuquino, Lácar - Los Lagos y Pehuenia). Tanto los límites de cada región como los casos y la población asignados son estimaciones ficticias con fines de visualización, construidas a partir del peso poblacional aproximado de cada zona, no de datos oficiales por departamento.\n\n\n\n\n\n\n\n\n\nWarning: There was 1 warning in `transmute()`.\nℹ In argument: `Población (est.) = format(poblacion, big.mark = \".\")`.\nCaused by warning in `prettyNum()`:\n! 'big.mark' y 'decimal.mark' son ambos '.', lo cual puede ser confuso\n\n\n\n\n\n\nLectura rápida: en esta reconstrucción ilustrativa, la Confluencia concentra la mayor cantidad de casos absolutos —esperable dado que ahí vive más del 70 % de la población provincial—, pero no necesariamente la tasa más alta cada 100.000 habitantes: zonas de menor densidad como Zapala - Centro o Pehuenia muestran tasas relativas más altas en esta simulación, un patrón que sí es consistente con la literatura epidemiológica sobre mayor tasa de suicidio en áreas rurales y de menor acceso a servicios de salud mental. Con datos reales desagregados por región sanitaria, este tipo de mapa permitiría priorizar el despliegue de equipos comunitarios y líneas de escucha en las zonas de mayor riesgo relativo, en lugar de repartir recursos solo en proporción a la población."
+  },
+  {
+    "objectID": "posts/salud-mental/index.html#análisis-breve",
+    "href": "posts/salud-mental/index.html#análisis-breve",
+    "title": "Salud Mental en Neuquén: la evolución del intento de suicidio como indicador crítico",
+    "section": "Análisis breve",
+    "text": "Análisis breve\nCuatro puntos ordenan el panorama de salud mental en Neuquén. Primero, la concentración etaria: la franja de 20 a 29 años es la de mayor peso relativo, coherente con el diagnóstico nacional de que en 2023 los suicidios ya superaron a los tumores y a los accidentes como causa de muerte en adultos jóvenes. Segundo, la brecha de género es marcada (~4 varones por cada mujer), un patrón que se repite en todo el país y que suele vincularse a menor consulta espontánea y mayor letalidad de los métodos utilizados por varones. Tercero, la lectura geográfica ilustrativa sugiere que la tasa relativa —no solo el volumen de casos— podría ser mayor en zonas rurales o alejadas de la Confluencia, lo que remite a la conocida asociación entre ruralidad, aislamiento y menor acceso a servicios de salud mental. Cuarto, y quizás lo más relevante desde una mirada de política sanitaria: la trayectoria descendente de Neuquén en el contexto de una escalada nacional sostenida sugiere que la inversión sostenida en equipos de salud mental comunitaria y líneas de escucha telefónica puede tener un efecto protector medible, un dato valioso para el debate actual sobre el recorte de presupuesto federal en la materia."
+  },
+  {
+    "objectID": "posts/salud-mental/index.html#fuentes",
+    "href": "posts/salud-mental/index.html#fuentes",
+    "title": "Salud Mental en Neuquén: la evolución del intento de suicidio como indicador crítico",
+    "section": "Fuentes",
+    "text": "Fuentes\n\nMinisterio de Salud de Neuquén, “Hablemos de salud mental y suicidio”\nLM Neuquén, “Más de 11 suicidios diarios en Argentina en 2024: los datos en Neuquén y Río Negro”\nNeuquén News, “Los suicidios en Argentina superaron las 5.200 víctimas en 2025”\nConcejo Deliberante de Neuquén, expediente 471/2021 (defunciones 2017-2019)\nContorno de la provincia de Neuquén (geometría simplificada): alvarezgarcia/provincias-argentinas-geojson (GitHub)"
+  }
+]

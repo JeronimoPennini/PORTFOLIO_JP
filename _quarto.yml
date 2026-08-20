@@ -1,0 +1,30 @@
+project:
+ type: website
+ output-dir: docs # cambiar carpeta donde se construye el sitio
+ 
+website:
+  description: "Portfolio - JP"
+  site-url: https://your-website-url.example.com # you must change this appropriately for RSS feeds to work properly
+  title: "Portfolio - JP"
+  navbar:
+    left:
+      - presentacion.qmd
+    right:
+      - about.qmd
+      - curriculum.qmd
+      - icon: github
+        href: https://github.com/JeronimoPennini
+      - icon: linkedin
+        href: https://www.linkedin.com/in/jeronimo-pennini
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    theme:
+      - minty
+      - brand
+      - tema.scss
+    css: styles.css
+
+
+

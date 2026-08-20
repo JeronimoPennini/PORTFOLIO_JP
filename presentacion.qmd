@@ -1,0 +1,31 @@
+---
+title: ""
+format: html
+---
+
+# **Presentacion del Portfolio**
+
+Bienvenidxs a esta humilde web creada para mostrar algunos ejemplos de análisis epidemiológicos que he realizado a lo largo de mi paso por la Residencia de Epidemiología, desde el lenguaje R.
+
+**Los datos utilizados en los analisis son de acceso publico o inventados/simulados.**
+
+Cada posteo tiene el objetivo de ser ilustrativo, no utilizar los resultados mostrados para otros fines.
+
+:::callout-important
+**Declaración del uso de IA**
+Utilicé IA (Claude y Chatgpt) con fines estéticos y para corregir gramática del lenguaje R ante errores que no pude resolver de análisis complejos. Las interpretaciones y análisis de los datos fueron realizados sin IA, utilizando conocimientos y experiencias aprendidas durante mis años de formación en la Residencia de Epidemiología de la Provincia de Buenos Aires
+:::
+
+Todos los códigos utilizados están accesibles para que puedan ser reproducidos si algun grafico o mapa es de su interés. Ingresando a la opción "Code" en cada post pueden copiar y pegar el código con el que fue creado.
+
+Espero les sea de utilidad para visualizar algunas de las aplicaciones del lenguaje R en la Epidemiología y la Salud Publica.
+
+Si quieren saber más sobre mí, les invito a ingresar en la sección "Sobre mí" o "CV". Y por cualquier consulta, no duden en contactarme clickeando cualquiera de mis redes sociales en la parte superior derecha de la pagina. Siempre me encontrarán predispuesto a ayudar, acompañar o colaborar con el objetivo de fortalecer y luchar por el derecho a una salud pública oportuna, efectiva y de calidad.
+
+Les dejo algunas paginas que me fueron de utilidad en el desarrollo de este portfolio:
+-["Coolors.co"](https://coolors.co/?home)
+-["Taller: Crea tu propia página web con Quarto y R"](https://santiagorusers.github.io/posts/taller_julio_2026/)
+
+
+Que tengas un lindo día!
+

@@ -1,0 +1,40 @@
+---
+title: "CV"
+format: html
+---
+
+## Les dejo mi CV actualizado
+
+<div style="text-align: center; margin-bottom: 1.5rem;">
+
+<a href="CV-Es-Jerónimo Pennini.pdf"
+   download
+   class="cv-download">
+   📄 Descargar CV
+</a>
+
+<a href="CV-Es-Jerónimo Pennini.pdf"
+   target="_blank"
+   class="cv-download">
+   🔗 Abrir en nueva pestaña
+</a>
+
+</div>
+
+## This is my actual CV
+
+<div style="text-align: center; margin-bottom: 1.5rem;">
+
+<a href="CV-En-Pennini Jeronimo.pdf"
+   download
+   class="cv-download">
+   📄 Download CV
+</a>
+
+<a href="CV-En-Pennini Jeronimo.pdf"
+   target="_blank"
+   class="cv-download">
+   🔗 Open in a new window
+</a>
+
+</div>
