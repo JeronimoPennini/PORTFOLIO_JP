@@ -23,7 +23,9 @@ Espero les sea de utilidad para visualizar algunas de las aplicaciones del lengu
 Si quieren saber más sobre mí, les invito a ingresar en la sección "Sobre mí" o "CV". Y por cualquier consulta, no duden en contactarme clickeando cualquiera de mis redes sociales en la parte superior derecha de la pagina. Siempre me encontrarán predispuesto a ayudar, acompañar o colaborar con el objetivo de fortalecer y luchar por el derecho a una salud pública oportuna, efectiva y de calidad.
 
 Les dejo algunas paginas que me fueron de utilidad en el desarrollo de este portfolio:
+
 -["Coolors.co"](https://coolors.co/?home)
+
 -["Taller: Crea tu propia página web con Quarto y R"](https://santiagorusers.github.io/posts/taller_julio_2026/)
 
 
