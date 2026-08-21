@@ -1,6 +1,6 @@
 ---
-title: "Salud Mental en Neuquén: la evolución del intento de suicidio como indicador crítico"
-subtitle: "Análisis epidemiológico sobre el intento de suicidio"
+title: "Salud Mental en Neuquén: la evolución de los casos de suicidio e intento de suicidio como indicador crítico"
+subtitle: "Análisis epidemiológico sobre el suicidio e intento de suicidio"
 author: "Jeronimo Pennini"
 date: 2026-08-11
 categories: [Epidemiología, Salud Mental, Neuquén, Intentos de Suicidio]
