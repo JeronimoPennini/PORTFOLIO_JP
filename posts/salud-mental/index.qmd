@@ -20,9 +20,17 @@ format:
 ![](images.jpg)
 
 ::: hero-caption
-Un análisis de datos sobre un tema sensible y urgente: cómo evolucionó el intento de suicidio en Neuquén frente a la tendencia nacional, y qué puede explicar la divergencia.
+Un análisis de datos sobre un tema urgente: cómo evolucionó el Suicidio y el Intento de Suicidio en la Provicnia de Neuquén frente a la tendencia nacional, y qué puede explicar la divergencia.
 :::
 ::::
+
+
+:::callout-note
+**Nota metodológica**
+
+Los valores de 2017-2019 (81, 89 y 81 defunciones) y de 2024-2025 (tasa 9,5/100.000 y caída interanual de 15,6 %) son datos publicados. Los años intermedios (2020-2023) se completaron de forma **ilustrativa** para reconstruir una serie continua, y la tabla de distribución por edad/sexo es una estimación basada en patrones nacionales documentados (\~8 de cada 10 víctimas son varones), no un registro provincial oficial. **La sección de "Regiones Sanitarias" que sigue más abajo es enteramente inventada con fines ilustrativos**: tanto la división territorial como las cifras por región son ficticias y no corresponden a la zonificación oficial del Ministerio de Salud de Neuquén ni a datos reales por localidad.
+:::
+
 
 ## Contexto
 
@@ -55,16 +63,16 @@ Caída de casos en Neuquén durante 2025
 interanual
 
 ::: stat-sub
-Suba nacional de víctimas en el mismo período
+Suba nacional de casos en el mismo período
 :::
 ::::
+
 :::::::::
 
-::: callout-Note
-Los valores de 2017-2019 (81, 89 y 81 defunciones) y de 2024-2025 (tasa 9,5/100.000 y caída interanual de 15,6 %) son datos publicados. Los años intermedios (2020-2023) se completaron de forma **ilustrativa** para reconstruir una serie continua, y la tabla de distribución por edad/sexo es una estimación basada en patrones nacionales documentados (\~8 de cada 10 víctimas son varones), no un registro provincial oficial. **La sección de "Regiones Sanitarias" que sigue más abajo es enteramente inventada con fines ilustrativos**: tanto la división territorial como las cifras por región son ficticias y no corresponden a la zonificación oficial del Ministerio de Salud de Neuquén ni a datos reales por localidad.
-:::
 
-Todo el procesamiento y las visualizaciones de este informe se realizan en R: los datos se definen como `tibble`s con **dplyr/tidyr**, los gráficos se construyen con **ggplot2** y se hacen interactivos con **plotly** (`ggplotly()`), y el mapa de regiones sanitarias usa **sf** para manejar la geometría de la provincia.
+
+
+
 
 ```{r}
 #| label: setup
@@ -78,41 +86,16 @@ library(DT)
 library(crosstalk)
 library(scales)
 
-# Tema propio: fondo transparente (hereda el color de fondo de la página en
-# lugar de imponer un blanco/color propio) + tipografía y grilla más suaves.
-tema_informe <- function(base_size = 12) {
-  theme_minimal(base_size = base_size) +
+theme_set(
+  theme_minimal(base_size = 12) +
     theme(
       panel.grid.minor = element_blank(),
-      panel.grid.major = element_line(color = "#2B3E4C", linewidth = 0.15),
-      plot.background   = element_rect(fill = "transparent", color = NA),
-      panel.background  = element_rect(fill = "transparent", color = NA),
-      legend.background = element_rect(fill = "transparent", color = NA),
-      legend.key        = element_rect(fill = "transparent", color = NA),
-      plot.title    = element_blank(),
-      axis.title    = element_text(color = "#2B3E4C", size = rel(0.95)),
-      axis.text     = element_text(color = "#5b6b76"),
-      axis.line     = element_line(color = "#2B3E4C", linewidth = 0.3),
-      legend.title  = element_text(color = "#2B3E4C", size = rel(0.9)),
-      legend.text   = element_text(color = "#5b6b76")
+      plot.title = element_blank()
     )
-}
-theme_set(tema_informe())
-
-# Deja transparentes tanto el "papel" como el área de trazado de un gráfico
-# plotly, para que se vea igual que el resto de la página (sin recuadro).
-fondo_transparente <- function(p) {
-  p |>
-    layout(
-      paper_bgcolor = "rgba(0,0,0,0)",
-      plot_bgcolor  = "rgba(0,0,0,0)",
-      legend = list(bgcolor = "rgba(0,0,0,0)")
-    ) |>
-    config(displayModeBar = FALSE)
-}
+)
 ```
 
-## Casos y tasa cada 100.000 habitantes
+## Distribución temporal de Suicidios en la Provincia de Neuquén
 
 ```{r}
 #| label: serie-suicidios
@@ -138,54 +121,83 @@ anios_clave <- c(2019, 2023, 2025)
 ```
 
 ::: panel-tabset
-## Casos (N)
+## Casos totales por año
 
 ```{r}
 #| echo: false
 #| warnings: false
-p_casos <- ggplot(serie_suicidios, aes(x = anio, y = casos)) +
-  geom_area(fill = "#6a51a3", alpha = 0.10) +
-  geom_line(color = "#6a51a3", linewidth = 1.3, lineend = "round") +
-  geom_point(
-    aes(text = paste0("Año: ", anio, "<br>Casos: ", casos)),
-    color = "#6a51a3", size = 2.2
-  ) +
-  geom_point(
-    data = filter(serie_suicidios, anio %in% anios_clave),
-    shape = 21, fill = "white", color = "#6a51a3", size = 3.3, stroke = 1.3
-  ) +
+p_casos <- ggplot(
+  serie_suicidios,
+  aes(
+    x = anio,
+    y = casos,
+    group = 1,
+    text = paste0(
+      "<b>Año:</b> ", anio,
+      "<br><b>Casos:</b> ", casos
+    )
+  )
+) +
+  geom_area(fill = "#6a51a3", alpha = 0.12) +
+  geom_line(linewidth = 1, color = "#6a51a3") +
+  geom_point(size = 2, color = "#3d1e7a") +
   scale_x_continuous(breaks = serie_suicidios$anio) +
-  scale_y_continuous(expand = expansion(mult = c(0.05, 0.12))) +
-  labs(x = "Año", y = "Casos (N)")
+  scale_y_continuous(
+    breaks = scales::pretty_breaks(n = 6),
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(x = NULL, y = "Casos confirmados") +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title.y = element_text(face = "bold")
+  )
 
-ggplotly(p_casos, tooltip = "text") |> fondo_transparente()
+ggplotly(p_casos, tooltip = "text")
 ```
 
-## Tasa cada 100.000 hab.
+## Tasa cada 100.000 hab. por año
 
 ```{r}
 #| echo: false
 #| warnings: false
-p_tasa <- ggplot(serie_suicidios, aes(x = anio, y = tasa)) +
-  geom_area(fill = "#3182bd", alpha = 0.10) +
-  geom_line(color = "#3182bd", linewidth = 1.3, lineend = "round") +
-  geom_point(
-    aes(text = paste0("Año: ", anio, "<br>Tasa cada 100.000 hab.: ", tasa)),
-    color = "#3182bd", size = 2.2
-  ) +
-  geom_point(
-    data = filter(serie_suicidios, anio %in% anios_clave),
-    shape = 21, fill = "white", color = "#3182bd", size = 3.3, stroke = 1.3
-  ) +
-  scale_x_continuous(breaks = serie_suicidios$anio) +
-  scale_y_continuous(expand = expansion(mult = c(0.05, 0.12))) +
-  labs(x = "Año", y = "Tasa cada 100.000 hab.")
 
-ggplotly(p_tasa, tooltip = "text") |> fondo_transparente()
+p_tasa <- ggplot(
+  serie_suicidios,
+  aes(
+    x = anio,
+    y = tasa,
+    group = 1,
+    text = paste0(
+      "<b>Año:</b> ", anio,
+      "<br><b>Tasa cada 100.000 hab.:</b> ", tasa
+    )
+  )
+) +
+  geom_area(fill = "#3182bd", alpha = 0.12) +
+  geom_line(linewidth = 1, color = "#3182bd") +
+  geom_point(size = 2, color = "#184e77") +
+  scale_x_continuous(breaks = serie_suicidios$anio) +
+  scale_y_continuous(
+    breaks = scales::pretty_breaks(n = 6),
+    expand = expansion(mult = c(0, 0.15))
+  ) +
+  labs(x = NULL, y = "Tasa cada 100.000 hab.") +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title.y = element_text(face = "bold")
+  )
+
+ggplotly(p_tasa, tooltip = "text")
 ```
 :::
 
-**Lectura rápida:** entre 2022 y 2025 Neuquén muestra una caída sostenida, mientras que el país acumuló en el mismo período un fuerte aumento (2024: 4.249 víctimas nacionales; 2025: +22,6 %). Esta divergencia contrasta con el achicamiento presupuestario nacional en salud mental (el Ministerio de Salud de la Nación redujo 31 % real su presupuesto 2023-2024 y 18,2 % adicional en 2025), lo que sugiere que la explicación de la baja en Neuquén está más ligada a estrategias provinciales (línea "Salud Mental Te Escucha", equipos comunitarios regionales) que a un fenómeno nacional generalizado.
+**Lectura rápida:** entre 2022 y 2025 Neuquén muestra una caída sostenida, mientras que el país acumuló en el mismo período un fuerte aumento (2024: 4.249 casos nacionales; 2025: +22,6 %). Esta divergencia podría vincularse con el achicamiento presupuestario nacional en salud mental y el retiro de diversas políticas públicas en Salud Mental (el Ministerio de Salud de la Nación redujo 31 % real su presupuesto 2023-2024 y 18,2 % adicional en 2025), lo que sugiere que la explicación de la baja en Neuquén está más ligada a estrategias provinciales (línea "Salud Mental Te Escucha", equipos comunitarios regionales) que a un fenómeno nacional generalizado.
 
 ## Distribución estimada por edad y sexo
 
@@ -227,15 +239,30 @@ filter_select("sexoSM", "Filtrar por sexo", sd_edad_sexo, ~filtro_sexo)
 p_edad_sexo <- ggplot(
   sd_edad_sexo,
   aes(
-    x = casos, y = grupo, fill = sexo,
-    text = paste0(sexo, " · ", grupo, "<br>", casos, " casos estimados")
+    x = casos,
+    y = grupo,
+    fill = sexo,
+    text = paste0(
+      "<b>", sexo, " · ", grupo, "</b>",
+      "<br>", casos, " casos estimados"
+    )
   )
 ) +
   geom_col(position = position_dodge(width = 0.7), width = 0.6, alpha = 0.92) +
   scale_fill_manual(values = c("Varones" = "#2B3E4C", "Mujeres" = "#80B366")) +
-  scale_x_continuous(expand = expansion(mult = c(0, 0.12))) +
+  scale_x_continuous(
+    expand = expansion(mult = c(0, 0.12)),
+    breaks = scales::pretty_breaks(n = 6)
+  ) +
   labs(x = "Casos estimados", y = "Grupo etario", fill = NULL) +
-  theme(legend.position = "top")
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    axis.title.x = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold"),
+    legend.position = "top"
+  )
 
 ggplotly(p_edad_sexo, tooltip = "text") |>
   layout(legend = list(orientation = "h", y = 1.08, x = 0.5, xanchor = "center"))
@@ -255,7 +282,7 @@ datatable(
 ## Distribución geográfica: Regiones Sanitarias (estimación ilustrativa)
 
 ::: callout-Note
-Neuquén no publica series de intento de suicidio abiertas por región sanitaria, así que para este mapa **inventamos una variable "Región Sanitaria"** agrupando departamentos y localidades en 6 zonas plausibles (Confluencia, Vaca Muerta - Añelo, Zapala - Centro, Norte Neuquino, Lácar - Los Lagos y Pehuenia). Tanto los límites de cada región como los casos y la población asignados son **estimaciones ficticias con fines de visualización**, construidas a partir del peso poblacional aproximado de cada zona, no de datos oficiales por departamento.
+Neuquén no publica series de intento de suicidio abiertas por región sanitaria, así que para este mapa **inventé una variable "Región Sanitaria"** agrupando departamentos y localidades en 6 zonas plausibles (Confluencia, Vaca Muerta - Añelo, Zapala - Centro, Norte Neuquino, Lácar - Los Lagos y Pehuenia). Tanto los límites de cada región como los casos y la población asignados son **estimaciones ficticias con fines de visualización**, construidas a partir del peso poblacional aproximado de cada zona, no de datos oficiales por departamento.
 :::
 
 ```{r}
@@ -263,6 +290,7 @@ Neuquén no publica series de intento de suicidio abiertas por región sanitaria
 #| echo: false
 #| warning: false
 #| message: false
+
 library(sf)
 library(dplyr)
 library(leaflet)
@@ -307,6 +335,7 @@ regiones_poly <- st_join(voronoi_raw, regiones_pts, join = st_intersects, larges
 #| label: mapa-regiones-leaflet
 #| echo: false
 #| warning: false
+#| message: false
 
 pal_tasa  <- colorNumeric("YlGnBu", domain = regiones_poly$tasa)
 pal_casos <- colorNumeric("YlOrRd", domain = regiones_poly$casos)
@@ -361,27 +390,17 @@ leaflet(regiones_poly, options = leafletOptions(minZoom = 6, maxZoom = 10)) |>
 ```
 
 
-```{r}
-#| echo: false
-datatable(
-  regiones_sanitarias |>
-    transmute(
-      `Región Sanitaria` = region,
-      Cabecera = cabecera,
-      `Población (est.)` = format(poblacion, big.mark = "."),
-      `Casos (est.)` = casos,
-      `Tasa / 100.000 hab.` = tasa
-    ),
-  rownames = FALSE,
-  options = list(dom = "t", pageLength = 10)
-)
-```
 
-**Lectura rápida:** en esta reconstrucción ilustrativa, la Confluencia concentra la mayor cantidad de casos absolutos —esperable dado que ahí vive más del 70 % de la población provincial—, pero no necesariamente la tasa más alta cada 100.000 habitantes: zonas de menor densidad como Zapala - Centro o Pehuenia muestran tasas relativas más altas en esta simulación, un patrón que sí es consistente con la literatura epidemiológica sobre mayor tasa de suicidio en áreas rurales y de menor acceso a servicios de salud mental. Con datos reales desagregados por región sanitaria, este tipo de mapa permitiría priorizar el despliegue de equipos comunitarios y líneas de escucha en las zonas de mayor riesgo relativo, en lugar de repartir recursos solo en proporción a la población.
+**Lectura rápida:** 
+
+en esta reconstrucción ilustrativa, la Confluencia concentra la mayor cantidad de casos absolutos —esperable dado que ahí vive más del 70 % de la población provincial—, pero no necesariamente la tasa más alta cada 100.000 habitantes: zonas de menor densidad como Zapala - Centro o Pehuenia muestran tasas relativas más altas en esta simulación, un patrón que sí es consistente con la literatura epidemiológica sobre mayor tasa de suicidio en áreas rurales y de menor acceso a servicios de salud mental. Con datos reales desagregados por región sanitaria, este tipo de mapa permitiría priorizar el despliegue de equipos comunitarios y líneas de escucha en las zonas de mayor riesgo relativo, en lugar de repartir recursos solo en proporción a la población.
 
 ## Análisis breve
-
-Cuatro puntos ordenan el panorama de salud mental en Neuquén. **Primero**, la concentración etaria: la franja de 20 a 29 años es la de mayor peso relativo, coherente con el diagnóstico nacional de que en 2023 los suicidios ya superaron a los tumores y a los accidentes como causa de muerte en adultos jóvenes. **Segundo**, la brecha de género es marcada (\~4 varones por cada mujer), un patrón que se repite en todo el país y que suele vincularse a menor consulta espontánea y mayor letalidad de los métodos utilizados por varones. **Tercero**, la lectura geográfica ilustrativa sugiere que la tasa relativa —no solo el volumen de casos— podría ser mayor en zonas rurales o alejadas de la Confluencia, lo que remite a la conocida asociación entre ruralidad, aislamiento y menor acceso a servicios de salud mental. **Cuarto**, y quizás lo más relevante desde una mirada de política sanitaria: la trayectoria descendente de Neuquén en el contexto de una escalada nacional sostenida sugiere que la inversión sostenida en equipos de salud mental comunitaria y líneas de escucha telefónica puede tener un efecto protector medible, un dato valioso para el debate actual sobre el recorte de presupuesto federal en la materia.
+Cuatro puntos ordenan el panorama de salud mental en Neuquén.
+**Primero**, la concentración etaria: la franja de 20 a 29 años es la de mayor peso relativo, coherente con el diagnóstico nacional de que en 2023 los suicidios ya superaron a los tumores y a los accidentes como causa de muerte en adultos jóvenes. 
+**Segundo**, la brecha de género es marcada (\~4 varones por cada mujer), un patrón que se repite en todo el país y que suele vincularse a menor consulta espontánea y mayor letalidad de los métodos utilizados por varones. 
+**Tercero**, la lectura geográfica ilustrativa sugiere que la tasa relativa —no solo el volumen de casos— podría ser mayor en zonas rurales o alejadas de la Confluencia, lo que remite a la conocida asociación entre ruralidad, aislamiento y menor acceso a servicios de salud mental. 
+**Cuarto**, y quizás lo más relevante desde una mirada de política sanitaria: la trayectoria descendente de Neuquén en el contexto de una escalada nacional sostenida sugiere que la inversión sostenida en equipos de salud mental comunitaria y líneas de escucha telefónica puede tener un efecto protector medible, un dato valioso para el debate actual sobre el recorte de presupuesto federal en la materia.
 
 ## Fuentes
 
