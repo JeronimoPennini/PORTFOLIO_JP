@@ -353,7 +353,7 @@ popup_html <- sprintf(
 )
 
 leaflet(regiones_poly, options = leafletOptions(minZoom = 6, maxZoom = 10)) |>
-  addProviderTiles("CartoDB.PositronNoLabels") |>
+  addProviderTiles("Esri.WorldGrayCanvas") |>
   addPolygons(
     fillColor = ~pal_tasa(tasa), fillOpacity = 0.78,
     color = "#ffffff", weight = 1.5,

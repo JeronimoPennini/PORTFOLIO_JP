@@ -28,7 +28,6 @@ library(sf)
 library(dplyr)
 library(leaflet)
 library(htmltools)
-library(rmapshaper)
 
 # Colores Provincia de Buenos Aires
 color_turquesa <- "#07A6BC"
@@ -1028,7 +1027,7 @@ partidos <- st_read(
   quiet = TRUE
 )
 
-partidos <- ms_simplify(partidos, keep = 0.05, keep_shapes = TRUE)
+partidos <- st_simplify(partidos, dTolerance = 500, preserveTopology = TRUE)
 
 
 partidos_rs <- partidos |>
@@ -1319,7 +1318,7 @@ anios_mapa <- sort(unique(mapa_datos$ANIO))
 
 mapa <- leaflet() |>
   addProviderTiles(
-    providers$CartoDB.Positron
+    providers$Esri.WorldGrayCanvas
   )
 
 for (año in anios_mapa) {

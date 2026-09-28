@@ -1064,7 +1064,7 @@ mapa$etiqueta <- lapply(
 # detach("package:xts", unload = TRUE)
 
 leaflet(mapa) %>%
-  addProviderTiles("CartoDB.Positron") %>%
+  addProviderTiles("Esri.WorldGrayCanvas") %>%
   setView(lng = -64, lat = -38, zoom = 4) %>%
   addPolygons(
     fillColor = ~paleta(casos),

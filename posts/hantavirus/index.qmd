@@ -640,7 +640,7 @@ popup_html_hanta <- sprintf(
 )
 
 leaflet(regiones_poly_hanta, options = leafletOptions(minZoom = 6, maxZoom = 10)) |>
-  addProviderTiles("CartoDB.PositronNoLabels") |>
+  addProviderTiles("Esri.WorldGrayCanvas") |>
   addPolygons(
     fillColor = ~pal_tasa_hanta(tasa_acumulada), fillOpacity = 0.78,
     color = "#ffffff", weight = 1.5,
