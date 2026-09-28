@@ -116,7 +116,7 @@ p_casos_hanta <- ggplot(
 ggplotly(
   p_casos_hanta,
   tooltip = "text"
-)
+) |> config(displayModeBar = FALSE)
 ```
 
 ## Fallecidos
@@ -170,7 +170,7 @@ p_fallecidos_hanta <- ggplot(
 ggplotly(
   p_fallecidos_hanta,
   tooltip = "text"
-)
+) |> config(displayModeBar = FALSE)
 ```
 
 ## Letalidad (%)
@@ -223,7 +223,7 @@ p_letalidad_hanta <- ggplot(
 ggplotly(
   p_letalidad_hanta,
   tooltip = "text"
-)
+) |> config(displayModeBar = FALSE)
 ```
 :::
 

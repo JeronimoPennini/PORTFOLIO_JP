@@ -4,7 +4,7 @@ project:
  
 website:
   description: "Portfolio - JP"
-  site-url: https://your-website-url.example.com # you must change this appropriately for RSS feeds to work properly
+  site-url: https://jeronimopennini.github.io/PORTFOLIO_JP/
   title: "Portfolio - JP"
   navbar:
     left:

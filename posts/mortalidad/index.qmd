@@ -45,6 +45,12 @@ paleta_capitulos <- c(
   "#00A8A8", "#F15BB5", "#845EC2", "#4E8397", "#B0413E",
   "#6D597A", "#118AB2", "#EF476F", "#06D6A0"
 )
+
+# Helper para gráficos interactivos limpios (mobile-friendly y sin barra de herramientas flotante)
+grafico_interactivo <- function(p, ...) {
+  ggplotly(p, ...) |>
+    config(displayModeBar = FALSE)
+}
 ```
 
 # Mortalidad en la Provincia de Buenos Aires
@@ -212,7 +218,7 @@ grafico_mortalidad <- ggplot(
   ) +
   scale_x_continuous(breaks = mortalidad_anual$ANIO) +
   scale_y_continuous(labels = comma, breaks = pretty_breaks(n = 6), expand = expansion(mult = c(0, 0.15))) +
-  labs(x = NULL, y = "Cant. defunciones", title = "Defunciones totales por año - PBA") +
+  labs(x = NULL, y = "Cant. defunciones", title = "Pico histórico en 2020–2021 y retorno a niveles basales (PBA)") +
   theme_minimal(base_size = 12) +
   theme(
     plot.title       = element_text(face = "bold", color = color_turquesa),
@@ -222,7 +228,7 @@ grafico_mortalidad <- ggplot(
     axis.title.y     = element_text(face = "bold")
   )
 
-ggplotly(grafico_mortalidad, tooltip = "text")
+grafico_interactivo(grafico_mortalidad, tooltip = "text")
 ```
 
 ## Tasa de Mortalidad por año
@@ -257,7 +263,7 @@ grafico_tasa_mortalidad <- ggplot(
   labs(
     x = NULL,
     y = "Tasa por 100.000 hab.",
-    title = "Tasa de mortalidad total por año - PBA"
+    title = "Evolución de la tasa bruta de mortalidad (por 100.000 hab.) - PBA"
   ) +
   theme_minimal(base_size = 12) +
   theme(
@@ -268,7 +274,7 @@ grafico_tasa_mortalidad <- ggplot(
     axis.title.y     = element_text(face = "bold")
   )
 
-ggplotly(
+grafico_interactivo(
   grafico_tasa_mortalidad,
   tooltip = "text"
 )
@@ -347,7 +353,7 @@ grafico_evol <- ggplot(
     panel.grid.minor = element_blank()
   )
 
-ggplotly(
+grafico_interactivo(
   grafico_evol,
   tooltip = "text"
 ) |>
@@ -753,9 +759,7 @@ grafico_heatmap <- ggplot(
     )
   )
 
-grafico_heatmap
-
-
+grafico_interactivo(grafico_heatmap, tooltip = "text")
 ```
 :::
 
@@ -792,7 +796,7 @@ grafico_externas <- ggplot(
     panel.grid.major.x   = element_blank()
   )
 
-grafico_externas
+grafico_interactivo(grafico_externas, tooltip = "text")
 ```
 
 A diferencia de las enfermedades crónicas, las causas externas se concentran en edades donde la mortalidad general todavía es baja, lo que amplifica su relevancia en términos de **años de vida potencialmente perdidos (AVPP)** 
@@ -950,7 +954,7 @@ grafico_region <- ggplot(
     )
   )
 
-grafico_region
+grafico_interactivo(grafico_region, tooltip = "text")
 ```
 
 ## Perfil de causas por región sanitaria (todas las regiones)

@@ -1,33 +1,70 @@
 ---
-title: ""
+title: "Presentación del Portfolio"
+subtitle: "Epidemiología, Salud Pública y Ciencia de Datos con R"
 format: html
 ---
 
-# **Presentacion del Portfolio**
+Bienvenidxs a esta web creada para compartir análisis epidemiológicos realizados a lo largo de mi formación en la Residencia de Epidemiología, desarrollados íntegramente con el lenguaje **R** y **Quarto**.
 
-Bienvenidxs a esta humilde web creada para mostrar algunos ejemplos de análisis epidemiológicos que he realizado a lo largo de mi paso por la Residencia de Epidemiología, desde el lenguaje R.
-
-**Los datos utilizados en los analisis son de acceso publico o inventados/simulados.**
-
-Cada posteo tiene el objetivo de ser ilustrativo, no utilizar los resultados mostrados para otros fines.
-
-:::callout-important
-**Declaración del uso de IA**
-Utilicé IA (Claude y Chatgpt) con fines estéticos y para corregir gramática del lenguaje R ante errores que no pude resolver de análisis complejos. Las interpretaciones y análisis de los datos fueron realizados sin IA, utilizando conocimientos y experiencias aprendidas durante mis años de formación en la Residencia de Epidemiología de la Provincia de Buenos Aires
+::: {.d-flex .gap-2 .flex-wrap .my-4}
+[📊 Explorar Análisis](index.qmd){.btn .btn-primary}
+[📄 Ver Currículum](curriculum.qmd){.btn .btn-outline-primary}
+[👤 Sobre mí](about.qmd){.btn .btn-outline-secondary}
 :::
 
-Todos los códigos utilizados están accesibles para que puedan ser reproducidos si algun grafico o mapa es de su interés. Ingresando a la opción "Code" en cada post pueden copiar y pegar el código con el que fue creado.
+### Áreas de Trabajo en este Portfolio
 
-Espero les sea de utilidad para visualizar algunas de las aplicaciones del lenguaje R en la Epidemiología y la Salud Publica.
+::: {.grid}
 
-Si quieren saber más sobre mí, les invito a ingresar en la sección "Sobre mí" o "CV". Y por cualquier consulta, no duden en contactarme clickeando cualquiera de mis redes sociales en la parte superior derecha de la pagina. Siempre me encontrarán predispuesto a ayudar, acompañar o colaborar con el objetivo de fortalecer y luchar por el derecho a una salud pública oportuna, efectiva y de calidad.
+::: {.g-col-12 .g-col-md-4}
+::: {.stat-card}
+### 🩺
+**Vigilancia & Mortalidad**
 
-Les dejo algunas paginas que me fueron de utilidad en el desarrollo de este portfolio:
+<p class="stat-sub">Análisis multidimensional de series temporales, perfiles de morbimortalidad y distribución por edad/sexo.</p>
+:::
+:::
 
--["Coolors.co"](https://coolors.co/?home)
+::: {.g-col-12 .g-col-md-4}
+::: {.stat-card .stat-card-accent}
+### 🗺️
+**Análisis Espacial & GIS**
 
--["Taller: Crea tu propia página web con Quarto y R"](https://santiagorusers.github.io/posts/taller_julio_2026/)
+<p class="stat-sub">Mapeo coroplético e interactivo territorial con paquetes <code>sf</code> y <code>leaflet</code>.</p>
+:::
+:::
 
+::: {.g-col-12 .g-col-md-4}
+::: {.stat-card .stat-card-alert}
+### 🔬
+**Código Abierto & Reproducibilidad**
 
-Que tengas un lindo día!
+<p class="stat-sub">Visualizaciones dinámicas, tablas interactivas y acceso directo a todo el código fuente.</p>
+:::
+:::
 
+:::
+
+---
+
+### Consideraciones sobre los Datos y Metodología
+
+**Los datos utilizados en los análisis son de acceso público o inventados/simulados con fines didácticos.** Cada posteo tiene el objetivo de ser ilustrativo; no deben utilizarse los resultados para otros fines ni como estadística oficial concluyente.
+
+:::callout-important
+#### Declaración del uso de Inteligencia Artificial
+Utilicé herramientas de IA (Claude y ChatGPT) con fines estéticos y para corregir gramática del lenguaje R ante errores de código o sintaxis. Las interpretaciones, el diseño metodológico y los análisis epidemiológicos fueron realizados sin IA, basándome en los conocimientos y experiencias adquiridas durante mi residencia de epidemiología en la Provincia de Buenos Aires.
+:::
+
+Todos los códigos utilizados están disponibles para su reproducción. Ingresando a la opción **"Code"** en cada publicación pueden copiar y ejecutar el script completo.
+
+Si quieren saber más sobre mí trayectoria, lxs invito a ingresar en las secciones **"Sobre mí"** o **"CV"**. Por cualquier consulta o propuesta de colaboración, pueden contactarme a través de mis redes sociales en el menú superior.
+
+---
+
+#### Recursos útiles utilizados en este desarrollo:
+
+- [Coolors.co](https://coolors.co/?home) - Generador de paletas cromáticas armónicas.
+- [Taller: Crea tu propia página web con Quarto y R](https://santiagorusers.github.io/posts/taller_julio_2026/) - Guía de referencia inicial.
+
+¡Espero que el contenido les resulte de interés y que tengan un lindo día!
