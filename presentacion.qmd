@@ -4,7 +4,7 @@ subtitle: "Epidemiología, Salud Pública y Ciencia de Datos con R"
 format: html
 ---
 
-Bienvenidxs a esta web creada para compartir análisis epidemiológicos realizados a lo largo de mi formación en la Residencia de Epidemiología, desarrollados íntegramente con el lenguaje **R** y **Quarto**.
+Bienvenidxs a esta web creada para compartir análisis epidemiológicos realizados en base a experiencias que tuve durante mi formación en la Residencia de Epidemiología, desarrollados íntegramente con el lenguaje **R** y **Quarto**.
 
 ::: {.d-flex .gap-2 .flex-wrap .my-4}
 [📊 Explorar Análisis](index.qmd){.btn .btn-primary}
@@ -12,38 +12,50 @@ Bienvenidxs a esta web creada para compartir análisis epidemiológicos realizad
 [👤 Sobre mí](about.qmd){.btn .btn-outline-secondary}
 :::
 
-### Áreas de Trabajo en este Portfolio
+### 🛠 Paquetes de R utiizados
 
-::: {.grid}
+<div class="badge-section">
 
-::: {.g-col-12 .g-col-md-4}
-::: {.stat-card}
-### 🩺
-**Vigilancia & Mortalidad**
+<div class="badge-group">
+<span class="badge-label">Lenguaje & Publicación</span>
+<span class="tech-badge badge-lang">R</span>
+<span class="tech-badge badge-lang">Quarto</span>
+</div>
 
-<p class="stat-sub">Análisis multidimensional de series temporales, perfiles de morbimortalidad y distribución por edad/sexo.</p>
-:::
-:::
+<div class="badge-group">
+<span class="badge-label">Visualización</span>
+<span class="tech-badge badge-viz">ggplot2</span>
+<span class="tech-badge badge-viz">plotly</span>
+<span class="tech-badge badge-viz">scico</span>
+<span class="tech-badge badge-viz">scales</span>
+</div>
 
-::: {.g-col-12 .g-col-md-4}
-::: {.stat-card .stat-card-accent}
-### 🗺️
-**Análisis Espacial & GIS**
+<div class="badge-group">
+<span class="badge-label">GIS & Mapas</span>
+<span class="tech-badge badge-gis">sf</span>
+<span class="tech-badge badge-gis">leaflet</span>
+<span class="tech-badge badge-gis">htmltools</span>
+</div>
 
-<p class="stat-sub">Mapeo coroplético e interactivo territorial con paquetes <code>sf</code> y <code>leaflet</code>.</p>
-:::
-:::
+<div class="badge-group">
+<span class="badge-label">Manipulación de datos</span>
+<span class="tech-badge badge-data">tidyverse</span>
+<span class="tech-badge badge-data">dplyr</span>
+<span class="tech-badge badge-data">lubridate</span>
+<span class="tech-badge badge-data">forcats</span>
+<span class="tech-badge badge-data">janitor</span>
+<span class="tech-badge badge-data">readxl</span>
+<span class="tech-badge badge-data">broom</span>
+<span class="tech-badge badge-data">crosstalk</span>
+</div>
 
-::: {.g-col-12 .g-col-md-4}
-::: {.stat-card .stat-card-alert}
-### 🔬
-**Código Abierto & Reproducibilidad**
+<div class="badge-group">
+<span class="badge-label">Tablas</span>
+<span class="tech-badge badge-table">DT</span>
+<span class="tech-badge badge-table">gtExtras</span>
+</div>
 
-<p class="stat-sub">Visualizaciones dinámicas, tablas interactivas y acceso directo a todo el código fuente.</p>
-:::
-:::
-
-:::
+</div>
 
 ---
 
@@ -53,7 +65,7 @@ Bienvenidxs a esta web creada para compartir análisis epidemiológicos realizad
 
 :::callout-important
 #### Declaración del uso de Inteligencia Artificial
-Utilicé herramientas de IA (Claude y ChatGPT) con fines estéticos y para corregir gramática del lenguaje R ante errores de código o sintaxis. Las interpretaciones, el diseño metodológico y los análisis epidemiológicos fueron realizados sin IA, basándome en los conocimientos y experiencias adquiridas durante mi residencia de epidemiología en la Provincia de Buenos Aires.
+Utilicé herramientas de IA (Antigravity) con fines estéticos y para corregir gramática del lenguaje R ante errores de código o sintaxis. Las interpretaciones, el diseño metodológico y los análisis epidemiológicos fueron realizados sin IA, basándome en  conocimientos y experiencia.
 :::
 
 Todos los códigos utilizados están disponibles para su reproducción. Ingresando a la opción **"Code"** en cada publicación pueden copiar y ejecutar el script completo.

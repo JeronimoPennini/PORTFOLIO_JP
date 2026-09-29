@@ -10,7 +10,2153 @@
 <atom:link href="https://jeronimopennini.github.io/PORTFOLIO_JP/index.xml" rel="self" type="application/rss+xml"/>
 <description>Portfolio - JP</description>
 <generator>quarto-1.9.38</generator>
-<lastBuildDate>Tue, 18 Aug 2026 03:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 28 Sep 2026 03:00:00 GMT</lastBuildDate>
+<item>
+  <title>Dispositivos de Inclusión Habitacional en Neuquén (2025)</title>
+  <dc:creator>Jeronimo Pennini</dc:creator>
+  <link>https://jeronimopennini.github.io/PORTFOLIO_JP/posts/salud-mental-dih/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="contexto" class="level1">
+<h1>Contexto</h1>
+<p>Este análisis resume los hallazgos de la <strong>Evaluación de Tecnología Sanitaria (ETS)</strong> sobre los <strong>Dispositivos de Inclusión Habitacional (DIH)</strong> realizada por el Ministerio de Salud de la Provincia de Neuquén en 2025. Los DIH son unidades convivenciales comunitarias que funcionan como alternativa a la internación prolongada en instituciones monovalentes para personas con trastornos mentales graves y/o consumo problemático de sustancias.</p>
+<blockquote class="blockquote">
+<p><strong>Fuente original:</strong> <a href="https://salud.neuquen.gob.ar/wp-content/uploads/2026/03/ETS-DISPOSITIVOS-HABITACIONALES-NEUQUEN-2025.pdf">ETS — Dispositivos Habitacionales · Neuquén 2025</a> — Ministerio de Salud de la Provincia de Neuquén.</p>
+</blockquote>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Los gráficos y mapas de este post están construidos con datos reales extraídos del informe oficial y datos <strong>ilustrativos/simulados</strong> basados en las proporciones y tendencias documentadas en el mismo. Los datos simulados están claramente identificados. Las cifras sobre internaciones en Neuquén (99 personas en 2019, 3 instituciones privadas) y las cifras internacionales (OMS 2022) son datos oficiales referenciados en el informe.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="carga-global-de-trastornos-de-salud-mental" class="level1">
+<h1>Carga global de trastornos de Salud Mental</h1>
+<p>Según la OMS (2022), para 2019 <strong>970 millones de personas</strong> vivían con algún trastorno de Salud Mental en el mundo.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" aria-controls="tabset-1-1" aria-selected="true" href="">Distribución global de trastornos (OMS 2019)</a></li><li class="nav-item"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" aria-controls="tabset-1-2" aria-selected="false" href="">Tendencia DALYs por trastornos mentales</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">trastornos <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb1-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">trastorno =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb1-3">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Ansiedad"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Depresión"</span>,</span>
+<span id="cb1-4">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trastornos del desarrollo"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"TDAH"</span>,</span>
+<span id="cb1-5">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trastorno bipolar"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Esquizofrenia"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Otros"</span></span>
+<span id="cb1-6">  ),</span>
+<span id="cb1-7">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">porcentaje =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">31.0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">28.9</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8.8</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.2</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.5</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10.5</span>),</span>
+<span id="cb1-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n_millones =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">301</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">280</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">108</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">85</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">34</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">102</span>)</span>
+<span id="cb1-9">)</span>
+<span id="cb1-10"></span>
+<span id="cb1-11">p_trastornos <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(</span>
+<span id="cb1-12">  trastornos,</span>
+<span id="cb1-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(</span>
+<span id="cb1-14">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">reorder</span>(trastorno, porcentaje),</span>
+<span id="cb1-15">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> porcentaje,</span>
+<span id="cb1-16">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> porcentaje,</span>
+<span id="cb1-17">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(</span>
+<span id="cb1-18">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;b&gt;"</span>, trastorno, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;/b&gt;&lt;br&gt;"</span>,</span>
+<span id="cb1-19">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Proporción: "</span>, porcentaje, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"%&lt;br&gt;"</span>,</span>
+<span id="cb1-20">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Personas: ~"</span>, n_millones, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" millones"</span></span>
+<span id="cb1-21">    )</span>
+<span id="cb1-22">  )</span>
+<span id="cb1-23">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-24">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_col</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.7</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">show.legend =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-25">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_text</span>(</span>
+<span id="cb1-26">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(porcentaje, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"%"</span>)),</span>
+<span id="cb1-27">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hjust =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fontface =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bold"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#011638"</span></span>
+<span id="cb1-28">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-29">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_gradient</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">low =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#d5bdaf"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">high =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#011638"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-30">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">38</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-31">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_flip</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-32">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb1-33">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Distribución de trastornos de Salud Mental"</span>,</span>
+<span id="cb1-34">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"970 millones de personas afectadas — Mundial 2019 (OMS, 2022)"</span>,</span>
+<span id="cb1-35">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>,</span>
+<span id="cb1-36">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Porcentaje del total (%)"</span></span>
+<span id="cb1-37">  )</span>
+<span id="cb1-38"></span>
+<span id="cb1-39"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplotly</span>(p_trastornos, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tooltip =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb1-40">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">layout</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">showlegend =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>)</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-d0e2a15bd3624e618acb" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-d0e2a15bd3624e618acb">{"x":{"data":[{"orientation":"h","width":0.70000000000000007,"base":0,"x":[3.5],"y":[1],"text":"<b>Esquizofrenia<\/b><br>Proporción: 3.5%<br>Personas: ~34 millones","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(213,189,175,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":0.70000000000000018,"base":0,"x":[6.2000000000000002],"y":[2],"text":"<b>Trastorno bipolar<\/b><br>Proporción: 6.2%<br>Personas: ~60 millones","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(192,170,163,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":0.70000000000000018,"base":0,"x":[8.8000000000000007],"y":[3],"text":"<b>TDAH<\/b><br>Proporción: 8.8%<br>Personas: ~85 millones","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(171,153,151,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":0.69999999999999973,"base":0,"x":[10.5],"y":[4],"text":"<b>Otros<\/b><br>Proporción: 10.5%<br>Personas: ~102 millones","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(158,142,143,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":0.69999999999999929,"base":0,"x":[11.1],"y":[5],"text":"<b>Trastornos del desarrollo<\/b><br>Proporción: 11.1%<br>Personas: ~108 millones","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(154,138,141,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":0.69999999999999929,"base":0,"x":[28.899999999999999],"y":[6],"text":"<b>Depresión<\/b><br>Proporción: 28.9%<br>Personas: ~280 millones","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(22,32,65,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"h","width":0.69999999999999929,"base":0,"x":[31],"y":[7],"text":"<b>Ansiedad<\/b><br>Proporción: 31%<br>Personas: ~301 millones","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(1,22,56,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[31,28.899999999999999,11.1,8.8000000000000007,6.2000000000000002,3.5,10.5],"y":[7,6,5,3,2,1,4],"text":["31%","28.9%","11.1%","8.8%","6.2%","3.5%","10.5%"],"hovertext":["<b>Ansiedad<\/b><br>Proporción: 31%<br>Personas: ~301 millones","<b>Depresión<\/b><br>Proporción: 28.9%<br>Personas: ~280 millones","<b>Trastornos del desarrollo<\/b><br>Proporción: 11.1%<br>Personas: ~108 millones","<b>TDAH<\/b><br>Proporción: 8.8%<br>Personas: ~85 millones","<b>Trastorno bipolar<\/b><br>Proporción: 6.2%<br>Personas: ~60 millones","<b>Esquizofrenia<\/b><br>Proporción: 3.5%<br>Personas: ~34 millones","<b>Otros<\/b><br>Proporción: 10.5%<br>Personas: ~102 millones"],"textfont":{"size":13.228346456692915,"color":"rgba(1,22,56,1)"},"type":"scatter","mode":"text","hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.23121627231216,"r":8.6342880863428828,"b":44.034869240348698,"l":185.63719385637197},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762},"title":{"text":"<b> Distribución de trastornos de Salud Mental <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":18.596928185969279},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-1.9000000000000001,39.899999999999999],"tickmode":"array","ticktext":["0","10","20","30"],"tickvals":[0,10,20,30],"categoryorder":"array","categoryarray":["0","10","20","30"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":4.3171440431714405,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.814860938148611},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.78493528057662576,"zeroline":false,"anchor":"y","title":{"text":"Porcentaje del total (%)","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,7.5999999999999996],"tickmode":"array","ticktext":["Esquizofrenia","Trastorno bipolar","TDAH","Otros","Trastornos del desarrollo","Depresión","Ansiedad"],"tickvals":[1,2,3,4.0000000000000009,5,6,7],"categoryorder":"array","categoryarray":["Esquizofrenia","Trastorno bipolar","TDAH","Otros","Trastornos del desarrollo","Depresión","Ansiedad"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":4.3171440431714414,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.814860938148611},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.78493528057662576,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}},"hoverformat":".2f"},"shapes":[],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":13.814860938148611},"orientation":"h","x":0.5,"y":-0.14999999999999999,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"63ac74ff5fd6":{"x":{},"y":{},"fill":{},"text":{},"type":"bar"},"63ac3065888":{"x":{},"y":{},"fill":{},"text":{},"label":{}}},"cur_data":"63ac74ff5fd6","visdat":{"63ac74ff5fd6":["function (y) ","x"],"63ac3065888":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Datos ilustrativos basados en Figura 1 del informe original</span></span>
+<span id="cb2-2">dalys <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb2-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">anio =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2000</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2019</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>),</span>
+<span id="cb2-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pais =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rep</span>(</span>
+<span id="cb2-5">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Argentina"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Brasil"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Chile"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Uruguay"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Mundial"</span>),</span>
+<span id="cb2-6">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">each =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span></span>
+<span id="cb2-7">  ),</span>
+<span id="cb2-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tasa_dalys =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb2-9">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1420</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1680</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">length.out =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>),</span>
+<span id="cb2-10">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1380</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1590</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">length.out =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>),</span>
+<span id="cb2-11">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1510</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1750</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">length.out =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>),</span>
+<span id="cb2-12">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1390</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1620</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">length.out =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>),</span>
+<span id="cb2-13">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1280</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1460</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">length.out =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>)</span>
+<span id="cb2-14">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rnorm</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>)</span>
+<span id="cb2-15">)</span>
+<span id="cb2-16"></span>
+<span id="cb2-17">p_dalys <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(</span>
+<span id="cb2-18">  dalys,</span>
+<span id="cb2-19">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(</span>
+<span id="cb2-20">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> anio,</span>
+<span id="cb2-21">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> tasa_dalys,</span>
+<span id="cb2-22">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> pais,</span>
+<span id="cb2-23">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> pais,</span>
+<span id="cb2-24">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(</span>
+<span id="cb2-25">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;b&gt;"</span>, pais, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;/b&gt; · "</span>, anio, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;br&gt;"</span>,</span>
+<span id="cb2-26">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tasa DALYs: "</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>(tasa_dalys, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" por 100.000 hab."</span></span>
+<span id="cb2-27">    )</span>
+<span id="cb2-28">  )</span>
+<span id="cb2-29">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-30">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.1</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-31">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-32">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_manual</span>(</span>
+<span id="cb2-33">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb2-34">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Argentina"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#011638"</span>,</span>
+<span id="cb2-35">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Brasil"</span>    <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#e76f51"</span>,</span>
+<span id="cb2-36">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Chile"</span>     <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#4a7c59"</span>,</span>
+<span id="cb2-37">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Uruguay"</span>   <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#277da1"</span>,</span>
+<span id="cb2-38">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Mundial"</span>   <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#b07d55"</span></span>
+<span id="cb2-39">    )</span>
+<span id="cb2-40">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-41">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_x_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2000</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2019</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-42">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb2-43">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tendencia de DALYs por Trastornos Mentales (2000-2019)"</span>,</span>
+<span id="cb2-44">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tasa por 100.000 hab. — Datos ilustrativos basados en Figura 1 del informe ETS"</span>,</span>
+<span id="cb2-45">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>,</span>
+<span id="cb2-46">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DALYs por 100.000 hab."</span>,</span>
+<span id="cb2-47">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span></span>
+<span id="cb2-48">  )</span>
+<span id="cb2-49"></span>
+<span id="cb2-50"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplotly</span>(p_dalys, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tooltip =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb2-51">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">layout</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">orientation =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"h"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>))</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-7049acbc631f57f1f2fc" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-7049acbc631f57f1f2fc">{"x":{"data":[{"x":[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019],"y":[1378.5879692702188,1410.9682457618453,1470.3926643158311,1490.8620383451573,1479.7208503753129,1494.9507116763941,1476.2471631808369,1551.5130752284708,1525.0258763020045,1560.9615170212865,1580.3659627611082,1571.9934249108937,1580.2505746241388,1566.6265656663595,1570.042077710985,1658.2081593141336,1658.0456867800494,1660.3687055193352,1665.7727863808936,1679.3313036589186],"text":["<b>Argentina<\/b> · 2000<br>Tasa DALYs: 1379 por 100.000 hab.","<b>Argentina<\/b> · 2001<br>Tasa DALYs: 1411 por 100.000 hab.","<b>Argentina<\/b> · 2002<br>Tasa DALYs: 1470 por 100.000 hab.","<b>Argentina<\/b> · 2003<br>Tasa DALYs: 1491 por 100.000 hab.","<b>Argentina<\/b> · 2004<br>Tasa DALYs: 1480 por 100.000 hab.","<b>Argentina<\/b> · 2005<br>Tasa DALYs: 1495 por 100.000 hab.","<b>Argentina<\/b> · 2006<br>Tasa DALYs: 1476 por 100.000 hab.","<b>Argentina<\/b> · 2007<br>Tasa DALYs: 1552 por 100.000 hab.","<b>Argentina<\/b> · 2008<br>Tasa DALYs: 1525 por 100.000 hab.","<b>Argentina<\/b> · 2009<br>Tasa DALYs: 1561 por 100.000 hab.","<b>Argentina<\/b> · 2010<br>Tasa DALYs: 1580 por 100.000 hab.","<b>Argentina<\/b> · 2011<br>Tasa DALYs: 1572 por 100.000 hab.","<b>Argentina<\/b> · 2012<br>Tasa DALYs: 1580 por 100.000 hab.","<b>Argentina<\/b> · 2013<br>Tasa DALYs: 1567 por 100.000 hab.","<b>Argentina<\/b> · 2014<br>Tasa DALYs: 1570 por 100.000 hab.","<b>Argentina<\/b> · 2015<br>Tasa DALYs: 1658 por 100.000 hab.","<b>Argentina<\/b> · 2016<br>Tasa DALYs: 1658 por 100.000 hab.","<b>Argentina<\/b> · 2017<br>Tasa DALYs: 1660 por 100.000 hab.","<b>Argentina<\/b> · 2018<br>Tasa DALYs: 1666 por 100.000 hab.","<b>Argentina<\/b> · 2019<br>Tasa DALYs: 1679 por 100.000 hab."],"type":"scatter","mode":"lines+markers","line":{"width":4.1574803149606305,"color":"rgba(1,22,56,1)","dash":"solid"},"hoveron":"points","name":"Argentina","legendgroup":"Argentina","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(1,22,56,1)","opacity":1,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(1,22,56,1)"}},"frame":null},{"x":[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019],"y":[1349.5085396646298,1385.0405059147974,1410.3192458810108,1445.4068716466606,1398.6043950342885,1433.0614042305601,1448.4119247284725,1431.1497660697319,1463.7968456249516,1466.2636913060251,1477.9925577433819,1519.4852460861996,1481.6661472333437,1491.76698458903,1507.000347874831,1536.8795095682437,1573.0433683573851,1597.5259172680726,1564.4987255473311,1571.9107747968449],"text":["<b>Brasil<\/b> · 2000<br>Tasa DALYs: 1350 por 100.000 hab.","<b>Brasil<\/b> · 2001<br>Tasa DALYs: 1385 por 100.000 hab.","<b>Brasil<\/b> · 2002<br>Tasa DALYs: 1410 por 100.000 hab.","<b>Brasil<\/b> · 2003<br>Tasa DALYs: 1445 por 100.000 hab.","<b>Brasil<\/b> · 2004<br>Tasa DALYs: 1399 por 100.000 hab.","<b>Brasil<\/b> · 2005<br>Tasa DALYs: 1433 por 100.000 hab.","<b>Brasil<\/b> · 2006<br>Tasa DALYs: 1448 por 100.000 hab.","<b>Brasil<\/b> · 2007<br>Tasa DALYs: 1431 por 100.000 hab.","<b>Brasil<\/b> · 2008<br>Tasa DALYs: 1464 por 100.000 hab.","<b>Brasil<\/b> · 2009<br>Tasa DALYs: 1466 por 100.000 hab.","<b>Brasil<\/b> · 2010<br>Tasa DALYs: 1478 por 100.000 hab.","<b>Brasil<\/b> · 2011<br>Tasa DALYs: 1519 por 100.000 hab.","<b>Brasil<\/b> · 2012<br>Tasa DALYs: 1482 por 100.000 hab.","<b>Brasil<\/b> · 2013<br>Tasa DALYs: 1492 por 100.000 hab.","<b>Brasil<\/b> · 2014<br>Tasa DALYs: 1507 por 100.000 hab.","<b>Brasil<\/b> · 2015<br>Tasa DALYs: 1537 por 100.000 hab.","<b>Brasil<\/b> · 2016<br>Tasa DALYs: 1573 por 100.000 hab.","<b>Brasil<\/b> · 2017<br>Tasa DALYs: 1598 por 100.000 hab.","<b>Brasil<\/b> · 2018<br>Tasa DALYs: 1564 por 100.000 hab.","<b>Brasil<\/b> · 2019<br>Tasa DALYs: 1572 por 100.000 hab."],"type":"scatter","mode":"lines+markers","line":{"width":4.1574803149606305,"color":"rgba(231,111,81,1)","dash":"solid"},"hoveron":"points","name":"Brasil","legendgroup":"Brasil","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(231,111,81,1)","opacity":1,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(231,111,81,1)"}},"frame":null},{"x":[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019],"y":[1515.4975911955298,1521.7525801888312,1551.4868743120182,1513.4846906905216,1590.540268764006,1572.1491514593674,1581.20520285677,1592.3473287443333,1595.8984734003195,1645.1432304638629,1641.1952729657726,1658.6971295807825,1663.1277393372307,1683.3927666469983,1690.7507438021614,1691.19106129496,1715.1902295744762,1725.2029323435702,1767.7001370837027,1767.536847649681],"text":["<b>Chile<\/b> · 2000<br>Tasa DALYs: 1515 por 100.000 hab.","<b>Chile<\/b> · 2001<br>Tasa DALYs: 1522 por 100.000 hab.","<b>Chile<\/b> · 2002<br>Tasa DALYs: 1551 por 100.000 hab.","<b>Chile<\/b> · 2003<br>Tasa DALYs: 1513 por 100.000 hab.","<b>Chile<\/b> · 2004<br>Tasa DALYs: 1591 por 100.000 hab.","<b>Chile<\/b> · 2005<br>Tasa DALYs: 1572 por 100.000 hab.","<b>Chile<\/b> · 2006<br>Tasa DALYs: 1581 por 100.000 hab.","<b>Chile<\/b> · 2007<br>Tasa DALYs: 1592 por 100.000 hab.","<b>Chile<\/b> · 2008<br>Tasa DALYs: 1596 por 100.000 hab.","<b>Chile<\/b> · 2009<br>Tasa DALYs: 1645 por 100.000 hab.","<b>Chile<\/b> · 2010<br>Tasa DALYs: 1641 por 100.000 hab.","<b>Chile<\/b> · 2011<br>Tasa DALYs: 1659 por 100.000 hab.","<b>Chile<\/b> · 2012<br>Tasa DALYs: 1663 por 100.000 hab.","<b>Chile<\/b> · 2013<br>Tasa DALYs: 1683 por 100.000 hab.","<b>Chile<\/b> · 2014<br>Tasa DALYs: 1691 por 100.000 hab.","<b>Chile<\/b> · 2015<br>Tasa DALYs: 1691 por 100.000 hab.","<b>Chile<\/b> · 2016<br>Tasa DALYs: 1715 por 100.000 hab.","<b>Chile<\/b> · 2017<br>Tasa DALYs: 1725 por 100.000 hab.","<b>Chile<\/b> · 2018<br>Tasa DALYs: 1768 por 100.000 hab.","<b>Chile<\/b> · 2019<br>Tasa DALYs: 1768 por 100.000 hab."],"type":"scatter","mode":"lines+markers","line":{"width":4.1574803149606305,"color":"rgba(74,124,89,1)","dash":"solid"},"hoveron":"points","name":"Chile","legendgroup":"Chile","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(74,124,89,1)","opacity":1,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(74,124,89,1)"}},"frame":null},{"x":[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019],"y":[1259.4011787890972,1268.3457254844552,1288.8596541949323,1327.3017987579008,1288.4095631889559,1364.0686368172485,1308.5912030045147,1336.8129328859704,1281.1700531815547,1373.1566576765899,1349.7327504621455,1421.98746541578,1399.7028880281109,1374.4501861453246,1404.0529029070256,1394.5413366635767,1418.586331929798,1428.5803978830463,1446.2265784009307,1430.7058546204148],"text":["<b>Mundial<\/b> · 2000<br>Tasa DALYs: 1259 por 100.000 hab.","<b>Mundial<\/b> · 2001<br>Tasa DALYs: 1268 por 100.000 hab.","<b>Mundial<\/b> · 2002<br>Tasa DALYs: 1289 por 100.000 hab.","<b>Mundial<\/b> · 2003<br>Tasa DALYs: 1327 por 100.000 hab.","<b>Mundial<\/b> · 2004<br>Tasa DALYs: 1288 por 100.000 hab.","<b>Mundial<\/b> · 2005<br>Tasa DALYs: 1364 por 100.000 hab.","<b>Mundial<\/b> · 2006<br>Tasa DALYs: 1309 por 100.000 hab.","<b>Mundial<\/b> · 2007<br>Tasa DALYs: 1337 por 100.000 hab.","<b>Mundial<\/b> · 2008<br>Tasa DALYs: 1281 por 100.000 hab.","<b>Mundial<\/b> · 2009<br>Tasa DALYs: 1373 por 100.000 hab.","<b>Mundial<\/b> · 2010<br>Tasa DALYs: 1350 por 100.000 hab.","<b>Mundial<\/b> · 2011<br>Tasa DALYs: 1422 por 100.000 hab.","<b>Mundial<\/b> · 2012<br>Tasa DALYs: 1400 por 100.000 hab.","<b>Mundial<\/b> · 2013<br>Tasa DALYs: 1374 por 100.000 hab.","<b>Mundial<\/b> · 2014<br>Tasa DALYs: 1404 por 100.000 hab.","<b>Mundial<\/b> · 2015<br>Tasa DALYs: 1395 por 100.000 hab.","<b>Mundial<\/b> · 2016<br>Tasa DALYs: 1419 por 100.000 hab.","<b>Mundial<\/b> · 2017<br>Tasa DALYs: 1429 por 100.000 hab.","<b>Mundial<\/b> · 2018<br>Tasa DALYs: 1446 por 100.000 hab.","<b>Mundial<\/b> · 2019<br>Tasa DALYs: 1431 por 100.000 hab."],"type":"scatter","mode":"lines+markers","line":{"width":4.1574803149606305,"color":"rgba(176,125,85,1)","dash":"solid"},"hoveron":"points","name":"Mundial","legendgroup":"Mundial","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(176,125,85,1)","opacity":1,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(176,125,85,1)"}},"frame":null},{"x":[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019],"y":[1371.4095767060705,1419.2570488330703,1394.7948160618007,1451.3629517968404,1427.6837404975786,1471.7542592893069,1466.1778170804309,1447.6119286985988,1483.2647333224097,1494.85823718956,1461.0954455483113,1530.3755274538387,1504.8060471113849,1547.4987141790523,1520.9504777748882,1572.8628837911006,1601.7965216149544,1553.0777728880951,1634.4025665614199,1624.3158460172478],"text":["<b>Uruguay<\/b> · 2000<br>Tasa DALYs: 1371 por 100.000 hab.","<b>Uruguay<\/b> · 2001<br>Tasa DALYs: 1419 por 100.000 hab.","<b>Uruguay<\/b> · 2002<br>Tasa DALYs: 1395 por 100.000 hab.","<b>Uruguay<\/b> · 2003<br>Tasa DALYs: 1451 por 100.000 hab.","<b>Uruguay<\/b> · 2004<br>Tasa DALYs: 1428 por 100.000 hab.","<b>Uruguay<\/b> · 2005<br>Tasa DALYs: 1472 por 100.000 hab.","<b>Uruguay<\/b> · 2006<br>Tasa DALYs: 1466 por 100.000 hab.","<b>Uruguay<\/b> · 2007<br>Tasa DALYs: 1448 por 100.000 hab.","<b>Uruguay<\/b> · 2008<br>Tasa DALYs: 1483 por 100.000 hab.","<b>Uruguay<\/b> · 2009<br>Tasa DALYs: 1495 por 100.000 hab.","<b>Uruguay<\/b> · 2010<br>Tasa DALYs: 1461 por 100.000 hab.","<b>Uruguay<\/b> · 2011<br>Tasa DALYs: 1530 por 100.000 hab.","<b>Uruguay<\/b> · 2012<br>Tasa DALYs: 1505 por 100.000 hab.","<b>Uruguay<\/b> · 2013<br>Tasa DALYs: 1547 por 100.000 hab.","<b>Uruguay<\/b> · 2014<br>Tasa DALYs: 1521 por 100.000 hab.","<b>Uruguay<\/b> · 2015<br>Tasa DALYs: 1573 por 100.000 hab.","<b>Uruguay<\/b> · 2016<br>Tasa DALYs: 1602 por 100.000 hab.","<b>Uruguay<\/b> · 2017<br>Tasa DALYs: 1553 por 100.000 hab.","<b>Uruguay<\/b> · 2018<br>Tasa DALYs: 1634 por 100.000 hab.","<b>Uruguay<\/b> · 2019<br>Tasa DALYs: 1624 por 100.000 hab."],"type":"scatter","mode":"lines+markers","line":{"width":4.1574803149606305,"color":"rgba(39,125,161,1)","dash":"solid"},"hoveron":"points","name":"Uruguay","legendgroup":"Uruguay","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(39,125,161,1)","opacity":1,"size":5.6692913385826778,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(39,125,161,1)"}},"frame":null}],"layout":{"margin":{"t":43.23121627231216,"r":8.6342880863428828,"b":26.766293067662936,"l":57.84973017849731},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762},"title":{"text":"<b> Tendencia de DALYs por Trastornos Mentales (2000-2019) <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":18.596928185969279},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1999.05,2019.95],"tickmode":"array","ticktext":["2000","2005","2010","2015"],"tickvals":[2000,2005,2010,2015],"categoryorder":"array","categoryarray":["2000","2005","2010","2015"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":4.3171440431714405,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.814860938148611},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.78493528057662576,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1233.986230874367,1793.1150849984328],"tickmode":"array","ticktext":["1300","1400","1500","1600","1700"],"tickvals":[1300,1400,1500,1600,1700],"categoryorder":"array","categoryarray":["1300","1400","1500","1600","1700"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":4.3171440431714414,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.814860938148611},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.78493528057662576,"zeroline":false,"anchor":"x","title":{"text":"DALYs por 100.000 hab.","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}},"hoverformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":13.814860938148611},"orientation":"h","x":0,"y":-0.20000000000000001,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"63ac1f9325f9":{"x":{},"y":{},"colour":{},"text":{},"type":"scatter"},"63ac69605c14":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"63ac1f9325f9","visdat":{"63ac1f9325f9":["function (y) ","x"],"63ac69605c14":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="situación-en-neuquén-internaciones-en-salud-mental" class="level1">
+<h1>Situación en Neuquén: internaciones en Salud Mental</h1>
+<p>El <strong>Primer Censo Nacional de Personas Internadas por Motivos de Salud Mental (2019)</strong> reveló que en todo el país había <strong>12.035 personas</strong> internadas, con una permanencia promedio de <strong>8,2 años</strong> (rango: 1–90 años).</p>
+<p>En la <strong>Provincia de Neuquén</strong>, para 2019 había <strong>99 personas internadas</strong> en <strong>3 instituciones privadas</strong> vinculadas al sistema público mediante convenios:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Institución</th>
+<th>Año del convenio</th>
+<th>Localidad</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Valle Sereno</td>
+<td>1998</td>
+<td>Neuquén capital</td>
+</tr>
+<tr class="even">
+<td>Vida Bella</td>
+<td>2004</td>
+<td>Neuquén capital</td>
+</tr>
+<tr class="odd">
+<td>CIPEC</td>
+<td>2006–2007</td>
+<td>Centenario</td>
+</tr>
+</tbody>
+</table>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" aria-controls="tabset-2-1" aria-selected="true" href="">Instituciones vs.&nbsp;personas internadas — Argentina 2019</a></li><li class="nav-item"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" aria-controls="tabset-2-2" aria-selected="false" href="">Duración de internaciones</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">df_sector <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb3-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">sector =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Privado"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Público"</span>),</span>
+<span id="cb3-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pct_instituciones =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">75</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>),</span>
+<span id="cb3-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pct_personas =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">48</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">52</span>)</span>
+<span id="cb3-5">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb3-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_longer</span>(</span>
+<span id="cb3-7">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cols =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(pct_instituciones, pct_personas),</span>
+<span id="cb3-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tipo"</span>,</span>
+<span id="cb3-9">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pct"</span></span>
+<span id="cb3-10">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb3-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(</span>
+<span id="cb3-12">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tipo_label =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">if_else</span>(tipo <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pct_instituciones"</span>,</span>
+<span id="cb3-13">      <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"% de instituciones"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"% de personas internadas"</span></span>
+<span id="cb3-14">    )</span>
+<span id="cb3-15">  )</span>
+<span id="cb3-16"></span>
+<span id="cb3-17">p_sector <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(</span>
+<span id="cb3-18">  df_sector,</span>
+<span id="cb3-19">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(</span>
+<span id="cb3-20">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> tipo_label, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> pct, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> sector,</span>
+<span id="cb3-21">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;b&gt;"</span>, sector, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;/b&gt;&lt;br&gt;"</span>, tipo_label, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">": "</span>, pct, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"%"</span>)</span>
+<span id="cb3-22">  )</span>
+<span id="cb3-23">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-24">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_col</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"stack"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.45</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-25">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Privado"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#011638"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Público"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#d5bdaf"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-26">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_text</span>(</span>
+<span id="cb3-27">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(pct, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"%"</span>)),</span>
+<span id="cb3-28">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">position =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">position_stack</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">vjust =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>),</span>
+<span id="cb3-29">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fontface =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bold"</span>,</span>
+<span id="cb3-30">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#011638"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#011638"</span>)</span>
+<span id="cb3-31">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-32">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb3-33">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Distribución por sector — Instituciones y personas internadas"</span>,</span>
+<span id="cb3-34">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Argentina · Censo Nacional de Internados en SM, 2019"</span>,</span>
+<span id="cb3-35">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"%"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span></span>
+<span id="cb3-36">  )</span>
+<span id="cb3-37"></span>
+<span id="cb3-38"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplotly</span>(p_sector, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tooltip =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">layout</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">showlegend =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-9d29c2cbca7203a14b01" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-9d29c2cbca7203a14b01">{"x":{"data":[{"orientation":"v","width":[0.45000000000000007,0.45000000000000018],"base":[25,52],"x":[1,2],"y":[75,48],"text":["<b>Privado<\/b><br>% de instituciones: 75%","<b>Privado<\/b><br>% de personas internadas: 48%"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(1,22,56,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Privado","legendgroup":"Privado","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.45000000000000007,0.45000000000000018],"base":[0,0],"x":[1,2],"y":[25,52],"text":["<b>Público<\/b><br>% de instituciones: 25%","<b>Público<\/b><br>% de personas internadas: 52%"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(213,189,175,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"Público","legendgroup":"Público","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2],"y":[76],"text":"48%","hovertext":"<b>Privado<\/b><br>% de personas internadas: 48%","textfont":{"size":17.007874015748033,"color":"rgba(1,22,56,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"Privado","legendgroup":"Privado","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1],"y":[62.5],"text":"75%","hovertext":"<b>Privado<\/b><br>% de instituciones: 75%","textfont":{"size":17.007874015748033,"color":"rgba(255,255,255,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"Privado","legendgroup":"Privado","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2],"y":[26],"text":"52%","hovertext":"<b>Público<\/b><br>% de personas internadas: 52%","textfont":{"size":17.007874015748033,"color":"rgba(1,22,56,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"Público","legendgroup":"Público","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1],"y":[12.5],"text":"25%","hovertext":"<b>Público<\/b><br>% de instituciones: 25%","textfont":{"size":17.007874015748033,"color":"rgba(255,255,255,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"Público","legendgroup":"Público","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.23121627231216,"r":8.6342880863428828,"b":26.766293067662936,"l":50.942299709423011},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762},"title":{"text":"<b> Distribución por sector — Instituciones y personas internadas <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":18.596928185969279},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,2.6000000000000001],"tickmode":"array","ticktext":["% de instituciones","% de personas internadas"],"tickvals":[1,2],"categoryorder":"array","categoryarray":["% de instituciones","% de personas internadas"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":4.3171440431714405,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.814860938148611},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.78493528057662576,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-5,105],"tickmode":"array","ticktext":["0","25","50","75","100"],"tickvals":[0,24.999999999999996,50,75,100],"categoryorder":"array","categoryarray":["0","25","50","75","100"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":4.3171440431714414,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.814860938148611},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.78493528057662576,"zeroline":false,"anchor":"x","title":{"text":"%","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}},"hoverformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":13.814860938148611},"orientation":"h","x":0.5,"y":-0.14999999999999999,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"63ac441143bd":{"x":{},"y":{},"fill":{},"text":{},"type":"bar"},"63ac75c86fa9":{"x":{},"y":{},"fill":{},"text":{},"label":{}}},"cur_data":"63ac441143bd","visdat":{"63ac441143bd":["function (y) ","x"],"63ac75c86fa9":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">perm <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb4-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">escenario =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Mínimo documentado"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Promedio nacional"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Máximo documentado"</span>),</span>
+<span id="cb4-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">anios =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8.2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">90</span>),</span>
+<span id="cb4-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">cat =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"min"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"prom"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"max"</span>)</span>
+<span id="cb4-5">)</span>
+<span id="cb4-6"></span>
+<span id="cb4-7">p_perm <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(</span>
+<span id="cb4-8">  perm,</span>
+<span id="cb4-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(</span>
+<span id="cb4-10">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> escenario, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> anios, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> cat,</span>
+<span id="cb4-11">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;b&gt;"</span>, escenario, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;/b&gt;&lt;br&gt;"</span>, anios, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" años de internación"</span>)</span>
+<span id="cb4-12">  )</span>
+<span id="cb4-13">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_col</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">width =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">show.legend =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_text</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(anios, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" años"</span>)), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">vjust =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fontface =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bold"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#011638"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-16">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"min"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#d5bdaf"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"prom"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#277da1"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"max"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#e76f51"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-17">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">105</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-18">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb4-19">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Duración de internaciones en instituciones monovalentes"</span>,</span>
+<span id="cb4-20">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Argentina · Censo Nacional, 2019 — la LNSM fija máx. 3 meses"</span>,</span>
+<span id="cb4-21">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Años"</span></span>
+<span id="cb4-22">  )</span>
+<span id="cb4-23"></span>
+<span id="cb4-24"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplotly</span>(p_perm, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tooltip =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">layout</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">showlegend =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>)</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-ee901134095f05da5eac" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-ee901134095f05da5eac">{"x":{"data":[{"orientation":"v","width":0.5,"base":0,"x":[1],"y":[90],"text":"<b>Máximo documentado<\/b><br>90 años de internación","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(231,111,81,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"max","legendgroup":"max","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.5,"base":0,"x":[2],"y":[1],"text":"<b>Mínimo documentado<\/b><br>1 años de internación","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(213,189,175,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"min","legendgroup":"min","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.5,"base":0,"x":[3],"y":[8.1999999999999993],"text":"<b>Promedio nacional<\/b><br>8.2 años de internación","type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(39,125,161,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"name":"prom","legendgroup":"prom","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1],"y":[90],"text":"90 años","hovertext":"<b>Máximo documentado<\/b><br>90 años de internación","textfont":{"size":17.007874015748033,"color":"rgba(1,22,56,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"max","legendgroup":"max","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2],"y":[1],"text":"1 años","hovertext":"<b>Mínimo documentado<\/b><br>1 años de internación","textfont":{"size":17.007874015748033,"color":"rgba(1,22,56,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"min","legendgroup":"min","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3],"y":[8.1999999999999993],"text":"8.2 años","hovertext":"<b>Promedio nacional<\/b><br>8.2 años de internación","textfont":{"size":17.007874015748033,"color":"rgba(1,22,56,1)"},"type":"scatter","mode":"text","hoveron":"points","name":"prom","legendgroup":"prom","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.23121627231216,"r":8.6342880863428828,"b":26.766293067662936,"l":50.942299709423011},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762},"title":{"text":"<b> Duración de internaciones en instituciones monovalentes <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":18.596928185969279},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,3.6000000000000001],"tickmode":"array","ticktext":["Máximo documentado","Mínimo documentado","Promedio nacional"],"tickvals":[1,2,3],"categoryorder":"array","categoryarray":["Máximo documentado","Mínimo documentado","Promedio nacional"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":4.3171440431714405,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.814860938148611},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.78493528057662576,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-5.25,110.25],"tickmode":"array","ticktext":["0","25","50","75","100"],"tickvals":[0,25,50,75,100],"categoryorder":"array","categoryarray":["0","25","50","75","100"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":4.3171440431714414,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.814860938148611},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.78493528057662576,"zeroline":false,"anchor":"x","title":{"text":"Años","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}},"hoverformat":".2f"},"shapes":[],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":13.814860938148611},"orientation":"h","x":0.5,"y":-0.14999999999999999,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"63ac7a07af4":{"x":{},"y":{},"fill":{},"text":{},"type":"bar"},"63ac12e552f":{"x":{},"y":{},"fill":{},"text":{},"label":{}}},"cur_data":"63ac7a07af4","visdat":{"63ac7a07af4":["function (y) ","x"],"63ac12e552f":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="hitos-del-primer-dih-en-neuquén" class="level1">
+<h1>Hitos del primer DIH en Neuquén</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">eventos <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb5-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fecha =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.Date</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb5-3">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2019-01-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2021-12-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2022-06-01"</span>,</span>
+<span id="cb5-4">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2023-06-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2023-12-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-06-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2025-03-01"</span></span>
+<span id="cb5-5">  )),</span>
+<span id="cb5-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">evento =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb5-7">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Censo Nacional: 99 personas internadas en Neuquén (3 inst. privadas)"</span>,</span>
+<span id="cb5-8">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Primer intento de externación post-pandemia — fracasa por falta de red comunitaria"</span>,</span>
+<span id="cb5-9">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Intervención en Vida Bella: se constatan condiciones de abandono"</span>,</span>
+<span id="cb5-10">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Fallece Ana María Firman mientras estaba internada en Vida Bella"</span>,</span>
+<span id="cb5-11">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"1° DIH provincial 'Ana María Firman' — Neuquén capital (dic. 2023)"</span>,</span>
+<span id="cb5-12">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Inicio de externaciones desde CIPEC — Centenario"</span>,</span>
+<span id="cb5-13">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Publicación ETS — Evaluación de Tecnología Sanitaria sobre DIH"</span></span>
+<span id="cb5-14">  ),</span>
+<span id="cb5-15">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tipo =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Diagnóstico"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Antecedente"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Crisis"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Crisis"</span>,</span>
+<span id="cb5-16">           <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Hito"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Expansión"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Evaluación"</span>),</span>
+<span id="cb5-17">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y_pos =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>)</span>
+<span id="cb5-18">)</span>
+<span id="cb5-19"></span>
+<span id="cb5-20">colores_ev <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb5-21">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Diagnóstico"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#277da1"</span>,</span>
+<span id="cb5-22">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Antecedente"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#b07d55"</span>,</span>
+<span id="cb5-23">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Crisis"</span>      <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#e76f51"</span>,</span>
+<span id="cb5-24">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Hito"</span>        <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#4a7c59"</span>,</span>
+<span id="cb5-25">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Expansión"</span>   <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#4a7c59"</span>,</span>
+<span id="cb5-26">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Evaluación"</span>  <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#011638"</span></span>
+<span id="cb5-27">)</span>
+<span id="cb5-28"></span>
+<span id="cb5-29">p_tl <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(eventos, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(</span>
+<span id="cb5-30">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> fecha, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> tipo,</span>
+<span id="cb5-31">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">text =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;b&gt;"</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">format</span>(fecha, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"%b %Y"</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;/b&gt;&lt;br&gt;"</span>, evento)</span>
+<span id="cb5-32">)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-33">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_hline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">yintercept =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#011638"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.9</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-34">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_segment</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xend =</span> fecha, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">yend =</span> y_pos), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-35">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-36">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_manual</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> colores_ev) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-37">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.65</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.65</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-38">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(</span>
+<span id="cb5-39">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Línea de tiempo · DIH en Neuquén"</span>,</span>
+<span id="cb5-40">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">subtitle =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Del Censo Nacional 2019 a la ETS 2025"</span>,</span>
+<span id="cb5-41">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span></span>
+<span id="cb5-42">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-43">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(</span>
+<span id="cb5-44">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb5-45">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.ticks.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(),</span>
+<span id="cb5-46">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">panel.grid.major.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>()</span>
+<span id="cb5-47">  )</span>
+<span id="cb5-48"></span>
+<span id="cb5-49"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplotly</span>(p_tl, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tooltip =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb5-50">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">layout</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">orientation =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"h"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.15</span>))</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-7bf0a81ce6a1205b92d7" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-7bf0a81ce6a1205b92d7">{"x":{"data":[{"x":[17784.450000000001,20260.549999999999],"y":[0,0],"text":"","type":"scatter","mode":"lines","line":{"width":3.4015748031496069,"color":"rgba(1,22,56,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[18962,18962],"y":[0,0.29999999999999999],"text":"<b>dic. 2021<\/b><br>Primer intento de externación post-pandemia — fracasa por falta de red comunitaria","type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(176,125,85,1)","dash":"solid"},"hoveron":"points","name":"Antecedente","legendgroup":"Antecedente","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[19144,19144,null,19509,19509],"y":[0,-0.29999999999999999,null,0,0.29999999999999999],"text":["<b>jun. 2022<\/b><br>Intervención en Vida Bella: se constatan condiciones de abandono","<b>jun. 2022<\/b><br>Intervención en Vida Bella: se constatan condiciones de abandono",null,"<b>jun. 2023<\/b><br>Fallece Ana María Firman mientras estaba internada en Vida Bella","<b>jun. 2023<\/b><br>Fallece Ana María Firman mientras estaba internada en Vida Bella"],"type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(231,111,81,1)","dash":"solid"},"hoveron":"points","name":"Crisis","legendgroup":"Crisis","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17897,17897],"y":[0,-0.29999999999999999],"text":"<b>ene. 2019<\/b><br>Censo Nacional: 99 personas internadas en Neuquén (3 inst. privadas)","type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(39,125,161,1)","dash":"solid"},"hoveron":"points","name":"Diagnóstico","legendgroup":"Diagnóstico","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20148,20148],"y":[0,-0.29999999999999999],"text":"<b>mar. 2025<\/b><br>Publicación ETS — Evaluación de Tecnología Sanitaria sobre DIH","type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(1,22,56,1)","dash":"solid"},"hoveron":"points","name":"Evaluación","legendgroup":"Evaluación","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[19875,19875],"y":[0,0.29999999999999999],"text":"<b>jun. 2024<\/b><br>Inicio de externaciones desde CIPEC — Centenario","type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(74,124,89,1)","dash":"solid"},"hoveron":"points","name":"Expansión","legendgroup":"Expansión","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[19692,19692],"y":[0,-0.29999999999999999],"text":"<b>dic. 2023<\/b><br>1° DIH provincial 'Ana María Firman' — Neuquén capital (dic. 2023)","type":"scatter","mode":"lines","line":{"width":3.7795275590551185,"color":"rgba(74,124,89,1)","dash":"solid"},"hoveron":"points","name":"Hito","legendgroup":"Hito","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[18962],"y":[0],"text":"<b>dic. 2021<\/b><br>Primer intento de externación post-pandemia — fracasa por falta de red comunitaria","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(176,125,85,1)","opacity":1,"size":17.007874015748033,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(176,125,85,1)"}},"hoveron":"points","name":"Antecedente","legendgroup":"Antecedente","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[19144,19509],"y":[0,0],"text":["<b>jun. 2022<\/b><br>Intervención en Vida Bella: se constatan condiciones de abandono","<b>jun. 2023<\/b><br>Fallece Ana María Firman mientras estaba internada en Vida Bella"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(231,111,81,1)","opacity":1,"size":17.007874015748033,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(231,111,81,1)"}},"hoveron":"points","name":"Crisis","legendgroup":"Crisis","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[17897],"y":[0],"text":"<b>ene. 2019<\/b><br>Censo Nacional: 99 personas internadas en Neuquén (3 inst. privadas)","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(39,125,161,1)","opacity":1,"size":17.007874015748033,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(39,125,161,1)"}},"hoveron":"points","name":"Diagnóstico","legendgroup":"Diagnóstico","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20148],"y":[0],"text":"<b>mar. 2025<\/b><br>Publicación ETS — Evaluación de Tecnología Sanitaria sobre DIH","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(1,22,56,1)","opacity":1,"size":17.007874015748033,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(1,22,56,1)"}},"hoveron":"points","name":"Evaluación","legendgroup":"Evaluación","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[19875],"y":[0],"text":"<b>jun. 2024<\/b><br>Inicio de externaciones desde CIPEC — Centenario","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(74,124,89,1)","opacity":1,"size":17.007874015748033,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(74,124,89,1)"}},"hoveron":"points","name":"Expansión","legendgroup":"Expansión","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[19692],"y":[0],"text":"<b>dic. 2023<\/b><br>1° DIH provincial 'Ana María Firman' — Neuquén capital (dic. 2023)","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(74,124,89,1)","opacity":1,"size":17.007874015748033,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(74,124,89,1)"}},"hoveron":"points","name":"Hito","legendgroup":"Hito","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.23121627231216,"r":8.6342880863428828,"b":26.766293067662936,"l":12.951432129514323},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762},"title":{"text":"<b> Línea de tiempo · DIH en Neuquén <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":18.596928185969279},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[17784.450000000001,20260.549999999999],"tickmode":"array","ticktext":["2020","2022","2024"],"tickvals":[18262,18993,19723],"categoryorder":"array","categoryarray":["2020","2022","2024"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":4.3171440431714405,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":13.814860938148611},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.78493528057662576,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-0.71500000000000008,0.71500000000000008],"tickmode":"array","ticktext":["-0.4","0.0","0.4"],"tickvals":[-0.40000000000000002,0,0.40000000000000013],"categoryorder":"array","categoryarray":["-0.4","0.0","0.4"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":4.3171440431714414,"tickwidth":0,"showticklabels":false,"tickfont":{"color":null,"family":null,"size":0},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}},"hoverformat":".2f"},"shapes":[],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":13.814860938148611},"orientation":"h","x":0,"y":-0.14999999999999999,"xanchor":"center","yanchor":"top","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":17.268576172685762}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"63ac27b77c3c":{"yintercept":{},"type":"scatter"},"63ac6f4e31e8":{"x":{},"y":{},"colour":{},"text":{},"xend":{},"yend":{}},"63acd986b41":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"63ac27b77c3c","visdat":{"63ac27b77c3c":["function (y) ","x"],"63ac6f4e31e8":["function (y) ","x"],"63acd986b41":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<hr>
+</section>
+<section id="distribución-territorial-de-los-dih-en-neuquén" class="level1">
+<h1>Distribución territorial de los DIH en Neuquén</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">localidades <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb6-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">localidad =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Neuquén capital"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Centenario"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Zapala"</span>,</span>
+<span id="cb6-3">                <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"San Martín de los Andes"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Chos Malal"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Cutral-Có"</span>),</span>
+<span id="cb6-4">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lat =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">38.9516</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">38.8286</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">38.8991</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40.1567</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">37.3791</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">38.9347</span>),</span>
+<span id="cb6-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lon =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">68.0591</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">68.1287</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">70.0538</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">71.3567</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">70.2671</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">69.2317</span>),</span>
+<span id="cb6-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">tipo =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DIH activo"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Externación en curso"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DIH proyectado"</span>,</span>
+<span id="cb6-7">           <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DIH proyectado"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Sin DIH"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Sin DIH"</span>),</span>
+<span id="cb6-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">detalle =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb6-9">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"1° DIH provincial 'Ana Maria Firman'&lt;br&gt;Inaugurado dic. 2023 · 6 plazas"</span>,</span>
+<span id="cb6-10">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Inst. CIPEC — externaciones activas desde 2024&lt;br&gt;DIH en construcción"</span>,</span>
+<span id="cb6-11">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Zona sanitaria IV · DIH en planificación"</span>,</span>
+<span id="cb6-12">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Zona sanitaria VII · DIH en planificación"</span>,</span>
+<span id="cb6-13">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Zona sanitaria I · Sin DIH proyectado aún"</span>,</span>
+<span id="cb6-14">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Zona sanitaria III · Sin DIH proyectado aún"</span></span>
+<span id="cb6-15">  )</span>
+<span id="cb6-16">)</span>
+<span id="cb6-17"></span>
+<span id="cb6-18">colores_marcador <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb6-19">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DIH activo"</span>           <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"green"</span>,</span>
+<span id="cb6-20">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Externación en curso"</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"blue"</span>,</span>
+<span id="cb6-21">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DIH proyectado"</span>       <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"orange"</span>,</span>
+<span id="cb6-22">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Sin DIH"</span>              <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray"</span></span>
+<span id="cb6-23">)</span>
+<span id="cb6-24"></span>
+<span id="cb6-25">mapa <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">leaflet</span>(localidades) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-26">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">addProviderTiles</span>(providers<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>CartoDB.Positron) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-27">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">setView</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lng =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">69.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lat =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">39.0</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">zoom =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-28">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">addCircleMarkers</span>(</span>
+<span id="cb6-29">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lng =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>lon, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">lat =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>lat,</span>
+<span id="cb6-30">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>colores_marcador[tipo],</span>
+<span id="cb6-31">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fillColor =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>colores_marcador[tipo],</span>
+<span id="cb6-32">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fillOpacity =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.85</span>,</span>
+<span id="cb6-33">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">radius =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>,</span>
+<span id="cb6-34">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">stroke =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">weight =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>,</span>
+<span id="cb6-35">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">popup =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;b&gt;"</span>, localidad, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;/b&gt;&lt;br&gt;&lt;i&gt;"</span>, tipo, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;/i&gt;&lt;br&gt;&lt;br&gt;"</span>, detalle),</span>
+<span id="cb6-36">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span>localidad</span>
+<span id="cb6-37">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-38">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">addLegend</span>(</span>
+<span id="cb6-39">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottomright"</span>,</span>
+<span id="cb6-40">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colors =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#4a7c59"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#277da1"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#e76f51"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#999999"</span>),</span>
+<span id="cb6-41">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DIH activo"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Externación en curso"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"DIH proyectado"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Sin DIH"</span>),</span>
+<span id="cb6-42">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Estado · Neuquén 2025"</span>,</span>
+<span id="cb6-43">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">opacity =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.9</span></span>
+<span id="cb6-44">  )</span>
+<span id="cb6-45"></span>
+<span id="cb6-46">mapa</span></code></pre></div></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Input to asJSON(keep_vec_names=TRUE) is a named vector. In a future version of jsonlite, this option will not be supported, and named vectors will be translated into arrays instead of objects. If you want JSON object output, please use a named list instead. See ?toJSON.
+Input to asJSON(keep_vec_names=TRUE) is a named vector. In a future version of jsonlite, this option will not be supported, and named vectors will be translated into arrays instead of objects. If you want JSON object output, please use a named list instead. See ?toJSON.</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-d13161330aa9c0bf9082" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-d13161330aa9c0bf9082">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addCircleMarkers","args":[[-38.9516,-38.8286,-38.8991,-40.1567,-37.3791,-38.9347],[-68.0591,-68.12869999999999,-70.0538,-71.3567,-70.2671,-69.2317],12,null,null,{"interactive":true,"className":"","stroke":true,"color":{"DIH activo":"green","Externación en curso":"blue","DIH proyectado":"orange","DIH proyectado.1":"orange","Sin DIH":"gray","Sin DIH.1":"gray"},"weight":2,"opacity":0.5,"fill":true,"fillColor":{"DIH activo":"green","Externación en curso":"blue","DIH proyectado":"orange","DIH proyectado.1":"orange","Sin DIH":"gray","Sin DIH.1":"gray"},"fillOpacity":0.85},null,null,["<b>Neuquén capital<\/b><br><i>DIH activo<\/i><br><br>1° DIH provincial 'Ana Maria Firman'<br>Inaugurado dic. 2023 · 6 plazas","<b>Centenario<\/b><br><i>Externación en curso<\/i><br><br>Inst. CIPEC — externaciones activas desde 2024<br>DIH en construcción","<b>Zapala<\/b><br><i>DIH proyectado<\/i><br><br>Zona sanitaria IV · DIH en planificación","<b>San Martín de los Andes<\/b><br><i>DIH proyectado<\/i><br><br>Zona sanitaria VII · DIH en planificación","<b>Chos Malal<\/b><br><i>Sin DIH<\/i><br><br>Zona sanitaria I · Sin DIH proyectado aún","<b>Cutral-Có<\/b><br><i>Sin DIH<\/i><br><br>Zona sanitaria III · Sin DIH proyectado aún"],null,["Neuquén capital","Centenario","Zapala","San Martín de los Andes","Chos Malal","Cutral-Có"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLegend","args":[{"colors":["#4a7c59","#277da1","#e76f51","#999999"],"labels":["DIH activo","Externación en curso","DIH proyectado","Sin DIH"],"na_color":null,"na_label":"NA","opacity":0.9,"position":"bottomright","type":"unknown","title":"Estado · Neuquén 2025","extra":null,"layerId":null,"className":"info legend","group":null}]}],"setView":[[-39,-69.5],7,[]],"limits":{"lat":[-40.1567,-37.3791],"lng":[-71.3567,-68.0591]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<hr>
+</section>
+<section id="fuerza-laboral-en-salud-mental-por-zona-sanitaria" class="level1">
+<h1>Fuerza laboral en Salud Mental por zona sanitaria</h1>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">fuerza_laboral <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tibble</span>(</span>
+<span id="cb8-2">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">zona =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Zona"</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"I"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"II"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"III"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"IV"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"V"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"VI"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"VII"</span>)),</span>
+<span id="cb8-3">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">localidad_ref  =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Chos Malal"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Neuquén capital"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Cutral-Có"</span>,</span>
+<span id="cb8-4">                     <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Zapala"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Junín de los Andes"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Norquinco"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"San M. de los Andes"</span>),</span>
+<span id="cb8-5">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">psiquiatras    =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,  <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>),</span>
+<span id="cb8-6">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">psicologos     =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">28</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>),</span>
+<span id="cb8-7">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">trabajadores_s =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>),</span>
+<span id="cb8-8">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">enfermeria_sm  =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>,  <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>),</span>
+<span id="cb8-9">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">poblacion_mil  =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">380</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">95</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">85</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">40</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>)</span>
+<span id="cb8-10">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb8-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(</span>
+<span id="cb8-12">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">total_prof    =</span> psiquiatras <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> psicologos <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> trabajadores_s <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> enfermeria_sm,</span>
+<span id="cb8-13">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ratio_10k     =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round</span>((total_prof <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> poblacion_mil) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb8-14">  )</span>
+<span id="cb8-15"></span>
+<span id="cb8-16">tabla_fuerza <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> fuerza_laboral <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb8-17">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(</span>
+<span id="cb8-18">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Zona =</span> zona,</span>
+<span id="cb8-19">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Localidad =</span> localidad_ref,</span>
+<span id="cb8-20">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Psiquiatras =</span> psiquiatras,</span>
+<span id="cb8-21">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Psicologos =</span> psicologos,</span>
+<span id="cb8-22">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Trab.Sociales</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> trabajadores_s,</span>
+<span id="cb8-23">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Enf.SM</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> enfermeria_sm,</span>
+<span id="cb8-24">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Total =</span> total_prof,</span>
+<span id="cb8-25">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Ratio.x10k</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">`</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> ratio_10k</span>
+<span id="cb8-26">  )</span>
+<span id="cb8-27"></span>
+<span id="cb8-28">DT<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">datatable</span>(</span>
+<span id="cb8-29">  tabla_fuerza,</span>
+<span id="cb8-30">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colnames =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(</span>
+<span id="cb8-31">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Zona"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Localidad ref."</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Psiquiatras"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Psicólogos/as"</span>,</span>
+<span id="cb8-32">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Trab. Sociales"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Enf. SM"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Total"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Ratio x 10.000 hab."</span></span>
+<span id="cb8-33">  ),</span>
+<span id="cb8-34">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">options =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">pageLength =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">dom =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"t"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scrollX =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>),</span>
+<span id="cb8-35">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">rownames =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>,</span>
+<span id="cb8-36">  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">caption =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Fuerza laboral en SM por Zona Sanitaria · Neuquén 2025 (datos ilustrativos)"</span></span>
+<span id="cb8-37">) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb8-38">  DT<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">formatStyle</span>(</span>
+<span id="cb8-39">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Ratio.x10k"</span>,</span>
+<span id="cb8-40">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">background =</span> DT<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">styleColorBar</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max</span>(fuerza_laboral<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>ratio_10k)), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#4a7c59"</span>),</span>
+<span id="cb8-41">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">backgroundSize =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"100% 80%"</span>,</span>
+<span id="cb8-42">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">backgroundRepeat =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"no-repeat"</span>,</span>
+<span id="cb8-43">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">backgroundPosition =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"center"</span></span>
+<span id="cb8-44">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb8-45">  DT<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">formatStyle</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Total"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fontWeight =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bold"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"#011638"</span>)</span></code></pre></div></div>
+</details>
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-eabc2790cfa6b09d74f4" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-eabc2790cfa6b09d74f4">{"x":{"filter":"none","vertical":false,"caption":"<caption>Fuerza laboral en SM por Zona Sanitaria · Neuquén 2025 (datos ilustrativos)<\/caption>","data":[["Zona I","Zona II","Zona III","Zona IV","Zona V","Zona VI","Zona VII"],["Chos Malal","Neuquén capital","Cutral-Có","Zapala","Junín de los Andes","Norquinco","San M. de los Andes"],[1,8,2,2,1,0,2],[3,28,6,5,3,1,5],[2,15,3,3,2,1,3],[1,9,2,2,1,0,2],[7,60,13,12,7,2,12],[1.67,1.58,1.37,1.41,1.75,1.33,2.67]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Zona<\/th>\n      <th>Localidad ref.<\/th>\n      <th>Psiquiatras<\/th>\n      <th>Psicólogos/as<\/th>\n      <th>Trab. Sociales<\/th>\n      <th>Enf. SM<\/th>\n      <th>Total<\/th>\n      <th>Ratio x 10.000 hab.<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":7,"dom":"t","scrollX":true,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7]},{"name":"Zona","targets":0},{"name":"Localidad","targets":1},{"name":"Psiquiatras","targets":2},{"name":"Psicologos","targets":3},{"name":"Trab.Sociales","targets":4},{"name":"Enf.SM","targets":5},{"name":"Total","targets":6},{"name":"Ratio.x10k","targets":7}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[7,10,25,50,100],"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[7]; $(this.api().cell(row, 7).node()).css({'background':isNaN(parseFloat(value)) || value <= 0.000000 ? '' : 'linear-gradient(90.000000deg, transparent ' + Math.max(2.670000 - value, 0)/2.670000 * 100 + '%, #4a7c59 ' + Math.max(2.670000 - value, 0)/2.670000 * 100 + '%)','background-size':'100% 80%','background-repeat':'no-repeat','background-position':'center'});\nvar value=data[6]; $(this.api().cell(row, 6).node()).css({'font-weight':'bold','color':'#011638'});\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script>
+</div>
+</div>
+<hr>
+</section>
+<section id="conclusiones" class="level1">
+<h1>Conclusiones</h1>
+<p>El informe concluye que los DIH son una <strong>tecnología sanitaria efectiva y costo-eficiente</strong> para la atención de personas con trastornos mentales graves en proceso de desinstitucionalización, con evidencia de mejora en calidad de vida, autonomía y reducción del uso de camas hospitalarias.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Marco normativo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La <strong>Ley Nacional de Salud Mental N° 26.657 (2010)</strong> establece que la internación es excepcional y no puede superar <strong>3 meses</strong>. La Ley Provincial N° 3.182 (2018) adhiere Neuquén a esta normativa. Los DIH son la alternativa concreta que el marco legal exige.</p>
+</div>
+</div>
+<hr>
+<section id="referencias" class="level4">
+<h4 class="anchored" data-anchor-id="referencias">Referencias</h4>
+<ul>
+<li>Ministerio de Salud de la Provincia de Neuquén (2025). <em>ETS — Dispositivos Habitacionales: Evaluación de Tecnología Sanitaria sobre Dispositivos de Inclusión Habitacional</em>. <a href="https://salud.neuquen.gob.ar/wp-content/uploads/2026/03/ETS-DISPOSITIVOS-HABITACIONALES-NEUQUEN-2025.pdf">Acceso al informe</a></li>
+<li>OMS (2022). <em>Plan de acción integral sobre salud mental 2013-2030</em>.</li>
+<li>Argentina (2010). <em>Ley Nacional de Salud Mental N° 26.657</em>.</li>
+<li>Neuquén (2018). <em>Ley Provincial N° 3.182 — Adhesión a la LNSM</em>.</li>
+<li>SIGEN/MSAL (2019). <em>Primer Censo Nacional de Personas Internadas por Motivos de Salud Mental</em>.</li>
+</ul>
+
+
+<!-- -->
+
+</section>
+</section>
+
+ ]]></description>
+  <category>Salud Mental</category>
+  <category>Epidemiología</category>
+  <category>Neuquén</category>
+  <category>Políticas de Salud</category>
+  <category>DIH</category>
+  <guid>https://jeronimopennini.github.io/PORTFOLIO_JP/posts/salud-mental-dih/</guid>
+  <pubDate>Mon, 28 Sep 2026 03:00:00 GMT</pubDate>
+  <media:content url="https://jeronimopennini.github.io/PORTFOLIO_JP/posts/salud-mental-dih/cover.jpg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>Mortalidad en la Provincia de Buenos Aires</title>
   <dc:creator>JeronimoPennini </dc:creator>

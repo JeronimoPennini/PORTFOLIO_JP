@@ -178,3 +178,92 @@ form.inputs-form {
   background-color: #E02377;
   color: white !important;
 }
+
+/* ── Tech badges ─────────────────────────────────── */
+.badge-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 1.2rem 0 1.8rem 0;
+}
+
+.badge-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.badge-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #6b6b78;
+  min-width: 9rem;
+  padding-right: 0.5rem;
+}
+
+.tech-badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-family: "Google Sans", sans-serif;
+  padding: 0.22rem 0.75rem;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  cursor: default;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  user-select: none;
+}
+
+.tech-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(1, 22, 56, 0.15);
+}
+
+/* Colores por categoría */
+.badge-lang {
+  background: #011638;
+  color: #dedbd2;
+  border-color: #011638;
+}
+.badge-lang:hover {
+  background: #0a2a5e;
+}
+
+.badge-viz {
+  background: #ece3da;
+  color: #277da1;
+  border-color: #277da1;
+}
+.badge-viz:hover {
+  background: #d4eef7;
+}
+
+.badge-gis {
+  background: #ece3da;
+  color: #4a7c59;
+  border-color: #4a7c59;
+}
+.badge-gis:hover {
+  background: #d6ead9;
+}
+
+.badge-data {
+  background: #ece3da;
+  color: #7d5a3c;
+  border-color: #b07d55;
+}
+.badge-data:hover {
+  background: #f0e2d0;
+}
+
+.badge-table {
+  background: #ece3da;
+  color: #e76f51;
+  border-color: #e76f51;
+}
+.badge-table:hover {
+  background: #fce8e2;
+}
