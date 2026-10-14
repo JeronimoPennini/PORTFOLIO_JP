@@ -12,7 +12,7 @@ Bienvenidxs a esta web creada para compartir análisis epidemiológicos realizad
 [👤 Sobre mí](about.qmd){.btn .btn-outline-secondary}
 :::
 
-### 🛠 Paquetes de R utiizados
+### 🛠 Paquetes de R utilizados
 
 <div class="badge-section">
 

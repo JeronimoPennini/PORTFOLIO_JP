@@ -21,7 +21,7 @@ format: html
 
 </div>
 
-## This is my actual CV
+## My current CV
 
 <div style="text-align: center; margin-bottom: 1.5rem;">
 

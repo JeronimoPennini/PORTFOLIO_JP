@@ -15,7 +15,7 @@ editor:
     wrap: 72
 ---
 
-![](image.jpg)
+![Imagen de portada del análisis](image.jpg)
 
 # Contexto
 
@@ -1002,7 +1002,7 @@ provincias_arg <- c(
   "Formosa", "Jujuy", "La Pampa", "La Rioja", "Mendoza",
   "Misiones", "Neuquén", "Río Negro", "Salta", "San Juan",
   "San Luis", "Santa Cruz", "Santa Fe", "Santiago del Estero",
-  "Tierra del Fuego", "Tucumán"
+  "Tierra del Fuego, Antártida e Islas del Atlántico Sur", "Tucumán"
 )
 
 set.seed(2026)
@@ -1028,7 +1028,7 @@ resumen_provincia <- rita_geo %>%
 
 
 provincias_sf <- st_read(
-  "https://apis.datos.gob.ar/georef/api/v2.0/provincias.geojson",
+  "provincias.geojson",
   quiet = TRUE
 )
 
@@ -1040,7 +1040,7 @@ sin_match <- resumen_provincia %>%
   pull(provincia_simulada)
 
 if (length(sin_match) > 0) {
-  message("Revisar nombres, no matchearon: ", paste(sin_match, collapse = ", "))
+  stop("Revisar nombres, no matchearon: ", paste(sin_match, collapse = ", "))
 }
 
 paleta <- colorNumeric(
@@ -1101,7 +1101,7 @@ literatura internacional describe como *early-onset cancer*.
 
 La proporción de diagnósticos tempranos sobre el total muestra una
 tendencia que el modelo de regresión logística permite cuantificar,
-aunque esto describe unaasociación y no prueba una causa: podría
+aunque esto describe una asociación y no prueba una causa: podría
 reflejar cambios reales en la frecuencia de estos tumores, pero también
 cambios en el acceso al diagnóstico o en la población cubierta por el
 registro a lo largo del tiempo.

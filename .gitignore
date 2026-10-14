@@ -8,8 +8,11 @@
 /.quarto/
 **/*.quarto_ipynb
 
-# Archivos temporales y cache de Quarto
-.freeze/
+# Los resultados _freeze/ se versionan junto con las fuentes y docs/.
 
 Thumbs.db
 
+
+.R-library/
+renv/library/
+renv/staging/

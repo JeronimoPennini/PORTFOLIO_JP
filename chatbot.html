@@ -1,5 +1,17 @@
 <!-- Chatbot Widget Embed (Chatbase) -->
 <script>
+// Los mapas y gráficos en pestañas ocultas necesitan recalcular su tamaño.
+document.addEventListener("shown.bs.tab", function () {
+  window.dispatchEvent(new Event("resize"));
+  document.querySelectorAll(".leaflet.html-widget").forEach(function (element) {
+    if (element.offsetWidth && window.HTMLWidgets) {
+      const widget = HTMLWidgets.find("#" + element.id);
+      if (widget && widget.getMap) widget.getMap().invalidateSize();
+    }
+  });
+});
+</script>
+<script>
   (function () {
     if (!window.chatbase || window.chatbase("getState") !== "initialized") {
       window.chatbase = (...arguments) => { if (!window.chatbase.q) { window.chatbase.q = [] } window.chatbase.q.push(arguments) };

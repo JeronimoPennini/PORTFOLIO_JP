@@ -1,0 +1,23 @@
+/* Mantener widgets legibles dentro de paneles y pantallas estrechas. */
+.plotly.html-widget {
+  max-width: 100%;
+}
+.cell-output-display:has(> .plotly.html-widget) {
+  overflow: visible;
+}
+.leaflet.html-widget {
+  width: 100% !important;
+  min-height: 420px;
+}
+.leaflet-popup-content {
+  color: #011638;
+  line-height: 1.5;
+}
+.cv-download {
+  margin: 0.35rem;
+}
+@media (max-width: 575px) {
+  .quarto-title-block .subtitle {
+    font-size: 1rem;
+  }
+}

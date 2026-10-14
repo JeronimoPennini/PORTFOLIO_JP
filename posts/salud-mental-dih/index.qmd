@@ -42,6 +42,7 @@ library(htmltools)
 library(DT)
 library(scales)
 library(ggplot2)
+set.seed(2025)
 
 theme_set(
   theme_minimal(base_size = 13) +
@@ -76,39 +77,32 @@ trastornos <- tibble(
   n_millones = c(301, 280, 108, 85, 60, 34, 102)
 )
 
-p_trastornos <- ggplot(
-  trastornos,
-  aes(
-    x = reorder(trastorno, porcentaje),
-    y = porcentaje,
-    fill = porcentaje,
-    text = paste0(
-      "<b>", trastorno, "</b><br>",
-      "Proporción: ", porcentaje, "%<br>",
-      "Personas: ~", n_millones, " millones"
-    )
-  )
-) +
-  geom_col(width = 0.7, show.legend = FALSE) +
-  geom_text(
-    aes(label = paste0(porcentaje, "%")),
-    hjust = -0.1, size = 3.5, fontface = "bold", color = "#011638"
-  ) +
-  scale_fill_gradient(low = "#d5bdaf", high = "#011638") +
-  scale_y_continuous(limits = c(0, 38)) +
-  coord_flip() +
-  labs(
-    title = "Distribución de trastornos de Salud Mental",
-    subtitle = "970 millones de personas afectadas — Mundial 2019 (OMS, 2022)",
-    x = NULL,
-    y = "Porcentaje del total (%)"
-  )
-
-ggplotly(p_trastornos, tooltip = "text") |>
-  layout(showlegend = FALSE)
+trastornos <- trastornos |> arrange(porcentaje) |>
+  mutate(trastorno = factor(trastorno, levels = trastorno))
+plot_ly(trastornos, height = 400, x = ~porcentaje, y = ~trastorno,
+        type = "bar", orientation = "h",
+        marker = list(color = "#277da1"),
+        text = ~paste0(format(porcentaje, decimal.mark = ","), " %"),
+        textposition = "outside", cliponaxis = FALSE,
+        textfont = list(color = "#011638", size = 13),
+        customdata = ~n_millones,
+        hovertemplate = "%{y}<br>%{x:.1f} %<br>~%{customdata} millones<extra></extra>") |>
+  layout(showlegend = FALSE,
+         paper_bgcolor = "white", plot_bgcolor = "white",
+         margin = list(l = 130, r = 55, t = 30, b = 55),
+         xaxis = list(title = "Porcentaje del total (%)", range = c(0, 38)),
+         yaxis = list(title = "", automargin = TRUE,
+                      tickvals = levels(trastornos$trastorno),
+                      ticktext = str_replace_all(levels(trastornos$trastorno),
+                        c("Trastornos del desarrollo" = "Trastornos del<br>desarrollo",
+                          "Trastorno bipolar" = "Trastorno<br>bipolar")))) |>
+  config(displayModeBar = FALSE, responsive = TRUE)
 ```
 
 ## Tendencia DALYs por trastornos mentales
+
+DALYs: años de vida ajustados por discapacidad. **Serie simulada para ilustrar tendencias;
+los valores anuales no son estimaciones oficiales.**
 
 ```{r}
 #| label: dalys-tendencia
@@ -128,41 +122,17 @@ dalys <- tibble(
   ) + rnorm(100, 0, 25)
 )
 
-p_dalys <- ggplot(
-  dalys,
-  aes(
-    x = anio,
-    y = tasa_dalys,
-    color = pais,
-    group = pais,
-    text = paste0(
-      "<b>", pais, "</b> · ", anio, "<br>",
-      "Tasa DALYs: ", round(tasa_dalys, 0), " por 100.000 hab."
-    )
-  )
-) +
-  geom_line(linewidth = 1.1) +
-  geom_point(size = 1.5) +
-  scale_color_manual(
-    values = c(
-      "Argentina" = "#011638",
-      "Brasil"    = "#e76f51",
-      "Chile"     = "#4a7c59",
-      "Uruguay"   = "#277da1",
-      "Mundial"   = "#b07d55"
-    )
-  ) +
-  scale_x_continuous(breaks = seq(2000, 2019, 5)) +
-  labs(
-    title = "Tendencia de DALYs por Trastornos Mentales (2000-2019)",
-    subtitle = "Tasa por 100.000 hab. — Datos ilustrativos basados en Figura 1 del informe ETS",
-    x = NULL,
-    y = "DALYs por 100.000 hab.",
-    color = NULL
-  )
-
-ggplotly(p_dalys, tooltip = "text") |>
-  layout(legend = list(orientation = "h", x = 0, y = -0.2))
+plot_ly(dalys, height = 440, x = ~anio, y = ~tasa_dalys,
+        color = ~pais, colors = c("#011638", "#b64c35", "#35734b", "#277da1", "#885a32"),
+        type = "scatter", mode = "lines+markers",
+        line = list(width = 2), marker = list(size = 4),
+        hovertemplate = "%{x}<br>%{y:.0f} DALYs por 100.000 hab.<extra>%{fullData.name}</extra>") |>
+  layout(paper_bgcolor = "white", plot_bgcolor = "white",
+         margin = list(l = 80, r = 25, t = 25, b = 100),
+         xaxis = list(title = "Año", tickvals = c(2000, 2005, 2010, 2015, 2019)),
+         yaxis = list(title = "DALYs por 100.000 hab.", automargin = TRUE),
+         legend = list(orientation = "h", x = 0.5, xanchor = "center", y = -0.2)) |>
+  config(displayModeBar = FALSE, responsive = TRUE)
 ```
 
 :::
@@ -207,28 +177,20 @@ df_sector <- tibble(
     )
   )
 
-p_sector <- ggplot(
-  df_sector,
-  aes(
-    x = tipo_label, y = pct, fill = sector,
-    text = paste0("<b>", sector, "</b><br>", tipo_label, ": ", pct, "%")
-  )
-) +
-  geom_col(position = "stack", width = 0.45) +
-  scale_fill_manual(values = c("Privado" = "#011638", "Público" = "#d5bdaf")) +
-  geom_text(
-    aes(label = paste0(pct, "%")),
-    position = position_stack(vjust = 0.5),
-    size = 4.5, fontface = "bold",
-    color = c("white", "#011638", "white", "#011638")
-  ) +
-  labs(
-    title = "Distribución por sector — Instituciones y personas internadas",
-    subtitle = "Argentina · Censo Nacional de Internados en SM, 2019",
-    x = NULL, y = "%", fill = NULL
-  )
-
-ggplotly(p_sector, tooltip = "text") |> layout(showlegend = TRUE)
+plot_ly(df_sector, height = 400, x = ~tipo_label, y = ~pct, color = ~sector,
+        colors = c("#011638", "#4a7c59"), type = "bar",
+        text = ~paste0(pct, " %"), textposition = "inside",
+        insidetextanchor = "middle", textfont = list(color = "white", size = 18),
+        hovertemplate = "%{x}<br>%{y} %<extra>%{fullData.name}</extra>") |>
+  layout(barmode = "stack",
+         paper_bgcolor = "white", plot_bgcolor = "white",
+         margin = list(l = 55, r = 20, t = 25, b = 95),
+         xaxis = list(title = "", automargin = TRUE,
+                      tickvals = c("% de instituciones", "% de personas internadas"),
+                      ticktext = c("Instituciones", "Personas<br>internadas")),
+         yaxis = list(title = "Porcentaje (%)", range = c(0, 100)),
+         legend = list(orientation = "h", x = 0.5, xanchor = "center", y = -0.2)) |>
+  config(displayModeBar = FALSE, responsive = TRUE)
 ```
 
 ## Duración de internaciones
@@ -255,7 +217,7 @@ p_perm <- ggplot(
   scale_y_continuous(limits = c(0, 105)) +
   labs(
     title = "Duración de internaciones en instituciones monovalentes",
-    subtitle = "Argentina · Censo Nacional, 2019 — la LNSM fija máx. 3 meses",
+    subtitle = "Argentina · Censo Nacional, 2019",
     x = NULL, y = "Años"
   )
 
@@ -266,66 +228,10 @@ ggplotly(p_perm, tooltip = "text") |> layout(showlegend = FALSE)
 
 ---
 
-# Hitos del primer DIH en Neuquén
-
-```{r}
-#| label: timeline
-
-eventos <- tibble(
-  fecha = as.Date(c(
-    "2019-01-01", "2021-12-01", "2022-06-01",
-    "2023-06-01", "2023-12-01", "2024-06-01", "2025-03-01"
-  )),
-  evento = c(
-    "Censo Nacional: 99 personas internadas en Neuquén (3 inst. privadas)",
-    "Primer intento de externación post-pandemia — fracasa por falta de red comunitaria",
-    "Intervención en Vida Bella: se constatan condiciones de abandono",
-    "Fallece Ana María Firman mientras estaba internada en Vida Bella",
-    "1° DIH provincial 'Ana María Firman' — Neuquén capital (dic. 2023)",
-    "Inicio de externaciones desde CIPEC — Centenario",
-    "Publicación ETS — Evaluación de Tecnología Sanitaria sobre DIH"
-  ),
-  tipo = c("Diagnóstico", "Antecedente", "Crisis", "Crisis",
-           "Hito", "Expansión", "Evaluación"),
-  y_pos = c(-0.3, 0.3, -0.3, 0.3, -0.3, 0.3, -0.3)
-)
-
-colores_ev <- c(
-  "Diagnóstico" = "#277da1",
-  "Antecedente" = "#b07d55",
-  "Crisis"      = "#e76f51",
-  "Hito"        = "#4a7c59",
-  "Expansión"   = "#4a7c59",
-  "Evaluación"  = "#011638"
-)
-
-p_tl <- ggplot(eventos, aes(
-  x = fecha, y = 0, color = tipo,
-  text = paste0("<b>", format(fecha, "%b %Y"), "</b><br>", evento)
-)) +
-  geom_hline(yintercept = 0, color = "#011638", linewidth = 0.9) +
-  geom_segment(aes(xend = fecha, yend = y_pos), linewidth = 1) +
-  geom_point(size = 4.5) +
-  scale_color_manual(values = colores_ev) +
-  scale_y_continuous(limits = c(-0.65, 0.65)) +
-  labs(
-    title = "Línea de tiempo · DIH en Neuquén",
-    subtitle = "Del Censo Nacional 2019 a la ETS 2025",
-    x = NULL, y = NULL, color = NULL
-  ) +
-  theme(
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank(),
-    panel.grid.major.y = element_blank()
-  )
-
-ggplotly(p_tl, tooltip = "text") |>
-  layout(legend = list(orientation = "h", x = 0, y = -0.15))
-```
-
----
-
 # Distribución territorial de los DIH en Neuquén
+
+**Mapa ilustrativo:** los puntos ubican localidades, no domicilios de dispositivos.
+Los estados y detalles son un escenario demostrativo y no un inventario oficial de 2025.
 
 ```{r}
 #| label: mapa-dih
@@ -348,19 +254,27 @@ localidades <- tibble(
 )
 
 colores_marcador <- c(
-  "DIH activo"           = "green",
-  "Externación en curso" = "blue",
-  "DIH proyectado"       = "orange",
-  "Sin DIH"              = "gray"
+  "DIH activo"           = "#4a7c59",
+  "Externación en curso" = "#277da1",
+  "DIH proyectado"       = "#c45736",
+  "Sin DIH"              = "#757575"
 )
 
-mapa <- leaflet(localidades) |>
-  addProviderTiles(providers$CartoDB.Positron) |>
-  setView(lng = -69.5, lat = -39.0, zoom = 7) |>
+localidades <- localidades |>
+  mutate(color_marcador = unname(colores_marcador[tipo]))
+stopifnot(!anyNA(localidades$color_marcador),
+          all(localidades$lat >= -90 & localidades$lat <= 90),
+          all(localidades$lon >= -180 & localidades$lon <= 180))
+mapa <- leaflet(localidades, height = 480,
+                options = leafletOptions(scrollWheelZoom = FALSE)) |>
+  addTiles(urlTemplate = "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+           attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors') |>
+  fitBounds(lng1 = min(localidades$lon) - 0.2, lat1 = min(localidades$lat) - 0.2,
+            lng2 = max(localidades$lon) + 0.2, lat2 = max(localidades$lat) + 0.2) |>
   addCircleMarkers(
     lng = ~lon, lat = ~lat,
-    color = ~colores_marcador[tipo],
-    fillColor = ~colores_marcador[tipo],
+    color = ~color_marcador,
+    fillColor = ~color_marcador,
     fillOpacity = 0.85,
     radius = 12,
     stroke = TRUE, weight = 2,
@@ -369,8 +283,8 @@ mapa <- leaflet(localidades) |>
   ) |>
   addLegend(
     position = "bottomright",
-    colors = c("#4a7c59", "#277da1", "#e76f51", "#999999"),
-    labels = c("DIH activo", "Externación en curso", "DIH proyectado", "Sin DIH"),
+    colors = unname(colores_marcador),
+    labels = names(colores_marcador),
     title = "Estado · Neuquén 2025",
     opacity = 0.9
   )
@@ -424,7 +338,8 @@ DT::datatable(
 ) |>
   DT::formatStyle(
     "Ratio.x10k",
-    background = DT::styleColorBar(c(0, max(fuerza_laboral$ratio_10k)), "#4a7c59"),
+    color = "#011638",
+    background = DT::styleColorBar(c(0, max(fuerza_laboral$ratio_10k)), "#c5dfce"),
     backgroundSize = "100% 80%",
     backgroundRepeat = "no-repeat",
     backgroundPosition = "center"
@@ -443,8 +358,10 @@ reducción del uso de camas hospitalarias.
 
 ::: {.callout-important}
 #### Marco normativo
-La **Ley Nacional de Salud Mental N° 26.657 (2010)** establece que la internación es
-excepcional y no puede superar **3 meses**. La Ley Provincial N° 3.182 (2018) adhiere
+La [Ley Nacional de Salud Mental N° 26.657](https://www.argentina.gob.ar/normativa/nacional/ley-26657-175977/texto)
+establece que la internación debe ser lo más breve posible. En internaciones involuntarias,
+el artículo 24 exige una nueva evaluación independiente si continúan después de 90 días;
+ese plazo no constituye un máximo general de internación. La Ley Provincial N° 3.182 (2018) adhiere
 Neuquén a esta normativa. Los DIH son la alternativa concreta que el marco legal exige.
 :::
 

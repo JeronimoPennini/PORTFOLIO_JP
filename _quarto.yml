@@ -1,6 +1,8 @@
 project:
  type: website
  output-dir: docs # cambiar carpeta donde se construye el sitio
+ post-render:
+   - python scripts/post_render.py
  
 website:
   description: "Portfolio - JP"
@@ -16,6 +18,8 @@ website:
         href: https://github.com/JeronimoPennini
       - icon: linkedin
         href: https://www.linkedin.com/in/jeronimo-pennini
+lang: es
+
 format:
   html:
     code-fold: true

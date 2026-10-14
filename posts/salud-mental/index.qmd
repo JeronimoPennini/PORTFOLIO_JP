@@ -6,8 +6,6 @@ date: 2026-08-11
 categories: [Epidemiología, Salud Mental, Neuquén, Intentos de Suicidio]
 format:
   html:
-    theme: flatly
-    css: styles.css
     code-fold: true
     code-tools: true
     toc: true
@@ -17,10 +15,10 @@ format:
 ---
 
 :::: hero
-![](images.jpg)
+![Imagen de portada del análisis](images.jpg)
 
 ::: hero-caption
-Un análisis de datos sobre un tema urgente: cómo evolucionó el Suicidio y el Intento de Suicidio en la Provicnia de Neuquén frente a la tendencia nacional, y qué puede explicar la divergencia.
+Un análisis de datos sobre un tema urgente: cómo evolucionó el Suicidio y el Intento de Suicidio en la Provincia de Neuquén frente a la tendencia nacional, y qué puede explicar la divergencia.
 :::
 ::::
 
@@ -77,7 +75,7 @@ Suba nacional de casos en el mismo período
 ```{r}
 #| label: setup
 #| include: false
-#| warnings: false
+#| warning: false
 
 library(tidyverse)
 library(plotly)
@@ -100,7 +98,7 @@ theme_set(
 ```{r}
 #| label: serie-suicidios
 #| echo: false
-#| warnings: false
+#| warning: false
 
 poblacion_nqn <- tibble(
   anio = 2015:2025,
@@ -125,7 +123,7 @@ anios_clave <- c(2019, 2023, 2025)
 
 ```{r}
 #| echo: false
-#| warnings: false
+#| warning: false
 p_casos <- ggplot(
   serie_suicidios,
   aes(
@@ -162,7 +160,7 @@ ggplotly(p_casos, tooltip = "text")
 
 ```{r}
 #| echo: false
-#| warnings: false
+#| warning: false
 
 p_tasa <- ggplot(
   serie_suicidios,
@@ -204,7 +202,7 @@ ggplotly(p_tasa, tooltip = "text")
 ```{r}
 #| label: edad-sexo
 #| echo: false
-#| warnings: false
+#| warning: false
 distribucion_edad_sexo <- tibble(
   grupo = c("10-14", "15-19", "20-29", "30-39", "40-49", "50-59", "60+"),
   varones = c(3, 9, 16, 12, 9, 7, 6),
@@ -229,13 +227,13 @@ sd_edad_sexo <- SharedData$new(distribucion_filtrable, group = "filtro_edad_sexo
 
 ```{r}
 #| echo: false
-#| warnings: false
+#| warning: false
 filter_select("sexoSM", "Filtrar por sexo", sd_edad_sexo, ~filtro_sexo)
 ```
 
 ```{r}
 #| echo: false
-#| warnings: false
+#| warning: false
 p_edad_sexo <- ggplot(
   sd_edad_sexo,
   aes(
@@ -270,7 +268,7 @@ ggplotly(p_edad_sexo, tooltip = "text") |>
 
 ```{r}
 #| echo: false
-#| warnings: false
+#| warning: false
 datatable(
   distribucion_edad_sexo,
   colnames = c("Grupo etario" = "grupo", "Varones (est.)" = "varones", "Mujeres (est.)" = "mujeres"),

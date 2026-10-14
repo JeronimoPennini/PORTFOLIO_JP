@@ -7,13 +7,13 @@ $secondary:    #e76f51;
 // Cuerpo
 $body-bg:      #d5bdaf; // fondo de la página
 $body-color:   #011638; // texto general
-$link-color:   #277da1; // enlaces
+$link-color:   #17506e; // enlaces con contraste sobre el fondo beige
 $border-color: black; // líneas / separadores
 $code-block-bg: #81b29a; // fondo de bloques de código
 
 // Barra de navegación
 $navbar-bg: #4a7c59; // fondo
-$navbar-fg: #dedbd2; // texto
+$navbar-fg: #ffffff; // texto
 
 
 // Color de los títulos (h1-h6) en todo el documento.
@@ -165,7 +165,7 @@ form.inputs-form {
 /* Botón de descarga del CV */
 .cv-download {
   display: inline-block;
-  background-color: #07A6BC;
+  background-color: #17506e;
   color: white !important;
   padding: 10px 22px;
   border-radius: 8px;
@@ -175,7 +175,7 @@ form.inputs-form {
 }
 
 .cv-download:hover {
-  background-color: #E02377;
+  background-color: #011638;
   color: white !important;
 }
 
@@ -266,4 +266,4 @@ form.inputs-form {
 }
 .badge-table:hover {
   background: #fce8e2;
-}
+}

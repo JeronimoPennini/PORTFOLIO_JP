@@ -10,7 +10,7 @@ format:
     code-tools: true
 ---
 
-![](image.jpg)
+![Imagen de portada del análisis](image.jpg)
 
 ```{r}
 #| echo: false
@@ -62,6 +62,10 @@ El objetivo no es solamente construir un ranking de causas, sino observar cómo 
 
 ::: callout-important
 **Nota metodológica** 
+Las proyecciones incluyen un valor negativo para Lezama en 2009 y un dato ausente en 2010.
+Se tratan como población no disponible: no se calculan tasas para ese municipio ni
+para su región en esos años. Los recuentos de defunciones se conservan.
+
 Los datos utilizados son reales, peeero el fin de este análisis es meramente ilustrativo, por lo que no recomiendo usar los resultados obtenidos a continuación. Sugiero usar este informe como ejemplo de la amplitud de herramientas disponibles con R para analizar distintas situaciones en salud pública
 :::
 
@@ -139,7 +143,26 @@ POBLACION <- POBLACION_RAW |>
   ) |>
   mutate(ANIO = as.integer(ANIO)) |>
   rename(MUNICIPIO_NOMBRE = municipio_nombre) |>
-  filter(!is.na(POBLACION))
+  mutate(POBLACION = if_else(POBLACION > 0, POBLACION, NA_real_))
+
+
+# Un denominador por municipio y año, independiente de las filas de causas/edad/sexo.
+stopifnot(!anyDuplicated(POBLACION[c("MUNICIPIO_NOMBRE", "ANIO")]),
+          all(is.na(POBLACION$POBLACION) | POBLACION$POBLACION > 0))
+municipios_region <- BASE |>
+  filter(!is.na(REGION_SANITARIA), REGION_SANITARIA != "Ignorado") |>
+  distinct(MUNICIPIO_NOMBRE, REGION_SANITARIA)
+stopifnot(!anyDuplicated(municipios_region$MUNICIPIO_NOMBRE))
+faltantes_poblacion <- BASE |>
+  filter(REGION_SANITARIA != "Ignorado", !is.na(REGION_SANITARIA)) |>
+  distinct(MUNICIPIO_NOMBRE, ANIO) |>
+  anti_join(POBLACION, by = c("MUNICIPIO_NOMBRE", "ANIO"))
+stopifnot(nrow(faltantes_poblacion) == 0)
+POBLACION_REGIONAL <- POBLACION |>
+  inner_join(municipios_region, by = "MUNICIPIO_NOMBRE", relationship = "many-to-one") |>
+  group_by(ANIO, REGION_SANITARIA) |>
+  # Si falta un municipio, no calcular la tasa regional con población incompleta.
+  summarise(POBLACION = sum(POBLACION), .groups = "drop")
 
 
 BASE <- BASE |>
@@ -185,7 +208,7 @@ n_agrupamientos <- n_distinct(BASE$CAUSA_MUERTE_AGRUPAMIENTO)
 n_codigos       <- n_distinct(BASE$CODIGO_CIE10)
 n_municipios    <- n_distinct(BASE$MUNICIPIO_NOMBRE)
 
-pct_ignorado_region <- mean(BASE$REGION_SANITARIA == "Ignorado", na.rm = TRUE)
+pct_ignorado_region <- sum(BASE$DEFUNCIONES_CANTIDAD[BASE$REGION_SANITARIA == "Ignorado"], na.rm = TRUE) / sum(BASE$DEFUNCIONES_CANTIDAD, na.rm = TRUE)
 ```
 
 **Resumen del período `r anio_min`-`r anio_max`:** `r comma(total_periodo)` defunciones registradas, distribuidas en `r n_capitulos` capítulos CIE-10, `r n_agrupamientos` agrupamientos, `r n_codigos` códigos específicos y `r n_municipios` municipios.
@@ -824,12 +847,10 @@ datos_region <- BASE |>
       DEFUNCIONES_CANTIDAD,
       na.rm = TRUE
     ),
-    POBLACION = sum(
-      POBLACION,
-      na.rm = TRUE
-    ),
     .groups = "drop"
   ) |>
+  left_join(POBLACION_REGIONAL, by = c("ANIO", "REGION_SANITARIA"),
+            relationship = "many-to-one") |>
   mutate(
     TASA_DEFUNCIONES = DEFUNCIONES / POBLACION * 100000
   ) |>
@@ -1287,12 +1308,10 @@ datos_mapa <- BASE |>
       DEFUNCIONES_CANTIDAD,
       na.rm = TRUE
     ),
-    POBLACION = sum(
-      POBLACION,
-      na.rm = TRUE
-    ),
     .groups = "drop"
   ) |>
+  left_join(POBLACION_REGIONAL, by = c("ANIO", "REGION_SANITARIA"),
+            relationship = "many-to-one") |>
   mutate(
     TASA = DEFUNCIONES / POBLACION * 100000
   )
